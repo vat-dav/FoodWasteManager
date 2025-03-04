@@ -1,4 +1,12 @@
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
+using FoodWasteManager.Data;
 var builder = WebApplication.CreateBuilder(args);
+var connectionString = builder.Configuration.GetConnectionString("FoodWasteManagerContextConnection") ?? throw new InvalidOperationException("Connection string 'FoodWasteManagerContextConnection' not found.");
+
+builder.Services.AddDbContext<FoodWasteManagerContext>(options => options.UseSqlServer(connectionString));
+
+builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true).AddEntityFrameworkStores<FoodWasteManagerContext>();
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
