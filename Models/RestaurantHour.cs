@@ -6,20 +6,20 @@ namespace FoodWasteManager.Models
     {
         public enum RestaurantDay
         {
-            Monday, Tuesday, Wednesday, Thursday, Friday
+            Monday, Tuesday, Wednesday, Thursday, Friday, Saturday, Sunday
         }
 
         [Key]
-        public int RestaurantHourId { get; set; }
+        public int RestaurantHourId { get; set; } //unique identifier for RestaurantHourId
        
         [Required]
-        public int RestaurantId { get; set; }
+        public int RestaurantId { get; set; } //FK for each RestaurantId
         [Required]
-        public RestaurantDay Day { get; set; }
+        public RestaurantDay Day { get; set; }// enum of each day
         [Required]
-        public TimeOnly OpeningHours { get; set; }
+        public TimeOnly OpeningHours { get; set; } // times that the restaurant is open 
         [Required]
-        public TimeOnly ClosingHours { get; set; }
+        public TimeOnly ClosingHours { get; set; } // times the restaurant closes
 
     }
 }

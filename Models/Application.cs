@@ -12,21 +12,22 @@ namespace FoodWasteManager.Models
         public int CharityId { get; set; }
      
         
-        public enum ApplicationStatus
+        public enum ApplicationStatus //enum allows for better structure of data
         {
            Approved,Declined
         }
 
         [Required]
-        public ApplicationStatus AStatus { get; set; }
+        public ApplicationStatus AStatus { get; set; } // whether application is approved or declined
         public enum OrderStatus
         {
-            Approved, Declined
+            ReadyForPickup, Processing
         }
 
         [Required]
-        public OrderStatus OStatus { get; set; }
+        public OrderStatus? OStatus { get; set; } //whether order is ready or still in processing
 
+     
 
 
         
