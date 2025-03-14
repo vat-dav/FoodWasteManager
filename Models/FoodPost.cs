@@ -7,7 +7,7 @@ namespace FoodWasteManager.Models
         [Key]
         public int FoodPostId { get; set; } // unique identifier for each foodpost
         [Required]
-        public int RestauarantId { get; set; } // unique identifier for each restaurant
+        public int RestaurantId { get; set; } // unique identifier for each restaurant
         [Required,MaxLength(50)]
         public string FoodName { get; set; } // food name in string value limited to 50 characters
         [Required]

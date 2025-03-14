@@ -1,0 +1,49 @@
+﻿@model FoodWasteManager.Models.Charity
+
+@{
+    ViewData["Title"] = "Create";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1>Create</h1>
+
+<h4>Charity</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Create">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="CharityName" class="control-label"></label>
+                <input asp-for="CharityName" class="form-control" />
+                <span asp-validation-for="CharityName" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="CharityPhone" class="control-label"></label>
+                <input asp-for="CharityPhone" class="form-control" />
+                <span asp-validation-for="CharityPhone" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="CharityEmail" class="control-label"></label>
+                <input asp-for="CharityEmail" class="form-control" />
+                <span asp-validation-for="CharityEmail" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="CharityAddress" class="control-label"></label>
+                <input asp-for="CharityAddress" class="form-control" />
+                <span asp-validation-for="CharityAddress" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

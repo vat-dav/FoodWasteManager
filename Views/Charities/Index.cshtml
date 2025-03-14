@@ -1,0 +1,54 @@
+﻿@model IEnumerable<FoodWasteManager.Models.Charity>
+
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1>Index</h1>
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.CharityName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.CharityPhone)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.CharityEmail)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.CharityAddress)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.CharityName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.CharityPhone)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.CharityEmail)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.CharityAddress)
+            </td>
+            <td>
+                <a asp-action="Edit" asp-route-id="@item.CharityId">Edit</a> |
+                <a asp-action="Details" asp-route-id="@item.CharityId">Details</a> |
+                <a asp-action="Delete" asp-route-id="@item.CharityId">Delete</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>
