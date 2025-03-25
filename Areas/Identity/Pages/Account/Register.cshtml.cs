@@ -30,13 +30,20 @@ namespace FoodWasteManager.Areas.Identity.Pages.Account
         private readonly IUserEmailStore<FoodWasteManagerUser> _emailStore;
         private readonly ILogger<RegisterModel> _logger;
         private readonly IEmailSender _emailSender;
+        private readonly IUserStore<FoodWasteManagerUser> _OrgName;
+        private readonly IUserStore<FoodWasteManagerUser> _OrgPhone;
+        private readonly IUserStore<FoodWasteManagerUser> _OrgLandline;
+        private readonly IUserStore<FoodWasteManagerUser> _OrgAddress;
+        private readonly IUserStore<FoodWasteManagerUser> _Roles;
+
+
 
         public RegisterModel(
             UserManager<FoodWasteManagerUser> userManager,
             IUserStore<FoodWasteManagerUser> userStore,
             SignInManager<FoodWasteManagerUser> signInManager,
             ILogger<RegisterModel> logger,
-            IEmailSender emailSender)
+            IEmailSender emailSender, IUserStore<FoodWasteManagerUser> orgName, IUserStore<FoodWasteManagerUser> orgPhone, IUserStore<FoodWasteManagerUser> orgLandline, IUserStore<FoodWasteManagerUser> orgAddress, IUserStore<FoodWasteManagerUser> role)
         {
             _userManager = userManager;
             _userStore = userStore;
@@ -44,6 +51,13 @@ namespace FoodWasteManager.Areas.Identity.Pages.Account
             _signInManager = signInManager;
             _logger = logger;
             _emailSender = emailSender;
+            _OrgName = orgName;
+            _OrgPhone = orgPhone;
+            _OrgLandline = orgLandline;
+            _OrgAddress = orgAddress;
+            _Roles = role;
+
+
         }
 
         /// <summary>
@@ -71,14 +85,31 @@ namespace FoodWasteManager.Areas.Identity.Pages.Account
         /// </summary>
         public class InputModel
         {
-            [Display(Name = "Location")]
-            public string Location { get; set; }
+
 
 
             /// <summary>
             ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
             ///     directly from your code. This API may change or be removed in future releases.
             /// </summary>
+            /// 
+            // Custom Fields
+            [Required, MaxLength(50)]
+            public string OrgName { get; set; }
+
+            [Required, RegularExpression(@"^\(?(\d{3})\)?[- ]?(\d{3})[- ]?(\d{4})$", ErrorMessage = "Invalid phone format. Use '022-123-4567'.")]
+            public string OrgPhone { get; set; }
+
+            [RegularExpression(@"^09-\d{7}$", ErrorMessage = "Invalid landline. Use '09-813-3900'.")]
+            public string? OrgLandline { get; set; }
+
+            [Required, MaxLength(150)]
+            public string OrgAddress { get; set; }
+
+            [Required]
+            public FoodWasteManagerUser.Role Roles { get; set; }
+
+
             [Required]
             [EmailAddress]
             [Display(Name = "Email")]
@@ -105,6 +136,8 @@ namespace FoodWasteManager.Areas.Identity.Pages.Account
         }
 
 
+
+
         public async Task OnGetAsync(string returnUrl = null)
         {
             ReturnUrl = returnUrl;
@@ -115,11 +148,16 @@ namespace FoodWasteManager.Areas.Identity.Pages.Account
         {
             returnUrl ??= Url.Content("~/");
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
+
             if (ModelState.IsValid)
             {
                 var user = CreateUser();
 
-                user.Location = Input.Location;
+                user.OrgName = Input.OrgName;
+                user.OrgPhone = Input.OrgPhone;
+                user.OrgLandline = Input.OrgLandline;
+                user.OrgAddress = Input.OrgAddress;
+                user.Roles = Input.Roles;
 
                 await _userStore.SetUserNameAsync(user, Input.Email, CancellationToken.None);
                 await _emailStore.SetEmailAsync(user, Input.Email, CancellationToken.None);
@@ -185,3 +223,4 @@ namespace FoodWasteManager.Areas.Identity.Pages.Account
         }
     }
 }
+

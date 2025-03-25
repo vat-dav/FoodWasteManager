@@ -22,13 +22,13 @@ public class FoodWasteManagerContext : IdentityDbContext<FoodWasteManagerUser>
  
     }
 
-public DbSet<FoodWasteManager.Models.Application> Application { get; set; } = default!;
+    public DbSet<FoodWasteManager.Models.Application> Application { get; set; } = default!;
 
-public DbSet<FoodWasteManager.Models.Charity> Charity { get; set; } = default!;
+    public DbSet<FoodWasteManager.Models.Charity> Charity { get; set; } = default!;
 
-public DbSet<FoodWasteManager.Models.FoodPost> FoodPost { get; set; } = default!;
+    public DbSet<FoodWasteManager.Models.FoodPost> FoodPost { get; set; } = default!;
 
-public DbSet<FoodWasteManager.Models.Restaurant> Restaurant { get; set; } = default!;
+    public DbSet<FoodWasteManager.Models.Restaurant> Restaurant { get; set; } = default!;
 
-public DbSet<FoodWasteManager.Models.RestaurantHour> RestaurantHour { get; set; } = default!;
+    public DbSet<FoodWasteManager.Models.RestaurantHour> RestaurantHour { get; set; } = default!;
 }
