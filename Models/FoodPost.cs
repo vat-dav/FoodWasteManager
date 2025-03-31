@@ -1,14 +1,16 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using FoodWasteManager.Areas.Identity.Data;
+using Microsoft.AspNetCore.Identity;
+using System.ComponentModel.DataAnnotations;
 
 namespace FoodWasteManager.Models
 {
-    public class FoodPost
+    public class FoodPost: IdentityUser
     {
         [Key]
         public int FoodPostId { get; set; } // unique identifier for each foodpost
-        [Required]
-        public int RestaurantId { get; set; } // unique identifier for each restaurant
-        [Required,MaxLength(50)]
+    
+        [Required, MaxLength(50)]
+
         public string FoodName { get; set; } // food name in string value limited to 50 characters
         [Required]
         public string FoodImage { get; set; } // image of food available stored as a string value in wwroot folder

@@ -26,7 +26,7 @@ namespace FoodWasteManager.Areas.Identity.Data;
         [Required, RegularExpression(@"^\(?(\d{3})\)?[- ]?(\d{3})[- ]?(\d{4})$", ErrorMessage = "Please enter a valid phone number, only numerics accepted. Eg.) '0221234567'")]
         public string OrgPhone { get; set; } // phone number of organisation with RegEx for validation
 
-        [Required, RegularExpression(@"^09-\d{7}$", ErrorMessage = "Please enter a valid landline number, only numerics accepted. Eg.) '09-813-3900'")]
+        [RegularExpression(@"^09-\d{7}$", ErrorMessage = "Please enter a valid landline number, only numerics accepted. Eg.) '09-813-3900'")] // the regex is not working.
         public string? OrgLandline { get; set; } // (nullable) landline number of organisation with RegEx for validation
 
         [Required, MaxLength(150)]

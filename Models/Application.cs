@@ -1,16 +1,15 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using FoodWasteManager.Areas.Identity.Data;
+using Microsoft.AspNetCore.Identity;
+using System.ComponentModel.DataAnnotations;
 
 namespace FoodWasteManager.Models
 {
-    public class Application
+    public class Application: IdentityUser
     {
         [Key]
         public int ApplicationId { get; set; }
         [Required]
         public int FoodPostId { get; set; }
-        [Required]
-        public int CharityId { get; set; }
-     
         
         public enum ApplicationStatus //enum allows for better structure of data
         {
