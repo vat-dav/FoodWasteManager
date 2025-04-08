@@ -1,3 +1,6 @@
+/*
+ * 
+ * 
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using FoodWasteManager.Data;
@@ -17,30 +20,6 @@ builder.Services.AddIdentity<FoodWasteManagerUser, IdentityRole>().AddEntityFram
 builder.Services.AddControllersWithViews();
 
 builder.Services.AddRazorPages(); // added support for razor pages
-
-public static class RoleSeeder
-{
-    static async Task SeedRolesAsync(IServiceProvider serviceProvider) // ensures roles are added when running the application
-    {
-        var roleManager = serviceProvider.GetRequiredService<RoleManager<IdentityRole>>();
-
-        string[] roles = { "Charity", "Restaurant" };
-
-        foreach (var role in roles)
-        {
-            if (!await roleManager.RoleExistsAsync(role))
-            {
-                await roleManager.CreateAsync(new IdentityRole(role));
-            }
-        }
-    } 
-}
-
-using (var scope = app.Services.CreateScope())
-{
-    var services = scope.ServiceProvider;
-    await RoleSeeder.SeedRolesAsync(services);
-}
 
 var app = builder.Build();
 
@@ -63,6 +42,75 @@ app.UseAuthorization();
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
+
+app.MapRazorPages();  //added route to identity ui razor pages
+
+app.Run();
+
+
+
+
+/*public static class RoleSeeder
+{
+    static async Task SeedRolesAsync(IServiceProvider serviceProvider) // ensures roles are added when running the application
+    {
+        var roleManager = serviceProvider.GetRequiredService<RoleManager<IdentityRole>>();
+
+        string[] roles = { "Charity", "Restaurant" };
+
+        foreach (var role in roles)
+        {
+            if (!await roleManager.RoleExistsAsync(role))
+            {
+                await roleManager.CreateAsync(new IdentityRole(role));
+            }
+        }
+    } 
+}
+
+using (var scope = app.Services.CreateScope())
+{
+    var services = scope.ServiceProvider;
+    // await RoleSeeder.SeedRolesAsync(services);
+}
+
+*/
+
+
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
+using FoodWasteManager.Data;
+using FoodWasteManager.Areas.Identity.Data;
+using System.Configuration;
+
+var builder = WebApplication.CreateBuilder(args);
+var connectionString = builder.Configuration.GetConnectionString("FoodWasteManagerContextConnection") ?? throw new InvalidOperationException("Connection string 'FoodWasteManagerContextConnection' not found.");
+
+builder.Services.AddDbContext<FoodWasteManagerContext>(options => options.UseSqlServer(connectionString));
+
+builder.Services.AddDefaultIdentity<FoodWasteManagerUser>(options => options.SignIn.RequireConfirmedAccount = true).AddEntityFrameworkStores<FoodWasteManagerContext>();
+
+
+
+
+// Add services to the container.
+builder.Services.AddControllersWithViews();
+
+
+builder.Services.AddRazorPages(); // added support for razor pages
+
+
+var app = builder.Build();
+
+
+app.UseHttpsRedirection();
+app.UseStaticFiles();
+
+app.UseRouting();
+
+app.UseAuthorization();
+
+app.MapDefaultControllerRoute();
 
 app.MapRazorPages();  //added route to identity ui razor pages
 

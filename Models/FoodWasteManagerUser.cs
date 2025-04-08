@@ -32,11 +32,15 @@ namespace FoodWasteManager.Areas.Identity.Data;
         [Required, MaxLength(150)]
         public string OrgAddress { get; set; } // address of organisation in string value limited to 50 characters
 
-    [ForeignKey("CharityId")]
-    public int? CharityId { get; set; }
+    [Required, MaxLength(200)]
+    public string OrgDescription { get; set; } // address of organisation in string value limited to 50 characters
 
-    [ForeignKey("RestaurantId")]
-    public int? RestaurantId { get; set; }
+    public ICollection<FoodPost> FoodPosts { get; set; }
+    public ICollection<OrgHour> OrgHours { get; set; }
+
+   
+
     
-    }
+
+}
 

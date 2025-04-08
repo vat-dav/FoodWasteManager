@@ -1,0 +1,43 @@
+﻿@model FoodWasteManager.Models.Holiday
+
+@{
+    ViewData["Title"] = "Create";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1>Create</h1>
+
+<h4>Holiday</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Create">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="HolidayName" class="control-label"></label>
+                <input asp-for="HolidayName" class="form-control" />
+                <span asp-validation-for="HolidayName" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="HolidayDate" class="control-label"></label>
+                @{
+                    DateOnly minDate = DateOnly.FromDateTime(DateTime.Today.AddMonths(-1)); //adds min date value of one month from the current date
+                }
+                <input asp-for="HolidayDate" type="date" class="form-control" min="@minDate.ToString("yyyy-MM-dd")" max="@DateTime.Today.Date.ToString("yyyy-MM-dd")">
+                <!--sets minimum date to one month ago, and maximum date to the current day-->
+                <span asp-validation-for="HolidayDate" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

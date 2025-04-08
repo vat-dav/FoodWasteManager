@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace FoodWasteManager.Models
 {
-    public class OrgHours: IdentityUser
+    public class OrgHour
     {
         public enum OrgDay
         {
@@ -13,7 +13,7 @@ namespace FoodWasteManager.Models
         [Key]
         public int OrgHourId { get; set; } //unique identifier for RestaurantHourId
 
-      
+
         [Required]
         public OrgDay Day { get; set; }// enum of each day
         [Required]
