@@ -24,8 +24,13 @@
                 <span asp-validation-for="FoodImage" class="text-danger"></span>
             </div>
             <div class="form-group">
+                <label asp-for="Quantity" class="control-label"></label>
+                <input asp-for="Quantity" class="form-control" />
+                <span asp-validation-for="Quantity" class="text-danger"></span>
+            </div>
+            <div class="form-group">
                 <label asp-for="FoodBestBefore" class="control-label"></label>
-                <input asp-for="FoodBestBefore" class="form-control" />
+                <input asp-for="FoodBestBefore" class="form-control" type="date" />
                 <span asp-validation-for="FoodBestBefore" class="text-danger"></span>
             </div>
             <div class="form-group">

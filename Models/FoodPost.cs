@@ -15,6 +15,11 @@ namespace FoodWasteManager.Models
 
         public string FoodName { get; set; } // food name in string value limited to 50 characters
         [Required]
+
+        public int Quantity { get; set; }
+
+        [Required]
+
         public string FoodImage { get; set; } // image of food available stored as a string value in wwroot folder
 
         [NotMapped, DisplayName("Upload File")]
