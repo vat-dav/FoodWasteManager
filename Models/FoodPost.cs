@@ -11,20 +11,24 @@ namespace FoodWasteManager.Models
         [Key]
         public int FoodPostId { get; set; } // unique identifier for each foodpost
 
-        [Required, MaxLength(50)]
+        [Required]
 
+        public string FoodImage { get; set; } // image of food available stored as a string value in wwroot folder
+        
+        [Required, MaxLength(25)]
         public string FoodName { get; set; } // food name in string value limited to 50 characters
         [Required]
-        public string FoodImage { get; set; } // image of food available stored as a string value in wwroot folder
 
-        [NotMapped, DisplayName("Upload File")]
-        public IFormFile ImageFile { get; set; }
+        public int FoodQuantity { get; set; } // food int in food quantity limited to 50 characters
+        [Required, Range(0, 500, ErrorMessage="Please enter a price between $0-$500")]
 
+        public int FoodPrice { get; set; } // food int in food quantity limited to 50 characters
 
-        [Required] // add front end validation
+        [Required, DataType(DataType.Date)] // add front end validation
         public DateOnly FoodBestBefore { get; set; } // I will be adding front end validation for these field
         [Required] // add front end validation
         public DateTime DatePosted { get; set; } //I will be adding front end validation for this field
+        public FoodWasteManagerUser User { get; set; }
         public ICollection<Application> Applications { get; set; } // relation with applications table
 
 

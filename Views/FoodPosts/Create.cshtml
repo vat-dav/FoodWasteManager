@@ -11,21 +11,31 @@
 <hr />
 <div class="row">
     <div class="col-md-4">
-        <form asp-action="Create">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <form asp-controller="FoodPosts" asp-action="Create" method="post" enctype="multipart/form-data">
+            <div asp-validation-summary="ModelOnly"  class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="FoodImage" class="control-label"></label>
+                  <input asp-for="FoodImage" type="file" class="form-control" required/>    
+                <span asp-validation-for="FoodImage" class="text-danger"></span>
+            </div>
             <div class="form-group">
                 <label asp-for="FoodName" class="control-label"></label>
                 <input asp-for="FoodName" class="form-control" />
                 <span asp-validation-for="FoodName" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="FoodImage" class="control-label"></label>
-                <input asp-for="FoodImage" class="form-control" />
-                <span asp-validation-for="FoodImage" class="text-danger"></span>
+                <label asp-for="FoodQuantity" class="control-label"></label>
+                <input asp-for="FoodQuantity" class="form-control" />
+                <span asp-validation-for="FoodQuantity" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="FoodPrice" class="control-label"></label>
+                <input asp-for="FoodPrice" class="form-control" />
+                <span asp-validation-for="FoodPrice" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="FoodBestBefore" class="control-label"></label>
-                <input asp-for="FoodBestBefore" class="form-control" />
+                <input asp-for="FoodBestBefore" type="date" class="form-control" />
                 <span asp-validation-for="FoodBestBefore" class="text-danger"></span>
             </div>
             <div class="form-group">

@@ -22,11 +22,10 @@ public class FoodWasteManagerContext : IdentityDbContext<FoodWasteManagerUser>
 
     }
 
-public DbSet<Holiday> Holiday { get; set; } = default!;
+
     public DbSet<FoodPost> FoodPosts { get; set; }
     public DbSet<Application> Applications { get; set; }
-    public DbSet<OrgHour> OrgHours { get; set; }
-
+    public DbSet<FoodWasteManagerUser> Users {get; set; }
 
 
 

@@ -30,11 +30,12 @@ namespace FoodWasteManager.Areas.Identity.Pages.Account
         private readonly IUserEmailStore<FoodWasteManagerUser> _emailStore;
         private readonly ILogger<RegisterModel> _logger;
         private readonly IEmailSender _emailSender;
-        private readonly IUserStore<FoodWasteManagerUser> _OrgName;
-        private readonly IUserStore<FoodWasteManagerUser> _OrgPhone;
-        private readonly IUserStore<FoodWasteManagerUser> _OrgLandline;
-        private readonly IUserStore<FoodWasteManagerUser> _OrgAddress;
-        private readonly IUserStore<FoodWasteManagerUser> _Roles;
+        private readonly IUserStore<FoodWasteManagerUser> _UserFirstName;
+        private readonly IUserStore<FoodWasteManagerUser> _UserLastName;
+        private readonly IUserStore<FoodWasteManagerUser> _UserPhone;
+        private readonly IUserStore<FoodWasteManagerUser> _UserLandline;
+        private readonly IUserStore<FoodWasteManagerUser> _UserAddress;
+
 
 
 
@@ -43,7 +44,7 @@ namespace FoodWasteManager.Areas.Identity.Pages.Account
             IUserStore<FoodWasteManagerUser> userStore,
             SignInManager<FoodWasteManagerUser> signInManager,
             ILogger<RegisterModel> logger,
-            IEmailSender emailSender, IUserStore<FoodWasteManagerUser> orgName, IUserStore<FoodWasteManagerUser> orgPhone, IUserStore<FoodWasteManagerUser> orgLandline, IUserStore<FoodWasteManagerUser> orgAddress, IUserStore<FoodWasteManagerUser> role)
+            IEmailSender emailSender, IUserStore<FoodWasteManagerUser> firstName, IUserStore<FoodWasteManagerUser> lastName, IUserStore<FoodWasteManagerUser> userPhone, IUserStore<FoodWasteManagerUser> userLandline, IUserStore<FoodWasteManagerUser> userAddress)
         {
             _userManager = userManager;
             _userStore = userStore;
@@ -51,11 +52,12 @@ namespace FoodWasteManager.Areas.Identity.Pages.Account
             _signInManager = signInManager;
             _logger = logger;
             _emailSender = emailSender;
-            _OrgName = orgName;
-            _OrgPhone = orgPhone;
-            _OrgLandline = orgLandline;
-            _OrgAddress = orgAddress;
-            _Roles = role;
+            _UserFirstName = firstName;
+            _UserLastName = lastName;
+            _UserPhone = userPhone;
+            _UserLandline = userLandline;
+            _UserAddress = userAddress;
+            
 
 
         }
@@ -95,19 +97,21 @@ namespace FoodWasteManager.Areas.Identity.Pages.Account
             /// 
             // Custom Fields
             [Required, MaxLength(50)]
-            public string OrgName { get; set; }
+            public string UserFirstName { get; set; }
+
+            [Required, MaxLength(50)]
+            public string UserLastName { get; set; }
 
             [Required, RegularExpression(@"^\(?(\d{3})\)?[- ]?(\d{3})[- ]?(\d{4})$", ErrorMessage = "Invalid phone format. Use '022-123-4567'.")]
-            public string OrgPhone { get; set; }
+            public string UserPhone { get; set; }
 
-            [RegularExpression(@"^09-\d{7}$", ErrorMessage = "Invalid landline. Use '09-813-3900'.")]
-            public string? OrgLandline { get; set; }
+            [RegularExpression(@"^(0\d{8}|0\d-\d{3}-\d{4})$", ErrorMessage = "Please enter a valid landline number. Eg: '09-813-3900' or '098133900'")]
+            public string UserLandline { get; set; }
 
             [Required, MaxLength(150)]
-            public string OrgAddress { get; set; }
+            public string UserAddress { get; set; }
 
-            [Required]
-            public FoodWasteManagerUser.Role Roles { get; set; }
+
 
 
             [Required]
@@ -153,11 +157,13 @@ namespace FoodWasteManager.Areas.Identity.Pages.Account
             {
                 var user = CreateUser();
 
-                user.OrgName = Input.OrgName;
-                user.OrgPhone = Input.OrgPhone;
-                user.OrgLandline = Input.OrgLandline;
-                user.OrgAddress = Input.OrgAddress;
-                user.Roles = Input.Roles;
+                user.UserFirstName = Input.UserFirstName;
+                user.UserLastName = Input.UserLastName;
+
+                user.UserPhone = Input.UserPhone;
+                user.UserLandline = Input.UserLandline;
+                user.UserAddress = Input.UserAddress;
+          
 
                 await _userStore.SetUserNameAsync(user, Input.Email, CancellationToken.None);
                 await _emailStore.SetEmailAsync(user, Input.Email, CancellationToken.None);

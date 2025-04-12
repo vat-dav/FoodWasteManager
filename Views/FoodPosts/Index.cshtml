@@ -14,10 +14,16 @@
     <thead>
         <tr>
             <th>
+                @Html.DisplayNameFor(model => model.FoodImage)
+            </th>
+            <th>
                 @Html.DisplayNameFor(model => model.FoodName)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.FoodImage)
+                @Html.DisplayNameFor(model => model.FoodQuantity)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.FoodPrice)
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.FoodBestBefore)
@@ -32,10 +38,16 @@
 @foreach (var item in Model) {
         <tr>
             <td>
+                @Html.DisplayFor(modelItem => item.FoodImage)
+            </td>
+            <td>
                 @Html.DisplayFor(modelItem => item.FoodName)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.FoodImage)
+                @Html.DisplayFor(modelItem => item.FoodQuantity)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.FoodPrice)
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.FoodBestBefore)

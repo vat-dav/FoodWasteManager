@@ -16,9 +16,7 @@
             <th>
                 @Html.DisplayNameFor(model => model.AStatus)
             </th>
-            <th>
-                @Html.DisplayNameFor(model => model.OStatus)
-            </th>
+       
             <th></th>
         </tr>
     </thead>
@@ -28,9 +26,7 @@
             <td>
                 @Html.DisplayFor(modelItem => item.AStatus)
             </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.OStatus)
-            </td>
+
             <td>
                 <a asp-action="Edit" asp-route-id="@item.ApplicationId">Edit</a> |
                 <a asp-action="Details" asp-route-id="@item.ApplicationId">Details</a> |

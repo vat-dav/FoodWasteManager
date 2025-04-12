@@ -54,7 +54,7 @@ namespace FoodWasteManager.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("FoodPostId,FoodName,FoodImage,FoodBestBefore,DatePosted")] FoodPost foodPost)
+        public async Task<IActionResult> Create([Bind("FoodPostId,FoodImage,FoodName,FoodQuantity,FoodPrice,FoodBestBefore,DatePosted")] FoodPost foodPost)
         {
             if (ModelState.IsValid)
             {
@@ -86,7 +86,7 @@ namespace FoodWasteManager.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("FoodPostId,FoodName,FoodImage,FoodBestBefore,DatePosted")] FoodPost foodPost)
+        public async Task<IActionResult> Edit(int id, [Bind("FoodPostId,FoodImage,FoodName,FoodQuantity,FoodPrice,FoodBestBefore,DatePosted")] FoodPost foodPost)
         {
             if (id != foodPost.FoodPostId)
             {

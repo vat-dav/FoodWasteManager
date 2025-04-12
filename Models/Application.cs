@@ -1,5 +1,7 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using FoodWasteManager.Areas.Identity.Data;
+using Microsoft.AspNetCore.Identity;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace FoodWasteManager.Models
 {
@@ -9,9 +11,13 @@ namespace FoodWasteManager.Models
 
             [Key]
             public int ApplicationId { get; set; }
-            [Required]
+            [Required, ForeignKey("FoodPost")]
             public int FoodPostId { get; set; }
+            [Required]
+            public DateTime EarliestPickup { get; set; }
 
+            [Required]
+            public DateTime LatestPickup { get; set; }
             public enum ApplicationStatus //enum allows for better structure of data
             {
                 Approved, Declined
@@ -19,16 +25,13 @@ namespace FoodWasteManager.Models
 
             [Required]
             public ApplicationStatus AStatus { get; set; } // whether application is approved or declined
-            public enum OrderStatus
-            {
-                ReadyForPickup, Processing
-            }
 
-            [Required]
-            public OrderStatus? OStatus { get; set; } //whether order is ready or still in processing
+            public FoodWasteManagerUser User { get; set; }
+            public FoodPost FoodPost { get; set; }
 
 
-        }
+
+    }
     }
 
 
