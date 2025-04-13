@@ -20,13 +20,17 @@ namespace FoodWasteManager.Models
             public DateTime LatestPickup { get; set; }
             public enum ApplicationStatus //enum allows for better structure of data
             {
-                Approved, Declined
+                Approved, Declined, Processing
             }
 
             [Required]
             public ApplicationStatus AStatus { get; set; } // whether application is approved or declined
-
-            public FoodWasteManagerUser User { get; set; }
+       
+        [ForeignKey("UserId")]
+        public string UserId { get; set; }
+        
+   
+        public FoodWasteManagerUser User { get; set; }
             public FoodPost FoodPost { get; set; }
 
 

@@ -14,9 +14,17 @@
     <thead>
         <tr>
             <th>
+                @Html.DisplayNameFor(model => model.EarliestPickup)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.LatestPickup)
+            </th>
+            <th>
                 @Html.DisplayNameFor(model => model.AStatus)
             </th>
-       
+            <th>
+                @Html.DisplayNameFor(model => model.FoodPost)
+            </th>
             <th></th>
         </tr>
     </thead>
@@ -24,9 +32,17 @@
 @foreach (var item in Model) {
         <tr>
             <td>
+                @Html.DisplayFor(modelItem => item.EarliestPickup)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.LatestPickup)
+            </td>
+            <td>
                 @Html.DisplayFor(modelItem => item.AStatus)
             </td>
-
+            <td>
+                @Html.DisplayFor(modelItem => item.FoodPost.FoodName)
+            </td>
             <td>
                 <a asp-action="Edit" asp-route-id="@item.ApplicationId">Edit</a> |
                 <a asp-action="Details" asp-route-id="@item.ApplicationId">Details</a> |

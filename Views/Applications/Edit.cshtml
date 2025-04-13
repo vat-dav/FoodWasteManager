@@ -20,8 +20,26 @@
                 <span asp-validation-for="FoodPostId" class="text-danger"></span>
             </div>
             <div class="form-group">
+                <label asp-for="EarliestPickup" class="control-label"></label>
+                <input asp-for="EarliestPickup" class="form-control" />
+                <span asp-validation-for="EarliestPickup" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="LatestPickup" class="control-label"></label>
+                <input asp-for="LatestPickup" class="form-control" />
+                <span asp-validation-for="LatestPickup" class="text-danger"></span>
+            </div>
+            <div class="form-group">
                 <label asp-for="AStatus" class="control-label"></label>
-                <select asp-for="AStatus" class="form-control"></select>
+                <select asp-for="AStatus" class="form-control">
+                    <!--adds a default option of Please Select-->
+                    <option value="">--- Please Select ---</option>
+                    @foreach (var value in Enum.GetValues(typeof(Application.ApplicationStatus)))
+                    {
+                        <option value="@value">@value</option>
+                    }
+                </select>
+
                 <span asp-validation-for="AStatus" class="text-danger"></span>
             </div>
             <div class="form-group">

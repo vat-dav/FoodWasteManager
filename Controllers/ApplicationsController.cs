@@ -7,22 +7,36 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using FoodWasteManager.Data;
 using FoodWasteManager.Models;
+using Microsoft.AspNetCore.Identity;
+using FoodWasteManager.Areas.Identity.Data;
+using Microsoft.AspNetCore.Authorization;
+
 
 namespace FoodWasteManager.Controllers
 {
     public class ApplicationsController : Controller
-    {
-        private readonly FoodWasteManagerContext _context;
 
-        public ApplicationsController(FoodWasteManagerContext context)
+    {
+        
+
+        private readonly FoodWasteManagerContext _context;
+        private readonly UserManager<FoodWasteManagerUser> _userManager; // injected usermanager
+
+        public ApplicationsController(FoodWasteManagerContext context, UserManager<FoodWasteManagerUser> userManager)
         {
             _context = context;
+            _userManager = userManager;
         }
+
+
+        [Authorize]
+
 
         // GET: Applications
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Applications.ToListAsync());
+            var foodWasteManagerContext = _context.Applications.Include(a => a.FoodPost);
+            return View(await foodWasteManagerContext.ToListAsync());
         }
 
         // GET: Applications/Details/5
@@ -34,6 +48,7 @@ namespace FoodWasteManager.Controllers
             }
 
             var application = await _context.Applications
+                .Include(a => a.FoodPost)
                 .FirstOrDefaultAsync(m => m.ApplicationId == id);
             if (application == null)
             {
@@ -46,6 +61,7 @@ namespace FoodWasteManager.Controllers
         // GET: Applications/Create
         public IActionResult Create()
         {
+            ViewData["FoodPostId"] = new SelectList(_context.FoodPosts, "FoodPostId", "FoodName");
             return View();
         }
 
@@ -54,14 +70,32 @@ namespace FoodWasteManager.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("ApplicationId,FoodPostId,AStatus,OStatus")] Application application)
+        public async Task<IActionResult> Create([Bind("ApplicationId,FoodPostId,EarliestPickup,LatestPickup,AStatus")] Application application)
         {
-            if (ModelState.IsValid)
+            var currentUserId = _userManager.GetUserId(User); // gets logged-in user's ID
+            application.UserId = currentUserId;
+
+            var foodPostId = await _context.FoodPosts.Include(f => f.User).FirstOrDefaultAsync(f => f.FoodPostId == application.FoodPostId);
+
+            if (application.UserId == foodPostId.UserId)
             {
+                ModelState.AddModelError("", "You cannot apply for your own food post.");
+            }
+
+
+            if (!ModelState.IsValid)
+            {
+                application.AStatus = Application.ApplicationStatus.Processing; // default sets the application status to processing, as waiting for the other user to approve/decline the application.
+                
+
                 _context.Add(application);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
+
+            
+
+            ViewData["FoodPostId"] = new SelectList(_context.FoodPosts, "FoodPostId", "FoodName", application.FoodPostId);
             return View(application);
         }
 
@@ -78,6 +112,7 @@ namespace FoodWasteManager.Controllers
             {
                 return NotFound();
             }
+            ViewData["FoodPostId"] = new SelectList(_context.FoodPosts, "FoodPostId", "FoodName", application.FoodPostId);
             return View(application);
         }
 
@@ -86,7 +121,7 @@ namespace FoodWasteManager.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("ApplicationId,FoodPostId,AStatus,OStatus")] Application application)
+        public async Task<IActionResult> Edit(int id, [Bind("ApplicationId,FoodPostId,EarliestPickup,LatestPickup,AStatus")] Application application)
         {
             if (id != application.ApplicationId)
             {
@@ -113,6 +148,7 @@ namespace FoodWasteManager.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
+            ViewData["FoodPostId"] = new SelectList(_context.FoodPosts, "FoodPostId", "FoodName", application.FoodPostId);
             return View(application);
         }
 
@@ -125,6 +161,7 @@ namespace FoodWasteManager.Controllers
             }
 
             var application = await _context.Applications
+                .Include(a => a.FoodPost)
                 .FirstOrDefaultAsync(m => m.ApplicationId == id);
             if (application == null)
             {

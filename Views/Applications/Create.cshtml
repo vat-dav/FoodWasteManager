@@ -11,18 +11,23 @@
 <hr />
 <div class="row">
     <div class="col-md-4">
-        <form asp-action="Create">
+        <form asp-action="Create" onsubmit="return PickupTimes()">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
                 <label asp-for="FoodPostId" class="control-label"></label>
                 <select asp-for="FoodPostId" class ="form-control" asp-items="ViewBag.FoodPostId"></select>
             </div>
             <div class="form-group">
-                <label asp-for="AStatus" class="control-label"></label>
-                <select asp-for="AStatus" class="form-control"></select>
-                <span asp-validation-for="AStatus" class="text-danger"></span>
+                <label asp-for="EarliestPickup" class="control-label"></label>
+                <input asp-for="EarliestPickup" class="form-control" />
+                <span asp-validation-for="EarliestPickup" class="text-danger"></span>
             </div>
-   
+            <div class="form-group">
+                <label asp-for="LatestPickup" class="control-label"></label>
+                <input asp-for="LatestPickup" class="form-control" />
+                <span asp-validation-for="LatestPickup" class="text-danger"></span>
+            </div>
+
             <div class="form-group">
                 <input type="submit" value="Create" class="btn btn-primary" />
             </div>
@@ -37,3 +42,17 @@
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
 }
+
+<script>
+    function PickupTimes() {
+        const earliest = new Date(document.getElementById("EarliestPickup").value);
+        const latest = new Date(document.getElementById("LatestPickup").value);
+
+        if (latest <= earliest) {
+            alert("Latest Pickup must be after Earliest Pickup :)");
+            return false; // stop form submission
+        }
+
+        return true; // allow form to submit
+    }
+</script>

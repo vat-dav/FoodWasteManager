@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using FoodWasteManager.Data;
 using FoodWasteManager.Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace FoodWasteManager.Controllers
 {
@@ -18,6 +19,8 @@ namespace FoodWasteManager.Controllers
         {
             _context = context;
         }
+        [Authorize]
+
 
         // GET: FoodPosts
         public async Task<IActionResult> Index()
@@ -54,14 +57,33 @@ namespace FoodWasteManager.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("FoodPostId,FoodImage,FoodName,FoodQuantity,FoodPrice,FoodBestBefore,DatePosted")] FoodPost foodPost)
+        public async Task<IActionResult> Create([Bind("FoodPostId,FoodImage,FoodName,FoodQuantity,FoodPrice,FoodBestBefore,DatePosted,ImageFile")] FoodPost foodPost, IFormFile imageFile)
+
         {
-            if (ModelState.IsValid)
+            //if imagefile has been uploaded and is not null, the following runs
+            if (imageFile != null && imageFile.Length > 0)
+            {
+
+                var fileName = Path.GetFileName(imageFile.FileName);// gets the filename of the image uploaded
+                var filePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/images", fileName); // creates the name of filepath AND saves the to the wwwroot folder
+                using (var stream = new FileStream(filePath, FileMode.Create))
+                {
+                    await imageFile.CopyToAsync(stream);
+                }
+
+                foodPost.FoodImage = "/images/" + fileName;
+            }
+
+            foodPost.DatePosted = DateTime.Now; //takes in the users date and time when they post it
+
+
+            if (!ModelState.IsValid)
             {
                 _context.Add(foodPost);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
+
             return View(foodPost);
         }
 
