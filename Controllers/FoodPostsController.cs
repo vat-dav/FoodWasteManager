@@ -8,17 +8,21 @@ using Microsoft.EntityFrameworkCore;
 using FoodWasteManager.Data;
 using FoodWasteManager.Models;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
+using FoodWasteManager.Areas.Identity.Data;
 
 namespace FoodWasteManager.Controllers
 {
     public class FoodPostsController : Controller
     {
         private readonly FoodWasteManagerContext _context;
-
-        public FoodPostsController(FoodWasteManagerContext context)
+        private readonly UserManager<FoodWasteManagerUser> _userManager;
+        public FoodPostsController(FoodWasteManagerContext context, UserManager<FoodWasteManagerUser> userManager)
         {
             _context = context;
+            _userManager = userManager;
         }
+
         [Authorize]
 
 
@@ -79,6 +83,9 @@ namespace FoodWasteManager.Controllers
 
             if (!ModelState.IsValid)
             {
+                var user = await _userManager.GetUserAsync(User); // get the currently logged-in user
+                foodPost.Id = user.Id; // sets the foreign key manually
+
                 _context.Add(foodPost);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));

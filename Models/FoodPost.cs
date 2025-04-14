@@ -28,7 +28,7 @@ namespace FoodWasteManager.Models
         [Required] // add front end validation
         public DateTime DatePosted { get; set; }
         [ForeignKey("User")]
-        public string UserId { get; set; }
+        public string Id { get; set; }
         public FoodWasteManagerUser User { get; set; }
         public ICollection<Application> Applications { get; set; } // relation with applications table
 

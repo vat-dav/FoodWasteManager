@@ -73,20 +73,21 @@ namespace FoodWasteManager.Controllers
         public async Task<IActionResult> Create([Bind("ApplicationId,FoodPostId,EarliestPickup,LatestPickup,AStatus")] Application application)
         {
             var currentUserId = _userManager.GetUserId(User); // gets logged-in user's ID
-            application.UserId = currentUserId;
+            application.Id = currentUserId;
 
             var foodPostId = await _context.FoodPosts.Include(f => f.User).FirstOrDefaultAsync(f => f.FoodPostId == application.FoodPostId);
 
-            if (application.UserId == foodPostId.UserId)
+            if (application.Id == foodPostId.Id)
             {
                 ModelState.AddModelError("", "You cannot apply for your own food post.");
             }
 
 
-            if (!ModelState.IsValid)
+            if (ModelState.IsValid)
             {
                 application.AStatus = Application.ApplicationStatus.Processing; // default sets the application status to processing, as waiting for the other user to approve/decline the application.
-                
+                var user = await _userManager.GetUserAsync(User); // get the currently logged-in user
+                application.Id = user.Id; // sets the foreign key manually
 
                 _context.Add(application);
                 await _context.SaveChangesAsync();

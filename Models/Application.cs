@@ -26,12 +26,12 @@ namespace FoodWasteManager.Models
             [Required]
             public ApplicationStatus AStatus { get; set; } // whether application is approved or declined
        
-        [ForeignKey("UserId")]
-        public string UserId { get; set; }
+        [ForeignKey("User")]
+        public string Id { get; set; }
         
    
         public FoodWasteManagerUser User { get; set; }
-            public FoodPost FoodPost { get; set; }
+        public FoodPost FoodPost { get; set; }
 
 
 
