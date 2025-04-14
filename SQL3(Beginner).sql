@@ -1,0 +1,1 @@
+﻿UPDATE FoodWasteManager.dbo.FoodPosts SET FoodPrice = 0 WHERE FoodPostId = 2;
