@@ -11,7 +11,7 @@
 <hr />
 <div class="row">
     <div class="col-md-4">
-        <form asp-action="Edit">
+        <form asp-action="Edit" onsubmit= "return PickupTimes()">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <input type="hidden" asp-for="ApplicationId" />
             <div class="form-group">
@@ -19,6 +19,12 @@
                 <select asp-for="FoodPostId" class="form-control" asp-items="ViewBag.FoodPostId"></select>
                 <span asp-validation-for="FoodPostId" class="text-danger"></span>
             </div>
+            <div class="form-group">
+                <label asp-for="QuantityRequired" class="control-label"></label>
+                <input asp-for="QuantityRequired" class="form-control" />
+                <span asp-validation-for="QuantityRequired" class="text-danger"></span>
+            </div>
+              
             <div class="form-group">
                 <label asp-for="EarliestPickup" class="control-label"></label>
                 <input asp-for="EarliestPickup" class="form-control" />
@@ -29,19 +35,7 @@
                 <input asp-for="LatestPickup" class="form-control" />
                 <span asp-validation-for="LatestPickup" class="text-danger"></span>
             </div>
-            <div class="form-group">
-                <label asp-for="AStatus" class="control-label"></label>
-                <select asp-for="AStatus" class="form-control">
-                    <!--adds a default option of Please Select-->
-                    <option value="">--- Please Select ---</option>
-                    @foreach (var value in Enum.GetValues(typeof(Application.ApplicationStatus)))
-                    {
-                        <option value="@value">@value</option>
-                    }
-                </select>
-
-                <span asp-validation-for="AStatus" class="text-danger"></span>
-            </div>
+           
             <div class="form-group">
                 <input type="submit" value="Save" class="btn btn-primary" />
             </div>
@@ -56,3 +50,18 @@
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
 }
+
+
+<script>
+    function PickupTimes() {
+        const earliest = new Date(document.getElementById("EarliestPickup").value);
+        const latest = new Date(document.getElementById("LatestPickup").value);
+
+        if (latest <= earliest) {
+            alert("Latest Pickup must be after Earliest Pickup :)");
+            return false; // stop form submission
+        }
+
+        return true; // allow form to submit
+    }
+</script>

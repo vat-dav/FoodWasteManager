@@ -84,7 +84,7 @@ namespace FoodWasteManager.Controllers
             if (!ModelState.IsValid)
             {
                 var user = await _userManager.GetUserAsync(User); // get the currently logged-in user
-                foodPost.Id = user.Id; // sets the foreign key manually
+                foodPost.UserId = user.Id; // sets the foreign key manually
 
                 _context.Add(foodPost);
                 await _context.SaveChangesAsync();

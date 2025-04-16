@@ -14,6 +14,9 @@
     <thead>
         <tr>
             <th>
+                @Html.DisplayNameFor(model => model.QuantityRequired)
+            </th>
+            <th>
                 @Html.DisplayNameFor(model => model.EarliestPickup)
             </th>
             <th>
@@ -31,6 +34,9 @@
     <tbody>
 @foreach (var item in Model) {
         <tr>
+                <td>
+                    @Html.DisplayFor(modelItem=> item.QuantityRequired)
+                </td>
             <td>
                 @Html.DisplayFor(modelItem => item.EarliestPickup)
             </td>

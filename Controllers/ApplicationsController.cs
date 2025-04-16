@@ -70,24 +70,36 @@ namespace FoodWasteManager.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("ApplicationId,FoodPostId,EarliestPickup,LatestPickup,AStatus")] Application application)
+        public async Task<IActionResult> Create([Bind("ApplicationId,FoodPostId,QuantityRequired,EarliestPickup,LatestPickup,AStatus")] Application application)
         {
             var currentUserId = _userManager.GetUserId(User); // gets logged-in user's ID
-            application.Id = currentUserId;
+            application.UserId = currentUserId;
 
-            var foodPostId = await _context.FoodPosts.Include(f => f.User).FirstOrDefaultAsync(f => f.FoodPostId == application.FoodPostId);
+            var foodPostId = await _context.FoodPosts.Include(f => f.Users).FirstOrDefaultAsync(f => f.FoodPostId == application.FoodPostId);
 
-            if (application.Id == foodPostId.Id)
+            if (application.UserId == foodPostId.UserId)
             {
                 ModelState.AddModelError("", "You cannot apply for your own food post.");
             }
+
+
+            //validation above is to ensure that users can't apply for their own foodposts
+
+            var foodQuantityExceeded = await _context.FoodPosts.FirstOrDefaultAsync(fp => fp.FoodPostId == application.FoodPostId);
+
+            if (application.QuantityRequired > foodQuantityExceeded.FoodQuantity)
+            {
+                ModelState.AddModelError("QuantityRequired", "Requested quantity exceeds available quantity.");
+                return View(application);
+            }
+            //validation above ensures that the food quantity required stated in the application does not exceed the available amount for the specific foodpost.
 
 
             if (ModelState.IsValid)
             {
                 application.AStatus = Application.ApplicationStatus.Processing; // default sets the application status to processing, as waiting for the other user to approve/decline the application.
                 var user = await _userManager.GetUserAsync(User); // get the currently logged-in user
-                application.Id = user.Id; // sets the foreign key manually
+                application.UserId = user.Id; // sets the foreign key manually
 
                 _context.Add(application);
                 await _context.SaveChangesAsync();
@@ -122,14 +134,14 @@ namespace FoodWasteManager.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("ApplicationId,FoodPostId,EarliestPickup,LatestPickup,AStatus")] Application application)
+        public async Task<IActionResult> Edit(int id, [Bind("ApplicationId,FoodPostId,QuantityRequired,EarliestPickup,LatestPickup,AStatus")] Application application)
         {
             if (id != application.ApplicationId)
             {
                 return NotFound();
             }
 
-            if (ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
                 try
                 {

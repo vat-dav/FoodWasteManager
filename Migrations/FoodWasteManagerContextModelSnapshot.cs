@@ -72,7 +72,8 @@ namespace FoodWasteManager.Migrations
 
                     b.Property<string>("UserAddress")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(250)
+                        .HasColumnType("nvarchar(250)");
 
                     b.Property<string>("UserFirstName")
                         .IsRequired()
@@ -125,14 +126,14 @@ namespace FoodWasteManager.Migrations
                     b.Property<int>("FoodPostId")
                         .HasColumnType("int");
 
-                    b.Property<string>("Id")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<DateTime>("LatestPickup")
                         .HasColumnType("datetime2");
 
+                    b.Property<int>("QuantityRequired")
+                        .HasColumnType("int");
+
                     b.Property<string>("UserId")
+                        .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
                     b.HasKey("ApplicationId");
@@ -173,13 +174,13 @@ namespace FoodWasteManager.Migrations
                     b.Property<int>("FoodQuantity")
                         .HasColumnType("int");
 
-                    b.Property<string>("Id")
+                    b.Property<string>("UserId")
                         .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
                     b.HasKey("FoodPostId");
 
-                    b.HasIndex("Id");
+                    b.HasIndex("UserId");
 
                     b.ToTable("FoodPosts");
                 });
@@ -326,27 +327,29 @@ namespace FoodWasteManager.Migrations
                     b.HasOne("FoodWasteManager.Models.FoodPost", "FoodPost")
                         .WithMany("Applications")
                         .HasForeignKey("FoodPostId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("FoodWasteManager.Areas.Identity.Data.FoodWasteManagerUser", "User")
+                    b.HasOne("FoodWasteManager.Areas.Identity.Data.FoodWasteManagerUser", "Users")
                         .WithMany("Applications")
-                        .HasForeignKey("UserId");
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
 
                     b.Navigation("FoodPost");
 
-                    b.Navigation("User");
+                    b.Navigation("Users");
                 });
 
             modelBuilder.Entity("FoodWasteManager.Models.FoodPost", b =>
                 {
-                    b.HasOne("FoodWasteManager.Areas.Identity.Data.FoodWasteManagerUser", "User")
+                    b.HasOne("FoodWasteManager.Areas.Identity.Data.FoodWasteManagerUser", "Users")
                         .WithMany("FoodPosts")
-                        .HasForeignKey("Id")
+                        .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("User");
+                    b.Navigation("Users");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>

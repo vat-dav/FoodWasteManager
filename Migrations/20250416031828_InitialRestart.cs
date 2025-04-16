@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace FoodWasteManager.Migrations
 {
     /// <inheritdoc />
-    public partial class InitialModelConfig : Migration
+    public partial class InitialRestart : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -30,6 +30,11 @@ namespace FoodWasteManager.Migrations
                 columns: table => new
                 {
                     Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    UserFirstName = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
+                    UserLastName = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
+                    UserPhone = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    UserLandline = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    UserAddress = table.Column<string>(type: "nvarchar(250)", maxLength: 250, nullable: false),
                     UserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     NormalizedUserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     Email = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
@@ -156,6 +161,71 @@ namespace FoodWasteManager.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
+            migrationBuilder.CreateTable(
+                name: "FoodPosts",
+                columns: table => new
+                {
+                    FoodPostId = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    FoodImage = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    FoodName = table.Column<string>(type: "nvarchar(25)", maxLength: 25, nullable: false),
+                    FoodQuantity = table.Column<int>(type: "int", nullable: false),
+                    FoodPrice = table.Column<int>(type: "int", nullable: false),
+                    FoodBestBefore = table.Column<DateOnly>(type: "date", nullable: false),
+                    DatePosted = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_FoodPosts", x => x.FoodPostId);
+                    table.ForeignKey(
+                        name: "FK_FoodPosts_AspNetUsers_UserId",
+                        column: x => x.UserId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Applications",
+                columns: table => new
+                {
+                    ApplicationId = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    FoodPostId = table.Column<int>(type: "int", nullable: false),
+                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    QuantityRequired = table.Column<int>(type: "int", nullable: false),
+                    EarliestPickup = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    LatestPickup = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    AStatus = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Applications", x => x.ApplicationId);
+                    table.ForeignKey(
+                        name: "FK_Applications_AspNetUsers_UserId",
+                        column: x => x.UserId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Applications_FoodPosts_FoodPostId",
+                        column: x => x.FoodPostId,
+                        principalTable: "FoodPosts",
+                        principalColumn: "FoodPostId",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Applications_FoodPostId",
+                table: "Applications",
+                column: "FoodPostId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Applications_UserId",
+                table: "Applications",
+                column: "UserId");
+
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetRoleClaims_RoleId",
                 table: "AspNetRoleClaims",
@@ -194,11 +264,19 @@ namespace FoodWasteManager.Migrations
                 column: "NormalizedUserName",
                 unique: true,
                 filter: "[NormalizedUserName] IS NOT NULL");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_FoodPosts_UserId",
+                table: "FoodPosts",
+                column: "UserId");
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.DropTable(
+                name: "Applications");
+
             migrationBuilder.DropTable(
                 name: "AspNetRoleClaims");
 
@@ -213,6 +291,9 @@ namespace FoodWasteManager.Migrations
 
             migrationBuilder.DropTable(
                 name: "AspNetUserTokens");
+
+            migrationBuilder.DropTable(
+                name: "FoodPosts");
 
             migrationBuilder.DropTable(
                 name: "AspNetRoles");

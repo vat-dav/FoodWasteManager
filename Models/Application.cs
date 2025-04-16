@@ -1,41 +1,43 @@
 ﻿using FoodWasteManager.Areas.Identity.Data;
-using Microsoft.AspNetCore.Identity;
-using System.ComponentModel.DataAnnotations;
+using FoodWasteManager.Models;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.ComponentModel.DataAnnotations;
 
 namespace FoodWasteManager.Models
+
 {
     public class Application
-
     {
+        [Key]
+        public int ApplicationId { get; set; }
 
-            [Key]
-            public int ApplicationId { get; set; }
-            [Required, ForeignKey("FoodPost")]
-            public int FoodPostId { get; set; }
-            [Required]
-            public DateTime EarliestPickup { get; set; }
+        [Required]
+        public int FoodPostId { get; set; }
 
-            [Required]
-            public DateTime LatestPickup { get; set; }
-            public enum ApplicationStatus //enum allows for better structure of data
-            {
-                Approved, Declined, Processing
-            }
-
-            [Required]
-            public ApplicationStatus AStatus { get; set; } // whether application is approved or declined
-       
-        [ForeignKey("User")]
-        public string Id { get; set; }
-        
-   
-        public FoodWasteManagerUser User { get; set; }
+        [ForeignKey("FoodPostId")]
         public FoodPost FoodPost { get; set; }
 
+        [Required]
+        public string UserId { get; set; } // FK to FoodWasteManagerUser
 
+        [ForeignKey("UserId")]
+        public FoodWasteManagerUser Users { get; set; }
 
+        [Required]
+        public int QuantityRequired { get; set; }
+
+        [Required]
+        public DateTime EarliestPickup { get; set; }
+
+        [Required]
+        public DateTime LatestPickup { get; set; }
+
+        public enum ApplicationStatus
+        {
+            Approved, Declined, Processing
+        }
+
+        [Required]
+        public ApplicationStatus AStatus { get; set; }
     }
-    }
-
-
+}
