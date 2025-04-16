@@ -94,17 +94,20 @@ namespace FoodWasteManager.Controllers
             }
             //validation above ensures that the food quantity required stated in the application does not exceed the available amount for the specific foodpost.
 
-
-            if (ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
                 application.AStatus = Application.ApplicationStatus.Processing; // default sets the application status to processing, as waiting for the other user to approve/decline the application.
-                var user = await _userManager.GetUserAsync(User); // get the currently logged-in user
+              
+                var user = await _userManager.GetUserAsync(User); // get the currently logged-in user - this variable works for FK and adding role to user
                 application.UserId = user.Id; // sets the foreign key manually
 
                 _context.Add(application);
                 await _context.SaveChangesAsync();
+
+                await _userManager.AddToRoleAsync(user, "Buyer");
                 return RedirectToAction(nameof(Index));
             }
+
 
             
 

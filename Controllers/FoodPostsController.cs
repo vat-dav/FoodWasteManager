@@ -88,6 +88,8 @@ namespace FoodWasteManager.Controllers
 
                 _context.Add(foodPost);
                 await _context.SaveChangesAsync();
+
+                await _userManager.AddToRoleAsync(user, "Seller");
                 return RedirectToAction(nameof(Index));
             }
 

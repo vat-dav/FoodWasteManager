@@ -20,7 +20,7 @@ namespace FoodWasteManager.Models
         [Required]
         public int FoodQuantity { get; set; }
 
-        [Required, Range(0, 500, ErrorMessage = "Please enter a price between $0-$500")]
+        [Required, Range(0, 50, ErrorMessage = "Please enter a price between $0-50")]
         public int FoodPrice { get; set; }
 
         [Required, DataType(DataType.Date)]
