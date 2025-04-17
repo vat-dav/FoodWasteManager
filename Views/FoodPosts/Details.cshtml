@@ -29,6 +29,14 @@
         <dd class = "col-sm-10">
             @Html.DisplayFor(model => model.FoodQuantity)
         </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.FoodTypes)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.FoodTypes.FoodTypeName)
+        </dd>
+
+
         <dt class = "col-sm-2">
             @Html.DisplayNameFor(model => model.FoodPrice)
         </dt>

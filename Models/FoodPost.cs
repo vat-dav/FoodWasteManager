@@ -20,6 +20,7 @@ namespace FoodWasteManager.Models
         [Required]
         public int FoodQuantity { get; set; }
 
+
         [Required, Range(0, 50, ErrorMessage = "Please enter a price between $0-50")]
         public int FoodPrice { get; set; }
 
@@ -36,5 +37,9 @@ namespace FoodWasteManager.Models
         public FoodWasteManagerUser Users { get; set; }
 
         public ICollection<Application> Applications { get; set; }
+
+        [ForeignKey("FoodType")]
+        public int FoodTypeId { get; set; }
+        public FoodType FoodTypes { get; set; }
     }
 }

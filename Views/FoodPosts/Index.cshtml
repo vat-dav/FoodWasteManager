@@ -23,6 +23,9 @@
                 @Html.DisplayNameFor(model => model.FoodQuantity)
             </th>
             <th>
+                @Html.DisplayNameFor(model => model.FoodTypes)
+            </th>
+            <th>
                 @Html.DisplayNameFor(model => model.FoodPrice)
             </th>
             <th>
@@ -45,6 +48,9 @@
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.FoodQuantity)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.FoodTypes.FoodTypeName)
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.FoodPrice)

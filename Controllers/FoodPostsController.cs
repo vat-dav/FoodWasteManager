@@ -25,12 +25,16 @@ namespace FoodWasteManager.Controllers
 
         [Authorize]
 
-
         // GET: FoodPosts
         public async Task<IActionResult> Index()
         {
-            return View(await _context.FoodPosts.ToListAsync());
+            var foodPosts = await _context.FoodPosts
+                .Include(f => f.FoodTypes)
+                .ToListAsync();
+
+            return View(foodPosts);
         }
+
 
         // GET: FoodPosts/Details/5
         public async Task<IActionResult> Details(int? id)
@@ -40,8 +44,8 @@ namespace FoodWasteManager.Controllers
                 return NotFound();
             }
 
-            var foodPost = await _context.FoodPosts
-                .FirstOrDefaultAsync(m => m.FoodPostId == id);
+            var foodPost = await _context.FoodPosts.Include(ft=> ft.FoodTypes).FirstOrDefaultAsync(m => m.FoodPostId == id); //lets me nav to the foodtype table in views
+
             if (foodPost == null)
             {
                 return NotFound();
@@ -53,6 +57,10 @@ namespace FoodWasteManager.Controllers
         // GET: FoodPosts/Create
         public IActionResult Create()
         {
+
+            ViewBag.FoodTypeId = new SelectList(_context.FoodTypes, "FoodTypeId", "FoodTypeName");
+
+          
             return View();
         }
 
@@ -61,7 +69,7 @@ namespace FoodWasteManager.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("FoodPostId,FoodImage,FoodName,FoodQuantity,FoodPrice,FoodBestBefore,DatePosted,ImageFile")] FoodPost foodPost, IFormFile imageFile)
+        public async Task<IActionResult> Create([Bind("FoodPostId,FoodTypeId,FoodImage,FoodName,FoodQuantity,FoodPrice,FoodBestBefore,DatePosted,ImageFile")] FoodPost foodPost, IFormFile imageFile)
 
         {
             //if imagefile has been uploaded and is not null, the following runs
@@ -78,13 +86,15 @@ namespace FoodWasteManager.Controllers
                 foodPost.FoodImage = "/images/" + fileName;
             }
 
-            foodPost.DatePosted = DateTime.Now; //takes in the users date and time when they post it
+            
 
 
             if (!ModelState.IsValid)
             {
                 var user = await _userManager.GetUserAsync(User); // get the currently logged-in user
                 foodPost.UserId = user.Id; // sets the foreign key manually
+
+                foodPost.DatePosted = DateTime.Now; //takes in the users date and time when they post it
 
                 _context.Add(foodPost);
                 await _context.SaveChangesAsync();
@@ -117,7 +127,7 @@ namespace FoodWasteManager.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("FoodPostId,FoodImage,FoodName,FoodQuantity,FoodPrice,FoodBestBefore,DatePosted")] FoodPost foodPost)
+        public async Task<IActionResult> Edit(int id, [Bind("FoodPostId,FoodTypeId,FoodImage,FoodName,FoodQuantity,FoodPrice,FoodBestBefore,DatePosted")] FoodPost foodPost)
         {
             if (id != foodPost.FoodPostId)
             {
@@ -154,9 +164,10 @@ namespace FoodWasteManager.Controllers
             {
                 return NotFound();
             }
-
             var foodPost = await _context.FoodPosts
-                .FirstOrDefaultAsync(m => m.FoodPostId == id);
+                    .Include(f => f.FoodTypes) 
+                    .FirstOrDefaultAsync(m => m.FoodPostId == id);
+
             if (foodPost == null)
             {
                 return NotFound();

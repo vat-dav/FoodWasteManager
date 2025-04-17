@@ -12,7 +12,7 @@ public class Program
 
         builder.Services.AddDbContext<FoodWasteManagerContext>(options => options.UseSqlServer(connectionString));
 
-        builder.Services.AddDefaultIdentity<FoodWasteManagerUser>(options => options.SignIn.RequireConfirmedAccount = true)
+        builder.Services.AddDefaultIdentity<FoodWasteManagerUser>(options => options.SignIn.RequireConfirmedAccount = false)
             .AddRoles<IdentityRole>()
             .AddEntityFrameworkStores<FoodWasteManagerContext>(); //added Identity with role support.
 
@@ -64,6 +64,8 @@ public class Program
         {
             var userManager = scope.ServiceProvider.GetRequiredService<UserManager<FoodWasteManagerUser>>();
 
+
+
             string adminEmail = "admin@admin.co.nz"; //set admin email
             string adminPassword = "PassWord123!"; //set admin pass
             string adminPhone = "0221234567";
@@ -82,7 +84,7 @@ public class Program
                 user.UserFirstName = adminFirstName;
                 user.UserAddress = adminAddress;
                 user.AccessFailedCount = 0;
-                user.Id = "2fhj-3nj3-3bb3-z6";
+                
            
                    
                 await userManager.CreateAsync(user, adminPassword);

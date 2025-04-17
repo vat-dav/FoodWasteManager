@@ -21,13 +21,13 @@ public class FoodWasteManagerContext : IdentityDbContext<FoodWasteManagerUser>
             .HasOne(a => a.FoodPost)
             .WithMany(fp => fp.Applications)
             .HasForeignKey(a => a.FoodPostId)
-            .OnDelete(DeleteBehavior.Restrict);
+            .OnDelete(DeleteBehavior.Restrict); // 
 
         modelBuilder.Entity<Application>()
        .HasOne(a => a.Users)
        .WithMany(u => u.Applications)
        .HasForeignKey(a => a.UserId)
-       .OnDelete(DeleteBehavior.Restrict);
+       .OnDelete(DeleteBehavior.Restrict); //
 
     }
 
@@ -35,6 +35,7 @@ public class FoodWasteManagerContext : IdentityDbContext<FoodWasteManagerUser>
     public DbSet<FoodPost> FoodPosts { get; set; }
     public DbSet<Application> Applications { get; set; }
     public DbSet<FoodWasteManagerUser> Users {get; set; }
+    public DbSet<FoodType> FoodTypes { get; set; }
 
 
 

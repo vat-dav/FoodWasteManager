@@ -82,7 +82,6 @@ namespace FoodWasteManager.Controllers
                 ModelState.AddModelError("", "You cannot apply for your own food post.");
             }
 
-
             //validation above is to ensure that users can't apply for their own foodposts
 
             var foodQuantityExceeded = await _context.FoodPosts.FirstOrDefaultAsync(fp => fp.FoodPostId == application.FoodPostId);
