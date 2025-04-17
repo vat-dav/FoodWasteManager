@@ -109,6 +109,7 @@ namespace FoodWasteManager.Controllers
         // GET: FoodPosts/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
+
             if (id == null)
             {
                 return NotFound();
@@ -119,43 +120,80 @@ namespace FoodWasteManager.Controllers
             {
                 return NotFound();
             }
-            return View(foodPost);
-        }
 
+            ViewBag.FoodTypeId = new SelectList(_context.FoodTypes, "FoodTypeId", "FoodTypeName", foodPost.FoodTypeId);
+            return View(foodPost);
+
+        }
         // POST: FoodPosts/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("FoodPostId,FoodTypeId,FoodImage,FoodName,FoodQuantity,FoodPrice,FoodBestBefore,DatePosted")] FoodPost foodPost)
+        public async Task<IActionResult> Edit(int id, [Bind("FoodPostId,FoodTypeId,FoodImage,FoodName,FoodQuantity,FoodPrice,FoodBestBefore,DatePosted")] FoodPost foodPost, IFormFile imageFile)
         {
             if (id != foodPost.FoodPostId)
             {
                 return NotFound();
             }
 
-            if (ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
-                try
+                var user = await _userManager.GetUserAsync(User); // get the currently logged-in user
+                foodPost.UserId = user.Id; // sets the foreign key manually
+
+            
+                var existingPost = await _context.FoodPosts.AsNoTracking().FirstOrDefaultAsync(f => f.FoodPostId == id);
+                if (existingPost == null)
                 {
-                    _context.Update(foodPost);
+                    return NotFound();
+                }
+
+                if (imageFile != null && imageFile.Length > 0)
+                {
+                    // this deletes the original image
+                    if (!string.IsNullOrEmpty(existingPost.FoodImage))
+                    {
+                        var oldImagePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", existingPost.FoodImage.TrimStart('/'));
+                        if (System.IO.File.Exists(oldImagePath))
+                        {
+                            System.IO.File.Delete(oldImagePath);
+                        }
+                    }
+
+                    // This saves the new image
+                    var uploadsFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "images");
+                    if (!Directory.Exists(uploadsFolder))
+                    {
+                        Directory.CreateDirectory(uploadsFolder);
+                    }
+
+                    var fileName = Path.GetFileName(imageFile.FileName);
+                    var newFilePath = Path.Combine(uploadsFolder, fileName);
+
+                    using (var stream = new FileStream(newFilePath, FileMode.Create))
+                    {
+                        await imageFile.CopyToAsync(stream);
+                    }
+
+                    foodPost.FoodImage = "/images/" + fileName;
+                }
+                else
+                {
+                    // No new file — retain existing image
+                    foodPost.FoodImage = existingPost.FoodImage;
+                }
+
+                _context.Update(foodPost);
                     await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!FoodPostExists(foodPost.FoodPostId))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
+             
                 return RedirectToAction(nameof(Index));
             }
+
             return View(foodPost);
         }
+
+
 
         // GET: FoodPosts/Delete/5
         public async Task<IActionResult> Delete(int? id)

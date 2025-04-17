@@ -5,19 +5,19 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h1>Edit</h1>
+<h1>Edit a FoodPost</h1>
 
 <h4>FoodPost</h4>
 <hr />
 <div class="row">
     <div class="col-md-4">
-        <form asp-action="Edit">
+        <form asp-action="Edit" method="post" enctype="multipart/form-data">
+
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <input type="hidden" asp-for="FoodPostId" />
             <div class="form-group">
                 <label asp-for="FoodImage" class="control-label"></label>
-                <input asp-for="FoodImage" class="form-control" />
-                <span asp-validation-for="FoodImage" class="text-danger"></span>
+                <input asp-for="ImageFile" type="file" class="form-control" required />
             </div>
             <div class="form-group">
                 <label asp-for="FoodName" class="control-label"></label>
