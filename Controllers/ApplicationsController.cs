@@ -72,6 +72,7 @@ namespace FoodWasteManager.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("ApplicationId,FoodPostId,QuantityRequired,EarliestPickup,LatestPickup,AStatus")] Application application)
         {
+
             var currentUserId = _userManager.GetUserId(User); // gets logged-in user's ID
             application.UserId = currentUserId;
 
@@ -92,6 +93,23 @@ namespace FoodWasteManager.Controllers
                 return View(application);
             }
             //validation above ensures that the food quantity required stated in the application does not exceed the available amount for the specific foodpost.
+
+            var today = DateTime.Today; // Declares today to be current date set as DateTime variable
+            var maxEarliestDate = today.AddMonths(1); // Declares variable to be 1 month from current date
+            var maxLatestDate = application.EarliestPickup.AddDays(7); // Latest Pickup can be up to 7 days after EarliestPickup
+
+            // Check if EarliestPickup is valid
+            if (application.EarliestPickup.Date < today || application.EarliestPickup.Date > maxEarliestDate)
+            {
+                ModelState.AddModelError("EarliestPickup", "Earliest Pickup must be today or within the next month.");
+            }
+
+            // Check if LatestPickup is valid
+            if (application.LatestPickup < application.EarliestPickup || application.LatestPickup > maxLatestDate)
+            {
+                ModelState.AddModelError("LatestPickup", "Latest Pickup must be within 7 days of the Earliest Pickup.");
+            }
+
 
             if (!ModelState.IsValid)
             {
@@ -145,6 +163,10 @@ namespace FoodWasteManager.Controllers
 
             if (!ModelState.IsValid)
             {
+                application.AStatus = Application.ApplicationStatus.Processing; // default sets the application status to processing, as waiting for the other user to approve/decline the application.
+                var user = await _userManager.GetUserAsync(User); // get the currently logged-in user - this variable works for FK and adding role to user
+                application.UserId = user.Id; // sets the foreign key manually
+
                 try
                 {
                     _context.Update(application);
@@ -177,6 +199,7 @@ namespace FoodWasteManager.Controllers
 
             var application = await _context.Applications
                 .Include(a => a.FoodPost)
+                .ThenInclude(bb => bb.Users)
                 .FirstOrDefaultAsync(m => m.ApplicationId == id);
             if (application == null)
             {

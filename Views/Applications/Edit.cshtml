@@ -24,15 +24,18 @@
                 <input asp-for="QuantityRequired" class="form-control" />
                 <span asp-validation-for="QuantityRequired" class="text-danger"></span>
             </div>
-              
+
             <div class="form-group">
                 <label asp-for="EarliestPickup" class="control-label"></label>
-                <input asp-for="EarliestPickup" class="form-control" />
+                <input asp-for="EarliestPickup" id="EarliestPickup" type="date" class="form-control"
+                       min="@DateTime.Today.ToString("yyyy-MM-dd")"
+                       max="@DateTime.Today.AddMonths(1).ToString("yyyy-MM-dd")" />
                 <span asp-validation-for="EarliestPickup" class="text-danger"></span>
             </div>
+
             <div class="form-group">
                 <label asp-for="LatestPickup" class="control-label"></label>
-                <input asp-for="LatestPickup" class="form-control" />
+                <input asp-for="LatestPickup" id="LatestPickup" type="date" class="form-control" />
                 <span asp-validation-for="LatestPickup" class="text-danger"></span>
             </div>
            
@@ -49,19 +52,39 @@
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+
+    <script>
+        function PickupTimes() {
+            const earliest = new Date(document.getElementById("EarliestPickup").value);
+            const latest = new Date(document.getElementById("LatestPickup").value);
+
+            if (latest <= earliest) {
+                alert("Latest Pickup must be after Earliest Pickup :)");
+                return false; // stop form submission
+            }
+
+            return true; // allow form to submit
+        }
+    </script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const earliestInput = document.getElementById("EarliestPickup");
+            const latestInput = document.getElementById("LatestPickup");
+
+            earliestInput.addEventListener("change", function () {
+                const earliestDate = new Date(this.value);
+                if (isNaN(earliestDate)) return;
+
+                const minDate = earliestDate.toISOString().split("T")[0];
+                const maxDate = new Date(earliestDate);
+                maxDate.setDate(maxDate.getDate() + 7);
+                const maxDateStr = maxDate.toISOString().split("T")[0];
+
+                latestInput.min = minDate;
+                latestInput.max = maxDateStr;
+            });
+        });
+    </script>
 }
 
 
-<script>
-    function PickupTimes() {
-        const earliest = new Date(document.getElementById("EarliestPickup").value);
-        const latest = new Date(document.getElementById("LatestPickup").value);
-
-        if (latest <= earliest) {
-            alert("Latest Pickup must be after Earliest Pickup :)");
-            return false; // stop form submission
-        }
-
-        return true; // allow form to submit
-    }
-</script>
