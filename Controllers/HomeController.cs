@@ -18,6 +18,10 @@ namespace FoodWasteManager.Controllers
             return View();
         }
 
+        public IActionResult HowToOperate() // returns the HowToOperate view if asp-action is "HowToOperate" and selected
+        {
+            return View();
+        }
 
         public IActionResult Privacy()
         {

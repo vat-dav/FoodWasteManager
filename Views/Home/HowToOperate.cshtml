@@ -1,0 +1,36 @@
+﻿@{
+    ViewData["Title"] = "How to Operate";
+}
+<h1>@ViewData["Title"]</h1>
+
+<p>
+    <!-- General description -->
+    This is a web-application that helps reduce food waste by letting users post leftover food and other users apply to purchase it. The app connects users (buyers) with other users (sellers).<br></br>
+
+    <!-- Accessing the system -->
+    <li>All users must first Register (or Login if already registered) to the app to use its features.</li>
+
+    <br></br>
+
+    <!-- Selling Food -->
+    <h5>Selling Food</h5>
+    <li>To post food, go to: <a asp-controller="FoodPosts" asp-action="Index">Manage FoodPosts</a> and click "Create New". Then, fill in all details like name, quantity, price, image, and best-before date of the food you would like to sell.</li>
+    <br></br>
+    <!-- Buying Food -->
+    <h5>Buying Food</h5>
+    <li>
+        To apply for available food, go to: <a asp-controller="Applications" asp-action="Index">Available Food</a>, and click "Create New". Then, pick a FoodPost you’re interested in, what quantity you would like, and your preferred pickup time.</li>
+    <br></br>
+
+        <h5>Please note the following will be done during the programming component of the assignment:</h5>
+    <!-- Viewing your applications -->
+    <li>To view or manage your food applications, go to: <a asp-controller="Applications" asp-action="Index">My Applications</a>. You’ll see if they’ve been accepted or declined, and get pickup instructions.</li>
+   
+    <!-- Managing requests if you're a seller -->
+    <li>If you've posted food, you can manage incoming applications by going to: <a asp-controller="FoodPosts" asp-action="Index">Manage FoodPosts</a> and clicking on the details of a post. You can then approve or reject any requests.</li>
+
+    <br></br>
+
+    <!-- Contact information -->
+    This web-app was developed by Vatsal, a TPI student at Avondale College. If you need help, feel free to reach out at ac121655@avcol.school.nz
+</p>
