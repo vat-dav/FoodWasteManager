@@ -31,21 +31,22 @@ VALUES
 ('user15', 'Omar', 'Baker', '0233333333', NULL, '303 Plum St', 'omar', 'OMAR', 'omar@example.com', 'OMAR@EXAMPLE.COM', 1, '', '', '', 0, 0, 0, 0);
 
 INSERT INTO FoodWasteManager.dbo.FoodPosts (FoodImage, FoodName, FoodQuantity, FoodPrice, FoodBestBefore, DatePosted, UserId, FoodTypeId) VALUES
-('image1.jpg', 'Lettuce', 10, 0, '2025-05-01', GETDATE(), 'user1', 1),        -- Fresh Produce
-('image2.jpg', 'Bananas', 8, 0, '2025-04-28', GETDATE(), 'user2', 1),         -- Fresh Produce
-('image3.jpg', 'Bread Loaf', 5, 1, '2025-04-20', GETDATE(), 'user3', 2),      -- Bakery & Grains
-('image4.jpg', 'Milk Carton', 3, 2, '2025-04-22', GETDATE(), 'user4', 3),     -- Dairy & Eggs
-('image5.jpg', 'Chicken Breast', 6, 4, '2025-04-25', GETDATE(), 'user5', 4),  -- Meat & Seafood
-('image6.jpg', 'Shrimp Pack', 2, 5, '2025-04-26', GETDATE(), 'user6', 4),     -- Meat & Seafood
-('image7.jpg', 'Chips', 9, 2, '2025-05-02', GETDATE(), 'user7', 7),           -- Snacks & Sweets
-('image8.jpg', 'Juice Box', 12, 1, '2025-04-27', GETDATE(), 'user8', 8),      -- Beverages
-('image9.jpg', 'Rice Bag', 4, 3, '2025-05-05', GETDATE(), 'user9', 2),        -- Bakery & Grains
-('image10.jpg', 'Cookies', 7, 2, '2025-04-30', GETDATE(), 'user10', 7),       -- Snacks & Sweets
-('image11.jpg', 'Frozen Peas', 5, 1, '2025-05-07', GETDATE(), 'user11', 6),   -- Frozen & Prepared
-('image12.jpg', 'Lasagna Tray', 3, 6, '2025-04-23', GETDATE(), 'user12', 6),  -- Frozen & Prepared
-('image13.jpg', 'Canned Beans', 11, 0, '2025-04-29', GETDATE(), 'user13', 5), -- Pantry Staples
-('image14.jpg', 'Ketchup Bottle', 4, 2, '2025-05-03', GETDATE(), 'user14', 5),-- Pantry Staples
-('image15.jpg', 'Fresh Basil', 2, 1, '2025-05-06', GETDATE(), 'user15', 1);   -- Fresh Produce
+('/images/InitialSetupImages/image1.jpg', 'Lettuce', 10, 0, '2025-05-01', GETDATE(), 'user1', 1),        -- Fresh Produce
+('/images/InitialSetupImages/image2.jpg', 'Bananas', 8, 0, '2025-04-28', GETDATE(), 'user2', 1),         -- Fresh Produce
+('/images/InitialSetupImages/image3.jpg', 'Bread Loaf', 5, 1, '2025-04-20', GETDATE(), 'user3', 2),      -- Bakery & Grains
+('/images/InitialSetupImages/image4.jpg', 'Milk Carton', 3, 2, '2025-04-22', GETDATE(), 'user4', 3),     -- Dairy & Eggs
+('/images/InitialSetupImages/AdobeStock_83103702_530x@2x.webp', 'Chicken Breast', 6, 4, '2025-04-25', GETDATE(), 'user5', 4),  -- Meat & Seafood
+('/images/InitialSetupImages/cooked-peeled-shrimp.jpg', 'Shrimp Pack', 2, 5, '2025-04-26', GETDATE(), 'user6', 4),     -- Meat & Seafood
+('/images/InitialSetupImages/9-Packet-Lay-s-Classic-Potato-Chips-Crispy-Gluten-free-and-Easy-to-carry-Potato-snacks_3f555135-d2c8-4d69-b6c1-4a3271d152a4.f558fb7aed5b0f4c4248a4a2834907b2.webp', 'Chips', 9, 2, '2025-05-02', GETDATE(), 'user7', 7),           -- Snacks & Sweets
+('/images/InitialSetupImages/images (1).jpg', 'Juice Box', 12, 1, '2025-04-27', GETDATE(), 'user8', 8),      -- Beverages
+('/images/InitialSetupImages/1686004821631.webp', 'Rice Bag', 4, 3, '2025-05-05', GETDATE(), 'user9', 2),        -- Bakery & Grains
+('/images/InitialSetupImages/10813-best-chocolate-chip-cooookei.jpg', 'Cookies', 7, 2, '2025-04-30', GETDATE(), 'user10', 7),       -- Snacks & Sweets
+('/images/InitialSetupImages/Frozen-Peas.webp', 'Frozen Peas', 5, 1, '2025-05-07', GETDATE(), 'user11', 6),   -- Frozen & Prepared
+('/images/InitialSetupImages/__opt__aboutcom__coeus__resources__content_migration__serious_eats__seriouseats.com__recipes__images__2014__07__lasanga.jpg', 'Lasagna Tray', 3, 6, '2025-04-23', GETDATE(), 'user12', 6),  -- Frozen & Prepared
+('/images/InitialSetupImages/istockphoto-459026777-612x612.jpg', 'Canned Beans', 11, 0, '2025-04-29', GETDATE(), 'user13', 5), -- Pantry Staples
+('/images/InitialSetupImages/heinzketchuo.webp', 'Ketchup Bottle', 4, 2, '2025-05-03', GETDATE(), 'user14', 5),-- Pantry Staples
+('/images/InitialSetupImages/should-you-refrigerate-basil-.jpg', 'Fresh Basil', 2, 1, '2025-05-06', GETDATE(), 'user15', 1);   -- Fresh Produce
+
 
 
 INSERT INTO FoodWasteManager.dbo.Applications (FoodPostId, UserId, QuantityRequired, EarliestPickup, LatestPickup, AStatus)
