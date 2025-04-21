@@ -7,6 +7,13 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="wwwroot\images\InitialSetupImages\**" />
+    <Content Remove="wwwroot\images\InitialSetupImages\**" />
+    <EmbeddedResource Remove="wwwroot\images\InitialSetupImages\**" />
+    <None Remove="wwwroot\images\InitialSetupImages\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="8.0.11" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="8.0.11" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="8.0.11" />
