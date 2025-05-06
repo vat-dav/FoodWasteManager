@@ -62,6 +62,10 @@ namespace FoodWasteManager.Controllers
         public IActionResult Create()
         {
             ViewData["FoodPostId"] = new SelectList(_context.FoodPosts, "FoodPostId", "FoodName");
+
+           
+
+           
             return View();
         }
 
@@ -72,6 +76,8 @@ namespace FoodWasteManager.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("ApplicationId,FoodPostId,QuantityRequired,EarliestPickup,LatestPickup,AStatus")] Application application)
         {
+
+
 
             var currentUserId = _userManager.GetUserId(User); // gets logged-in user's ID
             application.UserId = currentUserId;

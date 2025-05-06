@@ -64,3 +64,26 @@
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>
+
+
+
+
+@{
+    if (User.IsInRole("Buyer"))
+    {
+
+        <li class="nav-item">
+            <a class="nav-link text-dark" asp-area="" asp-controller="FoodTypes" asp-action="Index">Make a new Food Category</a>
+        </li>
+    }
+}
+
+@{
+    if (User.IsInRole("Seller"))
+    {
+
+        <li class="nav-item">
+            <a class="nav-link text-dark" asp-area="" asp-controller="FoodTypes" asp-action="Index">Make a new Food Category</a>
+        </li>
+    }
+}
