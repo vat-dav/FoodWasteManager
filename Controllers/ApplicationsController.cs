@@ -59,11 +59,10 @@ namespace FoodWasteManager.Controllers
         }
 
         // GET: Applications/Create
-        public IActionResult Create()
+        public IActionResult Create(int FoodPostId)
         {
             ViewData["FoodPostId"] = new SelectList(_context.FoodPosts, "FoodPostId", "FoodName");
 
-           
 
            
             return View();
