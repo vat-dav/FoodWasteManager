@@ -10,6 +10,7 @@ using FoodWasteManager.Models;
 using Microsoft.AspNetCore.Identity;
 using FoodWasteManager.Areas.Identity.Data;
 using Microsoft.AspNetCore.Authorization;
+using System.Security.Claims;
 
 
 namespace FoodWasteManager.Controllers
@@ -29,13 +30,17 @@ namespace FoodWasteManager.Controllers
         }
 
 
-        [Authorize]
+      [Authorize]
 
 
         // GET: Applications
         public async Task<IActionResult> Index()
         {
-            var foodWasteManagerContext = _context.Applications.Include(a => a.FoodPost);
+            var foodWasteManagerContext = _context.Applications.Include(a => a.FoodPost).Where(a => a.UserId == User.FindFirstValue(ClaimTypes.NameIdentifier));
+
+
+
+
             return View(await foodWasteManagerContext.ToListAsync());
         }
 
