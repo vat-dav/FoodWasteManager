@@ -22,26 +22,47 @@ namespace FoodWasteManager.Controllers
 
         private readonly FoodWasteManagerContext _context;
         private readonly UserManager<FoodWasteManagerUser> _userManager; // injected usermanager
+        private readonly SignInManager<FoodWasteManagerUser> _signInManager; //injected signinmanager
+        
 
-        public ApplicationsController(FoodWasteManagerContext context, UserManager<FoodWasteManagerUser> userManager)
+        public ApplicationsController(FoodWasteManagerContext context, UserManager<FoodWasteManagerUser> userManager, SignInManager<FoodWasteManagerUser> signInManager)
         {
             _context = context;
             _userManager = userManager;
+            _signInManager = signInManager;
         }
 
 
-      [Authorize]
+        [Authorize]
 
 
         // GET: Applications
         public async Task<IActionResult> Index()
         {
-            var foodWasteManagerContext = _context.Applications.Include(a => a.FoodPost).Where(a => a.UserId == User.FindFirstValue(ClaimTypes.NameIdentifier));
 
 
+            if (User.IsInRole("Buyer"))
+            {
+                var foodWasteManagerContext = _context.Applications.Include(a => a.FoodPost).Where(a => a.UserId == User.FindFirstValue(ClaimTypes.NameIdentifier));
+                return View(await foodWasteManagerContext.ToListAsync());
+            }
 
+            if (User.IsInRole("Admin"))
+            {
+                var foodWasteManagerContext = _context.Applications.Include(a => a.FoodPost);
+                return View(await foodWasteManagerContext.ToListAsync());
+            }
 
-            return View(await foodWasteManagerContext.ToListAsync());
+            if (User.IsInRole("Seller"))
+            {
+                var foodWasteManagerContext = _context.FoodPosts.Include(a => a.Applications).Where(b => b.UserId == User.FindFirstValue(ClaimTypes.NameIdentifier));
+                return View(await foodWasteManagerContext.ToListAsync());
+            }
+            else 
+            {
+                return View();
+            }
+
         }
 
         // GET: Applications/Details/5
@@ -100,7 +121,7 @@ namespace FoodWasteManager.Controllers
             if (application.QuantityRequired > foodQuantityExceeded.FoodQuantity)
             {
                 ModelState.AddModelError("QuantityRequired", "Requested quantity exceeds available quantity.");
-                return View(application);
+                return RedirectToAction("Index");
             }
             //validation above ensures that the food quantity required stated in the application does not exceed the available amount for the specific foodpost.
 
@@ -132,6 +153,8 @@ namespace FoodWasteManager.Controllers
                 await _context.SaveChangesAsync();
 
                 await _userManager.AddToRoleAsync(user, "Buyer");
+                await _signInManager.RefreshSignInAsync(user);
+
                 return RedirectToAction(nameof(Index));
             }
 

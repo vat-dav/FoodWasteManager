@@ -28,6 +28,16 @@
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="FoodPosts" asp-action="Index">Available Food</a>
                         </li>
+
+                        @{
+                            if (User.IsInRole("Admin"))
+                            {
+
+                                <li class="nav-item">
+                                    <a class="nav-link text-dark" asp-area="" asp-controller="FoodTypes" asp-action="Index">Make a new Food Category</a>
+                                </li>
+                            }
+                        }
                         @{
                             if (User.IsInRole("Buyer"))
                             {
@@ -48,15 +58,8 @@
                             }
                         }
 
-                        @{
-                            if (User.IsInRole("Admin"))
-                            {
 
-                                <li class="nav-item">
-                                    <a class="nav-link text-dark" asp-area="" asp-controller="FoodTypes" asp-action="Index">Make a new Food Category</a>
-                                </li>
-                            }
-                        }
+
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="HowToOperate">How to operate</a>
                         </li>
@@ -86,24 +89,3 @@
 </html>
 
 
-
-
-@{
-    if (User.IsInRole("Buyer"))
-    {
-
-        <li class="nav-item">
-            <a class="nav-link text-dark" asp-area="" asp-controller="FoodTypes" asp-action="Index">Make a new Food Category</a>
-        </li>
-    }
-}
-
-@{
-    if (User.IsInRole("Seller"))
-    {
-
-        <li class="nav-item">
-            <a class="nav-link text-dark" asp-area="" asp-controller="FoodTypes" asp-action="Index">Make a new Food Category</a>
-        </li>
-    }
-}
