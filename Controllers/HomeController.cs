@@ -23,6 +23,11 @@ namespace FoodWasteManager.Controllers
             return View();
         }
 
+        public IActionResult Community() //returns the Community view
+        {
+            return View();
+
+        }
         public IActionResult Privacy()
         {
             return View();

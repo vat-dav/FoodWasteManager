@@ -10,6 +10,8 @@ using FoodWasteManager.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using FoodWasteManager.Areas.Identity.Data;
+using LazZiya.ImageResize;
+using System.Drawing;
 
 namespace FoodWasteManager.Controllers
 {
@@ -75,15 +77,23 @@ namespace FoodWasteManager.Controllers
             //if imagefile has been uploaded and is not null, the following runs
             if (imageFile != null && imageFile.Length > 0)
             {
-
                 var fileName = Path.GetFileName(imageFile.FileName);// gets the filename of the image uploaded
                 var filePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/images", fileName); // creates the name of filepath AND saves the to the wwwroot folder
+
+                var img = Image.FromFile(filePath);
+                var scaleImage = ImageResize.Scale(img, 100, 100);
+                scaleImage.SaveAs("wwwroot/images" + fileName);
+
+
+
                 using (var stream = new FileStream(filePath, FileMode.Create))
                 {
                     await imageFile.CopyToAsync(stream);
                 }
 
-                foodPost.FoodImage = "/images/" + fileName;
+               foodPost.FoodImage = "/images/" + fileName;
+
+                
             }
 
             
