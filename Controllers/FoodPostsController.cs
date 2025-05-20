@@ -72,31 +72,27 @@ namespace FoodWasteManager.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("FoodPostId,FoodTypeId,FoodImage,FoodName,FoodQuantity,FoodPrice,FoodBestBefore,DatePosted,ImageFile")] FoodPost foodPost, IFormFile imageFile)
-
+        
         {
             //if imagefile has been uploaded and is not null, the following runs
             if (imageFile != null && imageFile.Length > 0)
             {
-                var fileName = Path.GetFileName(imageFile.FileName);// gets the filename of the image uploaded
-                var filePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/images", fileName); // creates the name of filepath AND saves the to the wwwroot folder
+                var fileName = Path.GetFileName(imageFile.FileName);
+                var filePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/images", fileName);
 
-                var img = Image.FromFile(filePath);
-                var scaleImage = ImageResize.Scale(img, 100, 100);
-                scaleImage.SaveAs("wwwroot/images" + fileName);
-
-
-
-                using (var stream = new FileStream(filePath, FileMode.Create))
+                using (var stream = new MemoryStream())
                 {
                     await imageFile.CopyToAsync(stream);
+                    stream.Position = 0;
+
+                    var img = Image.FromStream(stream);
+                    var scaleImage = ImageResize.Crop(img, 500, 500);
+                    scaleImage.Save(filePath); // Save resized image
+
+                    foodPost.FoodImage = "/images/" + fileName;
                 }
-
-               foodPost.FoodImage = "/images/" + fileName;
-
-                
             }
 
-            
 
 
             if (!ModelState.IsValid)
