@@ -9,13 +9,14 @@
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/FoodWasteManager.styles.css" asp-append-version="true" />
+    <link rel="icon" type="png" href="@(Url.Content("~/images/tabiconwasteless.png"))" />
+
 </head>
 <body>
     <header>
         <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light info border-bottom box-shadow mb-3" style="background-color:#d0f2b6;">
             <div class="container-fluid">
-                <!--<a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">FoodWasteManager</a>-->
-
+            
                
 
                 <a href="https://localhost:7193/Home"><img src="~/images/LogoFoodWasteonlylogo.png" asp-append-version="true" width="165px" height="auto" style="padding-right: 22px" /></a>
@@ -28,11 +29,9 @@
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
                     <ul class="navbar-nav flex-grow-1">
 
-                        <!--    <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
-                        </li> -->
+                       
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="FoodPosts" asp-action="Index">Available Food</a>
+                            <a class="nav-link text-dark fs-5" asp-area="" asp-controller="FoodPosts" asp-action="Index">Available Food</a>
                         </li>
 
                         @{
@@ -40,7 +39,7 @@
                             {
 
                                 <li class="nav-item">
-                                    <a class="nav-link text-dark" asp-area="" asp-controller="FoodTypes" asp-action="Index">Make a new Food Category</a>
+                                    <a class="nav-link text-dark fs-5" asp-area="" asp-controller="FoodTypes" asp-action="Index">Make a new Food Category</a>
                                 </li>
                             }
                         }
@@ -50,7 +49,7 @@
 
                               
                                 <li class="nav-item">
-                                    <a class="nav-link text-dark" asp-area="" asp-controller="Applications" asp-action="Index">Applications Made</a>
+                                    <a class="nav-link text-dark fs-5" asp-area="" asp-controller="Applications" asp-action="Index">Applications Made</a>
                                 </li> 
                             }
                         }
@@ -59,17 +58,17 @@
                             {
 
                                 <li class="nav-item">
-                                    <a class="nav-link text-dark" asp-area="" asp-controller="Applications" asp-action="Index">Applications Received</a>
+                                    <a class="nav-link text-dark fs-5" asp-area="" asp-controller="Applications" asp-action="Index">Applications Received</a>
                                 </li>
                             }
                         }
 
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Community">Community Initiatives/Outreaches</a>
+                            <a class="nav-link text-dark fs-5" asp-area="" asp-controller="Home" asp-action="Community">Community Initiatives/Outreaches</a>
                         </li>
 
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="HowToOperate">How to operate</a>
+                            <a class="nav-link text-dark fs-5" asp-area="" asp-controller="Home" asp-action="HowToOperate">How to operate</a>
                         </li>
 
                        
@@ -97,4 +96,10 @@
 </body>
 </html>
 
+
+<style>
+    body {
+        background-color: #f0ede6
+    }
+</style>
 

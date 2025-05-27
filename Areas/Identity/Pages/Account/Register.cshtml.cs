@@ -96,19 +96,19 @@ namespace FoodWasteManager.Areas.Identity.Pages.Account
             /// </summary>
             /// 
             // Custom Fields
-            [Required, MaxLength(50)]
+            [Required(ErrorMessage = "The Name field is required."), MaxLength(50)]
             public string UserFirstName { get; set; }
 
-            [Required, MaxLength(50)]
+            [Required(ErrorMessage = "The Surname field is required."), MaxLength(50)]
             public string UserLastName { get; set; }
 
-            [Required, RegularExpression(@"^\(?(\d{3})\)?[- ]?(\d{3})[- ]?(\d{4})$", ErrorMessage = "Invalid phone format. Use '022-123-4567'.")]
+            [Required(ErrorMessage = "The Phone No. field is required."), RegularExpression(@"^\(?(\d{3})\)?[- ]?(\d{3})[- ]?(\d{4})$", ErrorMessage = "Invalid phone format. Use '022-123-4567'.")]
             public string UserPhone { get; set; }
 
             [RegularExpression(@"^(0\d{8}|0\d-\d{3}-\d{4})$", ErrorMessage = "Please enter a valid landline number. Eg: '09-813-3900' or '098133900'")]
             public string UserLandline { get; set; }
 
-            [Required, MaxLength(150)]
+            [Required(ErrorMessage ="The Address field is required."), MaxLength(150)]
             public string UserAddress { get; set; }
 
 
