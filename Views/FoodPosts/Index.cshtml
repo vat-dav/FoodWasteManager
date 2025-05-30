@@ -6,11 +6,13 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h1>FoodPosts Made:</h1>
+<h1 style="color:#3d5438">FoodPosts Made:</h1>
 
-<p>
-    <a asp-action="Create" class="btn btn-success">Create New</a>
-</p>
+
+    <a asp-action="Create" class="btn align-content-center" style="background-color:#d0f2b6">
+        <h6 style="color:#3d5438">Create New</h6>
+    </a>
+
 
 <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-3 mt-3">
     @foreach (var item in Model)

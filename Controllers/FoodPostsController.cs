@@ -12,6 +12,7 @@ using Microsoft.AspNetCore.Identity;
 using FoodWasteManager.Areas.Identity.Data;
 using LazZiya.ImageResize;
 using System.Drawing;
+using System.Security.Claims;
 
 namespace FoodWasteManager.Controllers
 {
@@ -46,7 +47,7 @@ namespace FoodWasteManager.Controllers
                 return NotFound();
             }
 
-            var foodPost = await _context.FoodPosts.Include(ft=> ft.FoodTypes).FirstOrDefaultAsync(m => m.FoodPostId == id); //lets me nav to the foodtype table in views
+            var foodPost = await _context.FoodPosts.Include(ft => ft.FoodTypes).FirstOrDefaultAsync(m => m.FoodPostId == id); //lets me nav to the foodtype table in views
 
             if (foodPost == null)
             {
@@ -62,7 +63,7 @@ namespace FoodWasteManager.Controllers
 
             ViewBag.FoodTypeId = new SelectList(_context.FoodTypes, "FoodTypeId", "FoodTypeName");
 
-          
+
             return View();
         }
 
@@ -72,7 +73,7 @@ namespace FoodWasteManager.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("FoodPostId,FoodTypeId,FoodImage,FoodName,FoodQuantity,FoodPrice,FoodBestBefore,DatePosted,ImageFile")] FoodPost foodPost, IFormFile imageFile)
-        
+
         {
             //if imagefile has been uploaded and is not null, the following runs
             if (imageFile != null && imageFile.Length > 0)
@@ -148,7 +149,7 @@ namespace FoodWasteManager.Controllers
                 var user = await _userManager.GetUserAsync(User); // get the currently logged-in user
                 foodPost.UserId = user.Id; // sets the foreign key manually
 
-            
+
                 var existingPost = await _context.FoodPosts.AsNoTracking().FirstOrDefaultAsync(f => f.FoodPostId == id);
                 if (existingPost == null)
                 {
@@ -191,8 +192,8 @@ namespace FoodWasteManager.Controllers
                 }
 
                 _context.Update(foodPost);
-                    await _context.SaveChangesAsync();
-             
+                await _context.SaveChangesAsync();
+
                 return RedirectToAction(nameof(Index));
             }
 
@@ -204,40 +205,58 @@ namespace FoodWasteManager.Controllers
         // GET: FoodPosts/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
-            if (id == null)
             {
-                return NotFound();
+                if (id == null)
+                {
+                    return NotFound();
+                }
+                var foodPost = await _context.FoodPosts
+                        .Include(f => f.FoodTypes)
+                        .FirstOrDefaultAsync(m => m.FoodPostId == id);
+
+                if (foodPost == null)
+                {
+                    return NotFound();
+                }
+
+                return View(foodPost);
             }
-            var foodPost = await _context.FoodPosts
-                    .Include(f => f.FoodTypes) 
-                    .FirstOrDefaultAsync(m => m.FoodPostId == id);
+        }
+
+
+        // POST: FoodPosts/Delete/5
+        [HttpPost, ActionName("Delete")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteConfirmed(int id)
+
+        {
+
+
+            var foodPost = _context.FoodPosts.Where(a => a.FoodPostId == id).FirstOrDefault();
 
             if (foodPost == null)
             {
                 return NotFound();
             }
 
-            return View(foodPost);
-        }
-
-        // POST: FoodPosts/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
-        {
-            var foodPost = await _context.FoodPosts.FindAsync(id);
-            if (foodPost != null)
+            if (User.FindFirstValue(ClaimTypes.NameIdentifier) == foodPost.UserId)
             {
-                _context.FoodPosts.Remove(foodPost);
-            }
 
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+
+                _context.FoodPosts.Remove(foodPost);
+                await _context.SaveChangesAsync();
+                return RedirectToAction(nameof(Index));  
+
+            }
+            return Unauthorized();
         }
+            
+        
 
         private bool FoodPostExists(int id)
-        {
-            return _context.FoodPosts.Any(e => e.FoodPostId == id);
+            {
+                return _context.FoodPosts.Any(e => e.FoodPostId == id);
+            }
         }
     }
-}
+
