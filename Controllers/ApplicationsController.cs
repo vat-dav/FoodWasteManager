@@ -35,28 +35,39 @@ namespace FoodWasteManager.Controllers
 
         [Authorize]
 
-
         // GET: Applications
-        public async Task<IActionResult> Index()
+
+   
+        public async Task<IActionResult> Index(string? viewType)
         {
 
-
-            if (User.IsInRole("Buyer"))
+            if (User.IsInRole("Buyer") && viewType =="applicationsmade")
             {
-                var foodWasteManagerContext = _context.Applications.Include(a => a.FoodPost).Where(a => a.UserId == User.FindFirstValue(ClaimTypes.NameIdentifier));
-                return View(await foodWasteManagerContext.ToListAsync());
+                var foodWasteManagerContext = _context.Applications.Include(a => a.FoodPost).Where(a => a.UserId == User.FindFirstValue(ClaimTypes.NameIdentifier)).ToListAsync();
+                ViewData["Title"] = "Applications Made";
+
+                return View(foodWasteManagerContext);
+
             }
 
             if (User.IsInRole("Admin"))
             {
-                var foodWasteManagerContext = _context.Applications.Include(a => a.FoodPost);
-                return View(await foodWasteManagerContext.ToListAsync());
+                var foodWasteManagerContext = _context.Applications.Include(a => a.FoodPost).ToListAsync();
+
+                ViewData["Title"] = "All Applications";
+                return View(await foodWasteManagerContext);
             }
 
-            if (User.IsInRole("Seller"))
+            if (User.IsInRole("Seller") && viewType == "applicationsreceived")
             {
-                var foodWasteManagerContext = _context.FoodPosts.Include(a => a.Applications).Where(b => b.UserId == User.FindFirstValue(ClaimTypes.NameIdentifier));
-                return View(await foodWasteManagerContext.ToListAsync());
+                var sellerId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+                var sellerFoodPosts = await _context.FoodPosts.Include(fp => fp.Applications).Where(fp => fp.UserId == sellerId).ToListAsync();
+                var applications = sellerFoodPosts.SelectMany(fp => fp.Applications).ToList();
+
+                ViewData["Title"] = "Applications Received";
+                
+               
+                return View(applications);
             }
             else 
             {
