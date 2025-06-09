@@ -1,9 +1,15 @@
 ﻿@model IEnumerable<FoodWasteManager.Models.FoodPost>
+@using Azure.Core
 @using FoodWasteManager.Models;
 
 @{
     ViewData["Title"] = "Index";
     Layout = "~/Views/Shared/_Layout.cshtml";
+
+    
+    var sortOrder = Context.Request.Query["sortOrder"].ToString();
+
+
 }
 
 <h1 style="color:#3d5438">FoodPosts Made:</h1>
@@ -14,7 +20,22 @@
     </a>
 
 
+
+
+
 <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-3 mt-3">
+
+    <div class="d-flex justify-content-end align-items-center mb-3">
+        <span class="me-2 text-muted">Sort by:</span>
+    
+        <a asp-action="Index" asp-route-sortOrder="date" class="btn btn-sm btn-outline-dark me-1 @(sortOrder == "date" ? "active" : "")">Best Before ↑</a>
+        <a asp-action="Index" asp-route-sortOrder="date_desc" class="btn btn-sm btn-outline-dark me-1 @(sortOrder == "date_desc" ? "active" : "")">Best Before ↓</a>
+
+        <a asp-action="Index" asp-route-sortOrder="price" class="btn btn-sm btn-outline-dark me-1 @(sortOrder == "price" ? "active" : "")">Low to High Price</a>
+        <a asp-action="Index" asp-route-sortOrder="price_desc" class="btn btn-sm btn-outline-dark me-1 @(sortOrder == "price_desc" ? "active" : "")">High to low Price</a>
+    </div>
+
+
     @foreach (var item in Model)
     {
         <div class="col">

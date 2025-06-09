@@ -29,15 +29,42 @@ namespace FoodWasteManager.Controllers
         [Authorize]
 
         // GET: FoodPosts
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string sortOrder)
         {
-            var foodPosts = await _context.FoodPosts
-                .Include(f => f.FoodTypes)
-                .ToListAsync();
+            ViewData["CurrentSort"] = sortOrder;
+            ViewData["NameSortParm"] = String.IsNullOrEmpty(sortOrder) ? "name_desc" : "";
+            ViewData["DateSortParm"] = sortOrder == "date" ? "date_desc" : "date";
+            ViewData["PriceSortParm"] = sortOrder == "price" ? "price_desc" : "price";
 
-            return View(foodPosts);
+            var foodPosts = from f in _context.FoodPosts.Include(f => f.FoodTypes)
+                            select f; 
+
+            switch (sortOrder)
+            {
+                case "name_desc":
+                    foodPosts = foodPosts.OrderByDescending(f => f.FoodName);
+                    break;
+                case "date":
+                    foodPosts = foodPosts.OrderBy(f => f.FoodBestBefore);
+                    break;
+                case "date_desc":
+                    foodPosts = foodPosts.OrderByDescending(f => f.FoodBestBefore);
+                    break;
+                case "price":
+                    foodPosts = foodPosts.OrderBy(f => f.FoodPrice);
+                    break;
+                case "price_desc":
+                    foodPosts = foodPosts.OrderByDescending(f => f.FoodPrice);
+                    break;
+                default:
+                    foodPosts = foodPosts.OrderBy(f => f.FoodName);
+                    break;
+            }
+
+            return View(await foodPosts.AsNoTracking().ToListAsync());
         }
 
+  
 
         // GET: FoodPosts/Details/5
         public async Task<IActionResult> Details(int? id)

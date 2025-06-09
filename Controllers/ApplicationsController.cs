@@ -43,7 +43,7 @@ namespace FoodWasteManager.Controllers
 
             if (User.IsInRole("Buyer") && viewType =="applicationsmade")
             {
-                var foodWasteManagerContext = _context.Applications.Include(a => a.FoodPost).Where(a => a.UserId == User.FindFirstValue(ClaimTypes.NameIdentifier)).ToListAsync();
+                var foodWasteManagerContext = await _context.Applications.Include(a => a.FoodPost).Where(a => a.UserId == User.FindFirstValue(ClaimTypes.NameIdentifier)).ToListAsync();
                 ViewData["Title"] = "Applications Made";
 
                 return View(foodWasteManagerContext);
@@ -61,15 +61,17 @@ namespace FoodWasteManager.Controllers
             if (User.IsInRole("Seller") && viewType == "applicationsreceived")
             {
                 var sellerId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-                var sellerFoodPosts = await _context.FoodPosts.Include(fp => fp.Applications).Where(fp => fp.UserId == sellerId).ToListAsync();
-                var applications = sellerFoodPosts.SelectMany(fp => fp.Applications).ToList();
+
+                var applications = await _context.Applications
+                    .Include(a => a.FoodPost)
+                    .Where(a => a.FoodPost.UserId == sellerId)
+                    .ToListAsync();
 
                 ViewData["Title"] = "Applications Received";
-                
-               
                 return View(applications);
             }
-            else 
+
+            else
             {
                 return View();
             }
