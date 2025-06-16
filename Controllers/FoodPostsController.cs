@@ -13,6 +13,8 @@ using FoodWasteManager.Areas.Identity.Data;
 using LazZiya.ImageResize;
 using System.Drawing;
 using System.Security.Claims;
+using Microsoft.Extensions.Hosting;
+using TuitionDbv1.Helpers;
 
 namespace FoodWasteManager.Controllers
 {
@@ -29,16 +31,35 @@ namespace FoodWasteManager.Controllers
         [Authorize]
 
         // GET: FoodPosts
-        public async Task<IActionResult> Index(string sortOrder)
+        public async Task<IActionResult> Index(string sortOrder, string currentFilter, string searchString, int? pageNumber)
         {
             ViewData["CurrentSort"] = sortOrder;
             ViewData["NameSortParm"] = String.IsNullOrEmpty(sortOrder) ? "name_desc" : "";
             ViewData["DateSortParm"] = sortOrder == "date" ? "date_desc" : "date";
             ViewData["PriceSortParm"] = sortOrder == "price" ? "price_desc" : "price";
+            ViewData["DatePostedSortParm"] = sortOrder == "dateposted" ? "dateposted_desc" : "dateposted";
+
+            if (searchString != null)
+            {
+                pageNumber = 1;
+            }
+            else
+            {
+                searchString = currentFilter;
+            }
+
+            ViewData["CurrentFilter"] = searchString;
 
             var foodPosts = from f in _context.FoodPosts.Include(f => f.FoodTypes)
-                            select f; 
+                            select f;
 
+            // filtering
+            if (!string.IsNullOrEmpty(searchString))
+            {
+                foodPosts = foodPosts.Where(f => f.FoodName.Contains(searchString));
+            }
+
+            // sorting
             switch (sortOrder)
             {
                 case "name_desc":
@@ -56,15 +77,38 @@ namespace FoodWasteManager.Controllers
                 case "price_desc":
                     foodPosts = foodPosts.OrderByDescending(f => f.FoodPrice);
                     break;
+                case "dateposted":
+                    foodPosts = foodPosts.OrderBy(f => f.DatePosted);
+                    break;
+                case "dateposted_desc":
+                    foodPosts = foodPosts.OrderByDescending(f => f.DatePosted);
+                    break;
                 default:
                     foodPosts = foodPosts.OrderBy(f => f.FoodName);
                     break;
             }
 
-            return View(await foodPosts.AsNoTracking().ToListAsync());
+            // additional sort by DatePosted desc after other sorting (optional — or remove if redundant)
+            // foodPosts = foodPosts.OrderByDescending(f => f.DatePosted);
+
+            // pagination
+            int pageSize = 20;
+            int currentPage = pageNumber ?? 1;
+            int totalItems = await foodPosts.CountAsync();
+            int totalPages = (int)Math.Ceiling(totalItems / (double)pageSize);
+
+            var pagedFoodPosts = await foodPosts
+                .Skip((currentPage - 1) * pageSize)
+                .Take(pageSize)
+                .AsNoTracking()
+                .ToListAsync();
+
+            ViewBag.CurrentPage = currentPage;
+            ViewBag.TotalPages = totalPages;
+
+            return View(pagedFoodPosts);
         }
 
-  
 
         // GET: FoodPosts/Details/5
         public async Task<IActionResult> Details(int? id)
@@ -266,7 +310,7 @@ namespace FoodWasteManager.Controllers
                 return NotFound();
             }
 
-            if (User.FindFirstValue(ClaimTypes.NameIdentifier) == foodPost.UserId)
+            if (User.FindFirstValue(ClaimTypes.NameIdentifier) == foodPost.UserId || User.IsInRole("Admin"))
             {
 
 

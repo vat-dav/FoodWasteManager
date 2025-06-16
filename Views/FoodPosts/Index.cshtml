@@ -12,29 +12,75 @@
 
 }
 
-<h1 style="color:#3d5438">FoodPosts Made:</h1>
 
 
-    <a asp-action="Create" class="btn align-content-center" style="background-color:#d0f2b6">
-        <h6 style="color:#3d5438">Create New</h6>
-    </a>
 
+<div class="justify-content-end align-items-center">
+  
+    <h1 style="color:#3d5438">FoodPosts Made:</h1>
+
+
+
+    @{
+        if (User.IsInRole("Buyer") || User.IsInRole("Seller"))
+        {
+            <div class="mt-3">
+                <a asp-action="Create" class="btn align-content-center margin righ" style="background-color:#d0f2b6">
+                    <h6 style="color:#3d5438">Create New</h6>
+                </a>
+            </div>
+
+        }
+    }
+
+
+</div>
+
+<div class="mt-3">
+
+    <form asp-action="Index" method="get" class="d-inline ms-2 mt-3 ">
+        <input type="hidden" name="sortOrder" value="@ViewData["CurrentSort"]" />
+        <input type="text" name="searchString" value="@ViewData["CurrentFilter"]" placeholder="Search food..." class="form-control d-inline-block w-auto ms-3" />
+        <button type="submit" class="btn btn-sm apply-btn ms-3">Search</button>
+        <a asp-action="Index" class="btn btn-sm ms-1 clear-btn" style="color: #3d5438; border-color: #3d5438;">Clear</a>
+    </form>
+
+    <span class="me-2 text-muted ms-lg-5">Sort by:</span>
+    @{
+
+        <span class="ms-1"></span>
+        if (User.IsInRole("Buyer") || User.IsInRole("Seller"))
+        {
+            <a asp-action="Index" asp-route-sortOrder="date" class="btn btn-sm" style="color: #3d5438; border-color: #3d5438; @(sortOrder == "date" ? "active" : "")">Best Before ↑</a>
+            <a asp-action="Index" asp-route-sortOrder="date_desc" class="btn btn-sm" style=" color: #3d5438; border-color: #3d5438; @(sortOrder == "date_desc" ? "active" : "")">Best Before ↓</a>
+
+            <a asp-action="Index" asp-route-sortOrder="price" class="btn btn-sm" style=" color: #3d5438; border-color: #3d5438; @(sortOrder =="price" ? "active" : "" )">Low to High Price</a>
+            <a asp-action="Index" asp-route-sortOrder="price_desc" class="btn btn-sm" style=" color: #3d5438; border-color: #3d5438; @(sortOrder =="price_desc" ? "active" : "" )">High to low Price</a>
+
+        }
+
+
+        if (User.IsInRole("Admin"))
+        {
+
+            <a asp-action="Index" asp-route-sortOrder="dateposted" class="btn btn-sm" style=" color: #3d5438; border-color: #3d5438; @(sortOrder =="price" ? "active" : "" )">Oldest</a>
+            <a asp-action="Index" asp-route-sortOrder="dateposted_desc" class="btn btn-sm" style=" color: #3d5438; border-color: #3d5438; @(sortOrder =="price_desc" ? "active" : "" )">Newest</a>
+
+        }
+
+
+
+
+    }
+
+</div>
 
 
 
 
 <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-3 mt-3">
 
-    <div class="d-flex justify-content-end align-items-center mb-3">
-        <span class="me-2 text-muted">Sort by:</span>
     
-        <a asp-action="Index" asp-route-sortOrder="date" class="btn btn-sm btn-outline-dark me-1 @(sortOrder == "date" ? "active" : "")">Best Before ↑</a>
-        <a asp-action="Index" asp-route-sortOrder="date_desc" class="btn btn-sm btn-outline-dark me-1 @(sortOrder == "date_desc" ? "active" : "")">Best Before ↓</a>
-
-        <a asp-action="Index" asp-route-sortOrder="price" class="btn btn-sm btn-outline-dark me-1 @(sortOrder == "price" ? "active" : "")">Low to High Price</a>
-        <a asp-action="Index" asp-route-sortOrder="price_desc" class="btn btn-sm btn-outline-dark me-1 @(sortOrder == "price_desc" ? "active" : "")">High to low Price</a>
-    </div>
-
 
     @foreach (var item in Model)
     {
@@ -48,11 +94,22 @@
                     <h3 class="mb-0 small">Qty: @item.FoodQuantity</h3>
                    
                     <h3 class="mb-0 small">Price: $@item.FoodPrice</h3>
-                    <h4 class="mb-0 small">Best Before: @item.FoodBestBefore.ToShortDateString()</h4>
+                    <h4 class="mb-2 small">Best Before: @item.FoodBestBefore.ToShortDateString()</h4>
+
+
                     
                     <div class="mt-auto d-flex justify-content-between">
-                        <a asp-controller="Applications" asp-action="Create" asp-route-FoodPostId="@item.FoodPostId" class="btn btn-sm btn-outline-danger">Apply!</a>
-                        <a asp-action="Details" asp-route-id="@item.FoodPostId" class="btn btn-sm btn-outline-secondary">Details</a>
+                        <a asp-controller="Applications" asp-action="Create" asp-route-FoodPostId="@item.FoodPostId" class="btn btn-sm apply-btn" style="outline-color:#3d5438">Apply!</a>
+                        <a asp-action="Details" asp-route-id="@item.FoodPostId" class="btn btn-sm apply-btn">Details</a>
+
+                        @{
+                            if (User.IsInRole("Admin"))
+                            {
+                                <a asp-action="Delete" asp-route-id="@item.FoodPostId" class="btn btn-sm btn-outline-danger">Delete
+                                    <i class="bi bi-trash-fill"></i>
+                                </a>
+                            }
+                        }
                     </div>
                 </div>
             </div>
@@ -60,5 +117,47 @@
     }
 </div>
 
+<div class="pagination">
+    @if (ViewBag.CurrentPage > 1)
+    {
+        <a asp-action="Index"
+           asp-route-sortOrder="@ViewData["CurrentSort"]"
+           asp-route-currentFilter="@ViewData["CurrentFilter"]"
+           asp-route-pageNumber="@(ViewBag.CurrentPage - 1)">Previous</a>
+    }
+
+    <span>Page @ViewBag.CurrentPage of @ViewBag.TotalPages</span>
+
+    @if (ViewBag.CurrentPage < ViewBag.TotalPages)
+    {
+        <a asp-action="Index"
+           asp-route-sortOrder="@ViewData["CurrentSort"]"
+           asp-route-currentFilter="@ViewData["CurrentFilter"]"
+           asp-route-pageNumber="@(ViewBag.CurrentPage + 1)">Next</a>
+    }
+</div>
 
 
+<style>
+      .apply-btn {
+        color: #3d5438;
+        border: 1px solid #3d5438;
+        text-decoration: none;
+        padding: 3px 10px;
+        border-radius: 4px;
+        transition: all 0.3s ease;
+    }
+
+        .apply-btn:hover {
+            background-color: #3d5438;
+            color: white;
+          border-color: #3d5438;
+        }
+
+        .clear-btn{
+        padding: 3px 10px;
+        border-radius: 4px;
+
+        }
+        
+        </style>

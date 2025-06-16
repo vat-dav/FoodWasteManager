@@ -1,7 +1,191 @@
-﻿@{
-    ViewData["Title"] = "Community Outreach and Activities";
-}
-<h1>@ViewData["Title"]</h1>
+﻿<!DOCTYPE html>
+<html lang="en">
 
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>@ViewData["Title"] - Community Outreach</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/FoodWasteManager.styles.css" asp-append-version="true" />
+    <link rel="icon" type="png" href="@(Url.Content("~/images/tabiconwasteless.png"))" />
+    <style>
+        body {
+            background-color: #f0ede6;
+        }
 
+        .gallery {
+            width: 100%;
+            position: relative;
+            height: 400px;
+        }
 
+        .gallery-container {
+            display: flex;
+            justify-content: center;
+            height: 400px;
+            position: relative;
+        }
+
+        .gallery-item {
+            height: 200px;
+            opacity: 0;
+            position: absolute;
+            transition: all 0.3s ease-in-out;
+            width: 330px;
+            z-index: 0;
+            border-radius: 15px;
+            background-size: cover;
+        }
+
+        .gallery-item-1 {
+            left: 15%;
+            opacity: 0.4;
+        }
+
+        .gallery-item-2 {
+            left: 30%;
+            opacity: 0.8;
+        }
+
+        .gallery-item-3 {
+            left: 50%;
+            opacity: 1;
+            z-index: 2;
+        }
+
+        .gallery-item-4 {
+            left: 70%;
+            opacity: 0.8;
+        }
+
+        .gallery-item-5 {
+            left: 85%;
+            opacity: 0.4;
+        }
+
+        .gallery-controls {
+            display: flex;
+            justify-content: center;
+            margin-top: 20px;
+        }
+
+            .gallery-controls button {
+                background-color: transparent;
+                border: 0;
+                cursor: pointer;
+                font-size: 30px;
+                padding: 0 12px;
+                margin: 0 20px;
+            }
+
+        .gallery-nav {
+            bottom: -15px;
+            display: flex;
+            justify-content: center;
+            position: absolute;
+            width: 100%;
+        }
+
+            .gallery-nav li {
+                background: #ccc;
+                border-radius: 50%;
+                height: 10px;
+                margin: 0 16px;
+                width: 10px;
+            }
+
+                .gallery-nav li.selected {
+                    background: #555;
+                }
+    </style>
+</head>
+
+<body>
+    <div class="container mt-4">
+        <main role="main" class="pb-3">
+            <h1 style="color:#3d5438">Meet members of the community:</h1>
+
+            <!-- Custom Carousel -->
+            <div class="gallery">
+                <div class="gallery-container">
+                    <!-- Gallery Items -->
+                    <div class="gallery-item gallery-item-1" style="background-image: url('~/images/10813-best-chocolate-chip-cooookei.jpg');"></div>
+                    <div class="gallery-item gallery-item-2" style="background-image: url('~/images/cooked-peeled-shrimp.jpg');"></div>
+                    <div class="gallery-item gallery-item-3" style="background-image: url('~/wwwroot/images/DSCF2011.JPG';"></div>
+                    <div class="gallery-item gallery-item-4" style="background-image: url('~/wwwroot/images/image1.jpg');"></div>
+                    <div class="gallery-item gallery-item-5" style="background-image: url('~/wwwroot/images/image2.jpg');"></div>
+                </div>
+
+                <!-- Navigation Buttons -->
+                <div class="gallery-controls">
+                    <button class="gallery-controls-previous">Previous</button>
+                    <button class="gallery-controls-next">Next</button>
+                </div>
+                <!-- Navigation Dots -->
+                <ul class="gallery-nav">
+                    <li class="selected"></li>
+                    <li></li>
+                    <li></li>
+                    <li></li>
+                    <li></li>
+                </ul>
+            </div>
+        </main>
+    </div>
+
+    <footer class="border-top footer text-muted mt-5">
+        <div class="container">
+            &copy; 2025 - FoodWasteManager - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+        </div>
+    </footer>
+
+    <script>
+        const galleryItems = document.querySelectorAll('.gallery-item');
+        const prevButton = document.querySelector('.gallery-controls-previous');
+        const nextButton = document.querySelector('.gallery-controls-next');
+        const navDots = document.querySelectorAll('.gallery-nav li');
+
+        let currentIndex = 2; // Start at the 3rd item (index 2)
+
+        function updateGallery() {
+            // Hide all gallery items and reset navigation dots
+            galleryItems.forEach((item, index) => {
+                item.style.opacity = 0;
+                item.style.transform = `translateX(-50%)`; // Reset transform
+            });
+
+            // Show the current gallery items
+            galleryItems[currentIndex - 2].style.opacity = 0.4;
+            galleryItems[currentIndex - 1].style.opacity = 0.8;
+            galleryItems[currentIndex].style.opacity = 1;
+            galleryItems[currentIndex + 1].style.opacity = 0.8;
+            galleryItems[currentIndex + 2].style.opacity = 0.4;
+
+            // Update navigation dots
+            navDots.forEach((dot, index) => {
+                dot.classList.remove('selected');
+                if (index === currentIndex) {
+                    dot.classList.add('selected');
+                }
+            });
+        }
+
+        // Function to move carousel to the next/previous item
+        function moveCarousel(direction) {
+            if (direction === 'next') {
+                currentIndex = (currentIndex + 1) % galleryItems.length;
+            } else {
+                currentIndex = (currentIndex - 1 + galleryItems.length) % galleryItems.length;
+            }
+            updateGallery();
+        }
+
+        prevButton.addEventListener('click', () => moveCarousel('previous'));
+        nextButton.addEventListener('click', () => moveCarousel('next'));
+
+        updateGallery(); // Initialize the carousel
+    </script>
+</body>
+
+</html>

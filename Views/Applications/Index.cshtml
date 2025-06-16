@@ -1,11 +1,15 @@
 ﻿@model IEnumerable<FoodWasteManager.Models.Application>
 
 @{
-    <h2>@ViewData["Title"]</h2>
 
+    <h2>@ViewData["Title"]</h2>
+   
 
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
+
+
+
 
 <p>
     <a asp-action="Create">Create New</a>
@@ -13,6 +17,9 @@
 <table class="table">
     <thead>
         <tr>
+            <th style="height: 50%; overflow: hidden;">
+           <!--     -->
+            </th>
             <th>
                 @Html.DisplayNameFor(model => model.FoodPost)
             </th>

@@ -57,23 +57,36 @@ namespace FoodWasteManager.Controllers
                 ViewData["Title"] = "All Applications";
                 return View(await foodWasteManagerContext);
             }
-
             if (User.IsInRole("Seller") && viewType == "applicationsreceived")
             {
-                var sellerId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+                string sellerId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
+                // Get only applications where the FoodPost belongs to the current seller
                 var applications = await _context.Applications
                     .Include(a => a.FoodPost)
-                    .Where(a => a.FoodPost.UserId == sellerId)
+                    .Where(a => a.FoodPost.UserId == sellerId) // cleaner join logic
                     .ToListAsync();
 
-                ViewData["Title"] = "Applications Received";
+                // If there are no applications, set a custom message
+                if (applications.Count == 0)
+                {
+                    ViewData["Title"] = "No Applications Received";
+                }
+                else
+                {
+                    ViewData["Title"] = "Applications Received";  // Optional: Set a default title for when there are applications
+                }
+
                 return View(applications);
             }
 
+
+
             else
             {
-                return View();
+                ViewData["Title"] = "No Applications Found";
+                return RedirectToAction(nameof(Index), new { viewType = "applicationsreceived" });
+
             }
 
         }
