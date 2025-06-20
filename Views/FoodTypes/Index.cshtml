@@ -17,7 +17,7 @@
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.FoodTypeName)
+                Categories
             </th>
             <th></th>
         </tr>
@@ -29,14 +29,31 @@
                     @Html.DisplayFor(modelItem => item.FoodTypeName)
             </td>
             <td>
-                    <a asp-action="Edit" asp-route-id="@item.FoodTypeId" class="btn btn-outline-primary btn-sm" title="Edit">
+                    <a asp-action="Edit" asp-route-id="@item.FoodTypeId" class="btn btn-sm apply-btn me-1" title="Edit">
                         <i class="bi bi-pencil-fill"></i>
                     </a>
                     <a asp-action="Delete" asp-route-id="@item.FoodTypeId" class="btn btn-outline-danger btn-sm" title="Delete">
-                        <i class="bi bi-trash-fill"></i>
+                        <i class="bi bi-trash-fill"></i> Delete
                     </a>
             </td>
         </tr>
 }
     </tbody>
 </table>
+
+<style>
+            .apply-btn {
+    color: #3d5438;
+    border: 1px solid #3d5438;
+    text-decoration: none;
+    padding: 3px 10px;
+    border-radius: 4px;
+    transition: all 0.3s ease;
+}
+
+.apply-btn:hover {
+    background-color: #3d5438;
+    color: white;
+    border-color: #3d5438;
+}
+</style>

@@ -1,56 +1,48 @@
 ﻿@model FoodWasteManager.Models.Application
 
 @{
-    ViewData["Title"] = "Delete";
+    ViewData["Title"] = "Delete Application";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h1>Delete an Application for a FoodPost?</h1>
+<div class="d-flex justify-content-center align-items-start" style="min-height: 80vh; background-color: #f0ede6; padding: 2rem;">
+    <div class="w-100" style="max-width: 650px;">
+        <h1 class="mb-3 text-center" style="color:#3d5438;">Delete This Application?</h1>
+        <h5 class="text-center mb-4" style="color:#3d5438;">Are you sure you want to remove this request?</h5>
 
-<h3>Are you sure you want to delete this application?</h3>
-<div>
-    <h4>Application Details</h4>
-    <hr />
-    <dl class="row">
-        <dt class="col-sm-3">
-            @Html.DisplayNameFor(model => model.QuantityRequired)
-        </dt>
-        <dd class="col-sm-9">
-            @Html.DisplayFor(model => model.QuantityRequired)
-        </dd>
+        <div class="p-4 rounded-4 shadow" style="background-color:#d0f2b6;">
+            <div class="text-center mb-4">
+                <img src="@Url.Content(Model.FoodPost.FoodImage)" alt="@Model.FoodPost.FoodName" class="img-fluid rounded" style="max-width: 300px;" />
+            </div>
 
-        <dt class="col-sm-3">
-            @Html.DisplayNameFor(model => model.EarliestPickup)
-        </dt>
-        <dd class="col-sm-9">
-            @Html.DisplayFor(model => model.EarliestPickup)
-        </dd>
+            <dl class="row">
+                <dt class="col-sm-4" style="color:#3d5438;">Food Post</dt>
+                <dd class="col-sm-8">@Html.DisplayFor(model => model.FoodPost.FoodName)</dd>
 
-        <dt class="col-sm-3">
-            @Html.DisplayNameFor(model => model.LatestPickup)
-        </dt>
-        <dd class="col-sm-9">
-            @Html.DisplayFor(model => model.LatestPickup)
-        </dd>
+                <dt class="col-sm-4" style="color:#3d5438;">Quantity Required</dt>
+                <dd class="col-sm-8">@Html.DisplayFor(model => model.QuantityRequired)</dd>
 
-        <dt class="col-sm-3">
-            @Html.DisplayNameFor(model => model.AStatus)
-        </dt>
-        <dd class="col-sm-9">
-            @Html.DisplayFor(model => model.AStatus)
-        </dd>
+                <dt class="col-sm-4" style="color:#3d5438;">Earliest Pickup</dt>
+                <dd class="col-sm-8">@Html.DisplayFor(model => model.EarliestPickup)</dd>
 
-        <dt class="col-sm-3">
-            Food Post
-        </dt>
-        <dd class="col-sm-9">
-            @Html.DisplayFor(model => model.FoodPost.FoodName)
-        </dd>
-    </dl>
+                <dt class="col-sm-4" style="color:#3d5438;">Latest Pickup</dt>
+                <dd class="col-sm-8">@Html.DisplayFor(model => model.LatestPickup)</dd>
 
-    <form asp-action="Delete">
-        <input type="hidden" asp-for="ApplicationId" />
-        <input type="submit" value="Delete" class="btn btn-danger" /> |
-        <a asp-action="Index" class="btn btn-secondary">Back to List</a>
-    </form>
+                <dt class="col-sm-4" style="color:#3d5438;">Status</dt>
+                <dd class="col-sm-8">@Html.DisplayFor(model => model.AStatus)</dd>
+            </dl>
+
+            <form asp-action="Delete" method="post" class="mt-4 d-flex justify-content-center">
+                <input type="hidden" asp-for="ApplicationId" />
+
+                <button type="submit" class="btn btn-danger fw-semibold me-3" style="min-width: 120px;">
+                    <i class="bi bi-trash-fill me-1"></i> Delete
+                </button>
+
+                <a asp-action="Index" class="btn btn-outline-secondary" style="color:#3d5438; border-color:#3d5438; min-width: 120px;">
+                    Cancel
+                </a>
+            </form>
+        </div>
+    </div>
 </div>

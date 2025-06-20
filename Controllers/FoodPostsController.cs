@@ -88,10 +88,7 @@ namespace FoodWasteManager.Controllers
                     break;
             }
 
-            // additional sort by DatePosted desc after other sorting (optional — or remove if redundant)
-            // foodPosts = foodPosts.OrderByDescending(f => f.DatePosted);
 
-            // pagination
             int pageSize = 20;
             int currentPage = pageNumber ?? 1;
             int totalItems = await foodPosts.CountAsync();

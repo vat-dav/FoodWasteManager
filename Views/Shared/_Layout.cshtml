@@ -1,6 +1,13 @@
 ﻿<!DOCTYPE html>
 <html lang="en">
+    @{
+    var isBuyer = User.IsInRole("Buyer");
+    var isSeller = User.IsInRole("Seller");
+    var isAdmin = User.IsInRole("Admin");
 
+    var hasNoRole = !isBuyer && !isSeller && !isAdmin;
+
+    }
 
 <head>
     <meta charset="utf-8" />
@@ -41,6 +48,12 @@
                                 <li class="nav-item">
                                     <a class="nav-link text-dark fs-5" asp-area="" asp-controller="FoodTypes" asp-action="Index">Make a new Food Category</a>
                                 </li>
+
+                                <li class="nav-item">
+
+                                    <a class="nav-link text-dark fs-5" asp-area="" asp-controller="Applications" asp-action="Index">View all applications </a>
+                                
+                                </li>
                             }
                         }
                         @{
@@ -54,7 +67,7 @@
                             }
                         }
                         @{
-                            if (User.IsInRole("Seller"))
+                            if (User.IsInRole("Seller") )
                             {
 
                                 <li class="nav-item">

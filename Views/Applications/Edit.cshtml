@@ -1,72 +1,72 @@
 ﻿@model FoodWasteManager.Models.Application
 
 @{
-    ViewData["Title"] = "Edit";
+    ViewData["Title"] = "Edit Application";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h1>Edit an Application for a FoodPost?</h1>
+<div class="d-flex justify-content-center align-items-start" style="min-height: 80vh; background-color: #f0ede6; padding: 2rem;">
+    <div class="w-100" style="max-width: 600px;">
+        <h1 class="mb-4 text-center" style="color:#3d5438;">Edit Your Application</h1>
 
-<h4>Application</h4>
-<hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Edit" onsubmit= "return PickupTimes()">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <form asp-action="Edit" method="post" onsubmit="return PickupTimes()" class="p-4 rounded-4 shadow" style="background-color:#d0f2b6;">
+            <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
             <input type="hidden" asp-for="ApplicationId" />
-            <div class="form-group">
-                <label asp-for="FoodPostId" class="control-label"></label>
-                <select asp-for="FoodPostId" class="form-control" asp-items="ViewBag.FoodPostId"></select>
+
+            <div class="mb-3">
+                <label asp-for="FoodPostId" class="form-label fw-semibold" style="color:#3d5438;">Select Food Post</label>
+                <select asp-for="FoodPostId" class="form-select" asp-items="ViewBag.FoodPostId"></select>
                 <span asp-validation-for="FoodPostId" class="text-danger"></span>
             </div>
-            <div class="form-group">
-                <label asp-for="QuantityRequired" class="control-label"></label>
+
+            <div class="mb-3">
+                <label asp-for="QuantityRequired" class="form-label fw-semibold" style="color:#3d5438;">Quantity Required</label>
                 <input asp-for="QuantityRequired" class="form-control" />
                 <span asp-validation-for="QuantityRequired" class="text-danger"></span>
             </div>
 
-            <div class="form-group">
-                <label asp-for="EarliestPickup" class="control-label"></label>
+            <div class="mb-3">
+                <label asp-for="EarliestPickup" class="form-label fw-semibold" style="color:#3d5438;">Earliest Pickup</label>
                 <input asp-for="EarliestPickup" id="EarliestPickup" type="date" class="form-control"
                        min="@DateTime.Today.ToString("yyyy-MM-dd")"
                        max="@DateTime.Today.AddMonths(1).ToString("yyyy-MM-dd")" />
                 <span asp-validation-for="EarliestPickup" class="text-danger"></span>
             </div>
 
-            <div class="form-group">
-                <label asp-for="LatestPickup" class="control-label"></label>
+            <div class="mb-3">
+                <label asp-for="LatestPickup" class="form-label fw-semibold" style="color:#3d5438;">Latest Pickup</label>
                 <input asp-for="LatestPickup" id="LatestPickup" type="date" class="form-control" />
                 <span asp-validation-for="LatestPickup" class="text-danger"></span>
             </div>
-           
-            <div class="form-group">
-                <input type="submit" value="Save" class="btn btn-primary" />
+
+            <div class="d-flex justify-content-center">
+                <button type="submit" class="btn btn-success fw-semibold me-2" style="background-color:#3d5438; border:none; min-width:120px;">
+                    <i class="bi bi-pencil-square me-1"></i> Save
+                </button>
+                <a asp-action="Index" class="btn btn-outline-secondary" style="color:#3d5438; border-color:#3d5438; min-width:120px;">
+                    Cancel
+                </a>
             </div>
         </form>
     </div>
 </div>
 
-<div>
-    <a asp-action="Index">Back to List</a>
-</div>
-
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
 
     <script>
         function PickupTimes() {
             const earliest = new Date(document.getElementById("EarliestPickup").value);
             const latest = new Date(document.getElementById("LatestPickup").value);
-
             if (latest <= earliest) {
                 alert("Latest Pickup must be after Earliest Pickup :)");
-                return false; // stop form submission
+                return false;
             }
-
-            return true; // allow form to submit
+            return true;
         }
-    </script>
-    <script>
+
         document.addEventListener("DOMContentLoaded", function () {
             const earliestInput = document.getElementById("EarliestPickup");
             const latestInput = document.getElementById("LatestPickup");
@@ -86,5 +86,3 @@
         });
     </script>
 }
-
-

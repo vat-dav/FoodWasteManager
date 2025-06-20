@@ -9,7 +9,11 @@
     
     var sortOrder = Context.Request.Query["sortOrder"].ToString();
 
+    var isBuyer = User.IsInRole("Buyer");
+    var isSeller = User.IsInRole("Seller");
+    var isAdmin = User.IsInRole("Admin");
 
+    var hasNoRole = !isBuyer && !isSeller && !isAdmin;
 }
 
 
@@ -22,7 +26,7 @@
 
 
     @{
-        if (User.IsInRole("Buyer") || User.IsInRole("Seller"))
+        if (User.IsInRole("Buyer") || User.IsInRole("Seller") || !isAdmin || hasNoRole)
         {
             <div class="mt-3">
                 <a asp-action="Create" class="btn align-content-center margin righ" style="background-color:#d0f2b6">
@@ -49,7 +53,7 @@
     @{
 
         <span class="ms-1"></span>
-        if (User.IsInRole("Buyer") || User.IsInRole("Seller"))
+        if (User.IsInRole("Buyer") || User.IsInRole("Seller") || hasNoRole)
         {
             <a asp-action="Index" asp-route-sortOrder="date" class="btn btn-sm" style="color: #3d5438; border-color: #3d5438; @(sortOrder == "date" ? "active" : "")">Best Before ↑</a>
             <a asp-action="Index" asp-route-sortOrder="date_desc" class="btn btn-sm" style=" color: #3d5438; border-color: #3d5438; @(sortOrder == "date_desc" ? "active" : "")">Best Before ↓</a>
@@ -65,6 +69,8 @@
 
             <a asp-action="Index" asp-route-sortOrder="dateposted" class="btn btn-sm" style=" color: #3d5438; border-color: #3d5438; @(sortOrder =="price" ? "active" : "" )">Oldest</a>
             <a asp-action="Index" asp-route-sortOrder="dateposted_desc" class="btn btn-sm" style=" color: #3d5438; border-color: #3d5438; @(sortOrder =="price_desc" ? "active" : "" )">Newest</a>
+
+
 
         }
 
@@ -95,9 +101,6 @@
                    
                     <h3 class="mb-0 small">Price: $@item.FoodPrice</h3>
                     <h4 class="mb-2 small">Best Before: @item.FoodBestBefore.ToShortDateString()</h4>
-
-
-                    
                     <div class="mt-auto d-flex justify-content-between">
                         <a asp-controller="Applications" asp-action="Create" asp-route-FoodPostId="@item.FoodPostId" class="btn btn-sm apply-btn" style="outline-color:#3d5438">Apply!</a>
                         <a asp-action="Details" asp-route-id="@item.FoodPostId" class="btn btn-sm apply-btn">Details</a>
@@ -117,23 +120,25 @@
     }
 </div>
 
-<div class="pagination">
-    @if (ViewBag.CurrentPage > 1)
+<div class="pagination mt-5">
+   
+
+    <span class="ms-3">Page @ViewBag.CurrentPage of @ViewBag.TotalPages</span>
+
+     @if (ViewBag.CurrentPage > 1)
     {
-        <a asp-action="Index"
+        <h5> <a class="apply-btn ms-3" asp-action="Index"
            asp-route-sortOrder="@ViewData["CurrentSort"]"
            asp-route-currentFilter="@ViewData["CurrentFilter"]"
-           asp-route-pageNumber="@(ViewBag.CurrentPage - 1)">Previous</a>
+           asp-route-pageNumber="@(ViewBag.CurrentPage - 1)">Previous Page</a></h5>
     }
-
-    <span>Page @ViewBag.CurrentPage of @ViewBag.TotalPages</span>
 
     @if (ViewBag.CurrentPage < ViewBag.TotalPages)
     {
-        <a asp-action="Index"
+        <h5> <a class="apply-btn ms-3" asp-action="Index"
            asp-route-sortOrder="@ViewData["CurrentSort"]"
            asp-route-currentFilter="@ViewData["CurrentFilter"]"
-           asp-route-pageNumber="@(ViewBag.CurrentPage + 1)">Next</a>
+           asp-route-pageNumber="@(ViewBag.CurrentPage + 1)">Next Page</a> </h5>
     }
 </div>
 

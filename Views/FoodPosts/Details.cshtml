@@ -1,62 +1,47 @@
-﻿    @model FoodWasteManager.Models.FoodPost
+﻿@model FoodWasteManager.Models.FoodPost
 
-    @{
-        ViewData["Title"] = "Details";
-        Layout = "~/Views/Shared/_Layout.cshtml";
-    }
+@{
+    ViewData["Title"] = "Food Post Details";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
 
-    <h1>FoodPost Details:</h1>
+<div class="d-flex justify-content-center align-items-start" style="min-height: 80vh; background-color: #f0ede6; padding: 2rem;">
+    <div class="w-100" style="max-width: 700px;">
+        <h1 class="mb-4 text-center" style="color:#3d5438;">Food Post Details</h1>
 
-    <div>
-        <h4>FoodPost</h4>
-        <hr />
-        <dl class="row">
-            <dt class = "col-sm-2">
-                @Html.DisplayNameFor(model => model.FoodImage)
-            </dt>
-         <dd class = "col-sm-10">
-            <img src="@Url.Content(Model.FoodImage)" class="w-100 h-100 card-img-top" style="max-width: 25%" alt="@Model.FoodName" />
-            </dd>
-           
-        <dt class = "col-sm-2"> 
-                @Html.DisplayNameFor(model => model.FoodName)
-            </dt>
-            <dd class = "col-sm-10">
-                @Html.DisplayFor(model => model.FoodName)
-            </dd>
-            <dt class = "col-sm-2">
-                @Html.DisplayNameFor(model => model.FoodQuantity)
-            </dt>
-            <dd class = "col-sm-10">
-                @Html.DisplayFor(model => model.FoodQuantity)
-            </dd>
-            <dt class="col-sm-2">
-                @Html.DisplayNameFor(model => model.FoodTypes)
-            </dt>
-            <dd class="col-sm-10">
-                @Html.DisplayFor(model => model.FoodTypes.FoodTypeName)
-            </dd>
-            <dt class = "col-sm-2">
-                @Html.DisplayNameFor(model => model.FoodPrice)
-            </dt>
-            <dd class = "col-sm-10">
-                $@Html.DisplayFor(model => model.FoodPrice)
-            </dd>
-            <dt class = "col-sm-2">
-                @Html.DisplayNameFor(model => model.FoodBestBefore)
-            </dt>
-            <dd class = "col-sm-10">
-                @Html.DisplayFor(model => model.FoodBestBefore)
-            </dd>
-            <dt class = "col-sm-2">
-                @Html.DisplayNameFor(model => model.DatePosted)
-            </dt>
-            <dd class = "col-sm-10">
-                @Html.DisplayFor(model => model.DatePosted)
-            </dd>
-        </dl>
+        <div class="p-4 rounded-4 shadow" style="background-color:#d0f2b6;">
+            <div class="text-center mb-4">
+                <img src="@Url.Content(Model.FoodImage)" alt="@Model.FoodName" class="img-fluid rounded" style="max-width: 300px;" />
+            </div>
+
+            <dl class="row">
+                <dt class="col-sm-4" style="color:#3d5438;">Food Name</dt>
+                <dd class="col-sm-8">@Html.DisplayFor(model => model.FoodName)</dd>
+
+                <dt class="col-sm-4" style="color:#3d5438;">Quantity</dt>
+                <dd class="col-sm-8">@Html.DisplayFor(model => model.FoodQuantity)</dd>
+
+                <dt class="col-sm-4" style="color:#3d5438;">Category</dt>
+                <dd class="col-sm-8">@Html.DisplayFor(model => model.FoodTypes.FoodTypeName)</dd>
+
+                <dt class="col-sm-4" style="color:#3d5438;">Price</dt>
+                <dd class="col-sm-8">$@Html.DisplayFor(model => model.FoodPrice)</dd>
+
+                <dt class="col-sm-4" style="color:#3d5438;">Best Before</dt>
+                <dd class="col-sm-8">@Html.DisplayFor(model => model.FoodBestBefore)</dd>
+
+                <dt class="col-sm-4" style="color:#3d5438;">Date Posted</dt>
+                <dd class="col-sm-8">@Html.DisplayFor(model => model.DatePosted)</dd>
+            </dl>
+
+            <div class="d-flex justify-content-center mt-4">
+                <a asp-action="Edit" asp-route-id="@Model.FoodPostId" class="btn btn-success fw-semibold me-3" style="background-color:#3d5438; border:none; min-width:120px;">
+                    <i class="bi bi-pencil-square me-1"></i> Edit
+                </a>
+                <a asp-action="Index" class="btn btn-sm ms-1 clear-btn" style="color:#3d5438; border-color:#3d5438; min-width:120px;">
+                    Back to List
+                </a>
+            </div>
+        </div>
     </div>
-    <div>
-        <a asp-action="Edit" asp-route-id="@Model?.FoodPostId">Edit</a> |
-        <a asp-action="Index">Back to List</a>
-    </div>
+</div>

@@ -13,17 +13,18 @@ using Microsoft.AspNetCore.Authorization;
 using System.Security.Claims;
 
 
+
 namespace FoodWasteManager.Controllers
 {
     public class ApplicationsController : Controller
 
     {
-        
+
 
         private readonly FoodWasteManagerContext _context;
         private readonly UserManager<FoodWasteManagerUser> _userManager; // injected usermanager
         private readonly SignInManager<FoodWasteManagerUser> _signInManager; //injected signinmanager
-        
+
 
         public ApplicationsController(FoodWasteManagerContext context, UserManager<FoodWasteManagerUser> userManager, SignInManager<FoodWasteManagerUser> signInManager)
         {
@@ -36,60 +37,95 @@ namespace FoodWasteManager.Controllers
         [Authorize]
 
         // GET: Applications
-
-   
-        public async Task<IActionResult> Index(string? viewType)
+        public async Task<IActionResult> Index(string? viewType, string? searchString, string? sortOrder, int? pageNumber)
         {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
-            if (User.IsInRole("Buyer") && viewType =="applicationsmade")
-            {
-                var foodWasteManagerContext = await _context.Applications.Include(a => a.FoodPost).Where(a => a.UserId == User.FindFirstValue(ClaimTypes.NameIdentifier)).ToListAsync();
-                ViewData["Title"] = "Applications Made";
+         
+            IQueryable<Models.Application> applications = _context.Applications
+                .Include(a => a.FoodPost).ThenInclude(a => a.Users);
 
-                return View(foodWasteManagerContext);
-
-            }
-
+            // Filter by role and viewType
             if (User.IsInRole("Admin"))
             {
-                var foodWasteManagerContext = _context.Applications.Include(a => a.FoodPost).ToListAsync();
-
                 ViewData["Title"] = "All Applications";
-                return View(await foodWasteManagerContext);
             }
-            if (User.IsInRole("Seller") && viewType == "applicationsreceived")
+            if (User.IsInRole("Buyer") && viewType == "applicationsmade")
             {
-                string sellerId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
-                // Get only applications where the FoodPost belongs to the current seller
-                var applications = await _context.Applications
-                    .Include(a => a.FoodPost)
-                    .Where(a => a.FoodPost.UserId == sellerId) // cleaner join logic
-                    .ToListAsync();
 
-                // If there are no applications, set a custom message
-                if (applications.Count == 0)
-                {
-                    ViewData["Title"] = "No Applications Received";
-                }
-                else
-                {
-                    ViewData["Title"] = "Applications Received";  // Optional: Set a default title for when there are applications
-                }
-
-                return View(applications);
+                applications = applications.Where(a => a.UserId == userId &&
+        (a.AStatus == Application.ApplicationStatus.Processing ||
+         a.AStatus == Application.ApplicationStatus.Approved ||
+         a.AStatus == Application.ApplicationStatus.Declined)); ;
+                ViewData["Title"] = "Applications Made";
             }
+            else if (User.IsInRole("Seller") && viewType == "applicationsreceived")
+            {
+                applications = applications.Where(a => a.FoodPost.UserId == userId && (a.AStatus == Application.ApplicationStatus.Processing ||
+         a.AStatus == Application.ApplicationStatus.Approved ||
+         a.AStatus == Application.ApplicationStatus.Declined));
 
-
-
+                int count = await applications.CountAsync();
+                ViewData["Title"] = count == 0 ? "No Applications Received Yet!" : "Applications Received";
+            }
             else
             {
-                ViewData["Title"] = "No Applications Found";
-                return RedirectToAction(nameof(Index), new { viewType = "applicationsreceived" });
-
+                ViewData["Title"] = "No Applications Available";
+                ViewBag.CurrentPage = 1;
+                ViewBag.TotalPages = 1;
+                return View(new List<Application>());
             }
 
+            // Search
+            if (searchString != null)
+            {
+                pageNumber = 1;
+            }
+            else
+            {
+                searchString = ViewData["CurrentFilter"] as string;
+            }
+
+            ViewData["CurrentFilter"] = searchString;
+            ViewData["CurrentSort"] = sortOrder;
+            ViewData["StatusSortParm"] = sortOrder == "status" ? "status_desc" : "status";
+
+            if (!string.IsNullOrEmpty(searchString))
+            {
+                applications = applications.Where(a =>
+                    a.FoodPost.FoodName.Contains(searchString) ||
+                    "Approved".Contains(searchString) || "Processing".Contains(searchString) || "Declined".Contains(searchString));
+            }
+
+            // Sorting
+            applications = sortOrder switch
+            {
+                "status" => applications.OrderBy(a => a.AStatus),
+                "status_desc" => applications.OrderByDescending(a => a.AStatus),
+                _ => applications.OrderBy(a => a.FoodPost.FoodName)
+            };
+
+            // Paging
+            int pageSize = 10;
+            int currentPage = pageNumber ?? 1;
+            int totalItems = await applications.CountAsync();
+            int totalPages = (int)Math.Ceiling(totalItems / (double)pageSize);
+
+            var pagedApplications = await applications
+                .Skip((currentPage - 1) * pageSize)
+                .Take(pageSize)
+                .AsNoTracking()
+                .ToListAsync();
+
+            ViewBag.CurrentPage = currentPage;
+            ViewBag.TotalPages = totalPages;
+
+            return View(pagedApplications);
         }
+
+
+
 
         // GET: Applications/Details/5
         public async Task<IActionResult> Details(int? id)
@@ -116,7 +152,7 @@ namespace FoodWasteManager.Controllers
             ViewData["FoodPostId"] = new SelectList(_context.FoodPosts, "FoodPostId", "FoodName");
 
 
-           
+
             return View();
         }
 
@@ -128,7 +164,7 @@ namespace FoodWasteManager.Controllers
         public async Task<IActionResult> Create([Bind("ApplicationId,FoodPostId,QuantityRequired,EarliestPickup,LatestPickup,AStatus")] Application application)
         {
 
-
+      
 
             var currentUserId = _userManager.GetUserId(User); // gets logged-in user's ID
             application.UserId = currentUserId;
@@ -171,7 +207,7 @@ namespace FoodWasteManager.Controllers
             if (!ModelState.IsValid)
             {
                 application.AStatus = Application.ApplicationStatus.Processing; // default sets the application status to processing, as waiting for the other user to approve/decline the application.
-              
+
                 var user = await _userManager.GetUserAsync(User); // get the currently logged-in user - this variable works for FK and adding role to user
                 application.UserId = user.Id; // sets the foreign key manually
 
@@ -181,16 +217,63 @@ namespace FoodWasteManager.Controllers
                 await _userManager.AddToRoleAsync(user, "Buyer");
                 await _signInManager.RefreshSignInAsync(user);
 
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction(nameof(Index), new { viewType = "applicationsmade" });
+
             }
 
 
-            
+
 
             ViewData["FoodPostId"] = new SelectList(_context.FoodPosts, "FoodPostId", "FoodName", application.FoodPostId);
             return View(application);
         }
+        public async Task<IActionResult> Approve(int id)
+        {
+            var application = await _context.Applications
+                .Include(a => a.FoodPost) // include FoodPost to check owner
+                .FirstOrDefaultAsync(a => a.ApplicationId == id);
 
+            if (application == null)
+            {
+                return NotFound();
+            }
+
+            var currentUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (application.FoodPost.UserId != currentUserId)
+            {
+                return Forbid(); // user is not authorized to approve this application
+            }
+
+            application.AStatus = Application.ApplicationStatus.Approved;
+            await _context.SaveChangesAsync();
+
+            return RedirectToAction(nameof(Index), new { viewType = "applicationsreceived" });
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Decline(int id)
+        {
+            var application = await _context.Applications
+                .Include(a => a.FoodPost) // include FoodPost to check owner
+                .FirstOrDefaultAsync(a => a.ApplicationId == id);
+
+            if (application == null)
+            {
+                return NotFound();
+            }
+
+            var currentUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (application.FoodPost.UserId != currentUserId)
+            {
+                return Forbid(); // user is not authorized to decline this application
+            }
+
+            application.AStatus = Application.ApplicationStatus.Declined;
+            await _context.SaveChangesAsync();
+
+            return RedirectToAction(nameof(Index), new { viewType = "applicationsreceived" });
+        }
         // GET: Applications/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
@@ -213,7 +296,7 @@ namespace FoodWasteManager.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("ApplicationId,FoodPostId,QuantityRequired,EarliestPickup,LatestPickup,AStatus")] Application application)
+        public async Task<IActionResult> Edit(int id, [Bind("ApplicationId,FoodPostId,QuantityRequired,EarliestPickup,LatestPickup,AStatus")] Models.Application application)
         {
             if (id != application.ApplicationId)
             {
@@ -222,7 +305,7 @@ namespace FoodWasteManager.Controllers
 
             if (!ModelState.IsValid)
             {
-                application.AStatus = Application.ApplicationStatus.Processing; // default sets the application status to processing, as waiting for the other user to approve/decline the application.
+                application.AStatus = Models.Application.ApplicationStatus.Processing; // default sets the application status to processing, as waiting for the other user to approve/decline the application.
                 var user = await _userManager.GetUserAsync(User); // get the currently logged-in user - this variable works for FK and adding role to user
                 application.UserId = user.Id; // sets the foreign key manually
 

@@ -1,68 +1,69 @@
 ﻿@model FoodWasteManager.Models.FoodPost
 
 @{
-    ViewData["Title"] = "Edit";
+    ViewData["Title"] = "Edit Food Post";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h1>Edit a FoodPost</h1>
+<div class="d-flex justify-content-center align-items-start" style="min-height: 80vh; background-color: #f0ede6; padding: 2rem;">
+    <div class="w-100" style="max-width: 600px;">
+        <h1 class="mb-4 text-center" style="color:#3d5438;">Edit Food Post</h1>
 
-<h4>FoodPost</h4>
-<hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Edit" method="post" enctype="multipart/form-data">
-
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <form asp-action="Edit" method="post" enctype="multipart/form-data" class="p-4 rounded-4 shadow" style="background-color:#d0f2b6;">
+            <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
             <input type="hidden" asp-for="FoodPostId" />
-            <div class="form-group">
-                <label asp-for="FoodImage" class="control-label"></label>
+
+            <div class="mb-3">
+                <label asp-for="FoodImage" class="form-label fw-semibold" style="color:#3d5438;">Update Image</label>
                 <input asp-for="ImageFile" type="file" class="form-control" required />
             </div>
-            <div class="form-group">
-                <label asp-for="FoodName" class="control-label"></label>
+
+            <div class="mb-3">
+                <label asp-for="FoodName" class="form-label fw-semibold" style="color:#3d5438;">Food Name</label>
                 <input asp-for="FoodName" class="form-control" />
                 <span asp-validation-for="FoodName" class="text-danger"></span>
             </div>
-            <div class="form-group">
-                <label asp-for="FoodQuantity" class="control-label"></label>
+
+            <div class="mb-3">
+                <label asp-for="FoodQuantity" class="form-label fw-semibold" style="color:#3d5438;">Quantity</label>
                 <input asp-for="FoodQuantity" class="form-control" />
                 <span asp-validation-for="FoodQuantity" class="text-danger"></span>
             </div>
-            <div class="form-group">
-                <label asp-for="FoodTypeId" class="control-label"></label>
-                <select asp-for="FoodTypeId" class="form-control" asp-items="ViewBag.FoodTypeId"></select>
+
+            <div class="mb-3">
+                <label asp-for="FoodTypeId" class="form-label fw-semibold" style="color:#3d5438;">Food Category</label>
+                <select asp-for="FoodTypeId" class="form-select" asp-items="ViewBag.FoodTypeId"></select>
             </div>
 
-            <div class="form-group">
-                <label asp-for="FoodPrice" class="control-label"></label>
+            <div class="mb-3">
+                <label asp-for="FoodPrice" class="form-label fw-semibold" style="color:#3d5438;">Price (Optional)</label>
                 <input asp-for="FoodPrice" class="form-control" />
                 <span asp-validation-for="FoodPrice" class="text-danger"></span>
             </div>
-            <div class="form-group">
-                <label asp-for="FoodQuantity" class="control-label"></label>
-                <input asp-for="FoodQuantity" class="form-control" />
-                <span asp-validation-for="FoodQuantity" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="FoodBestBefore" class="control-label"></label>
+
+            <div class="mb-3">
+                <label asp-for="FoodBestBefore" class="form-label fw-semibold" style="color:#3d5438;">Best Before Date</label>
                 <input asp-for="FoodBestBefore" class="form-control"
                        type="date"
                        min="@DateOnly.FromDateTime(DateTime.Today).ToString("yyyy-MM-dd")"
                        max="@DateOnly.FromDateTime(DateTime.Today.AddMonths(1)).ToString("yyyy-MM-dd")" />
                 <span asp-validation-for="FoodBestBefore" class="text-danger"></span>
-            </<div>
-            <div class="form-group">
-                <input type="submit" value="Save" class="btn btn-primary" />
+            </div>
+
+            <div class="d-flex justify-content-center">
+                <button type="submit" class="btn btn-success fw-semibold" style="background-color:#3d5438; border:none; min-width:120px;">
+                    <i class="bi bi-pencil-square me-2"></i> Save
+                </button>
+                <a asp-action="Index" class="btn btn-sm ms-1 clear-btn" style="color:#3d5438; border-color:#3d5438; min-width:120px;">
+                    Back to List
+                </a>
             </div>
         </form>
     </div>
 </div>
 
-<div>
-    <a asp-action="Index">Back to List</a>
-</div>
-
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
 }

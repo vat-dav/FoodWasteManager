@@ -1,69 +1,257 @@
 ﻿@model IEnumerable<FoodWasteManager.Models.Application>
-
+@using System.Security.Claims
 @{
-
-    <h2>@ViewData["Title"]</h2>
-   
-
     Layout = "~/Views/Shared/_Layout.cshtml";
+    var currentUserId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+    var viewType = Context.Request.Query["viewType"].ToString()?.ToLower();
+
+    string currentFilter = ViewData["CurrentFilter"] as string ?? "";
+    string currentSort = ViewData["CurrentSort"] as string ?? "";
+    int currentPage = ViewBag.CurrentPage != null ? (int)ViewBag.CurrentPage : 1;
+    int totalPages = ViewBag.TotalPages != null ? (int)ViewBag.TotalPages : 1;
 }
 
+<h1 style="color:#3d5438">
+    @(viewType == "applicationsmade" ? "Applications Made:" : "Applications Received:")
+</h1>
 
+<div class="mt-3 mb-3">
+    <form asp-action="Index" method="get" class="d-inline-flex align-items-center">
+        <input type="hidden" name="viewType" value="@viewType" />
+        <input type="hidden" name="sortOrder" value="@currentSort" />
+        <input type="text" name="searchString" value="@currentFilter" placeholder="Search applications..." class="form-control form-control-sm me-2" style="width: 250px;" />
+        <button type="submit" class="btn btn-sm apply-btn me-2">Search</button>
+        <a asp-action="Index" asp-route-viewType="@viewType" class="btn btn-sm apply-btn">Clear</a>
+    </form>
 
+    <span class="ms-4 me-2 text-muted">Sort by:</span>
+    <a asp-action="Index" asp-route-viewType="@viewType" asp-route-sortOrder="status" asp-route-searchString="@currentFilter" class="btn btn-sm apply-btn @(currentSort == "status" ? "active" : "")">Status ↑</a>
+    <a asp-action="Index" asp-route-viewType="@viewType" asp-route-sortOrder="status_desc" asp-route-searchString="@currentFilter" class="btn btn-sm apply-btn @(currentSort == "status_desc" ? "active" : "")">Status ↓</a>
+    <a asp-action="Index" asp-route-viewType="@viewType" asp-route-sortOrder="foodname" asp-route-searchString="@currentFilter" class="btn btn-sm apply-btn @(currentSort == "foodname" ? "active" : "")">Food Name ↑</a>
+    <a asp-action="Index" asp-route-viewType="@viewType" asp-route-sortOrder="foodname_desc" asp-route-searchString="@currentFilter" class="btn btn-sm apply-btn @(currentSort == "foodname_desc" ? "active" : "")">Food Name ↓</a>
+</div>
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
-<table class="table">
-    <thead>
-        <tr>
-            <th style="height: 50%; overflow: hidden;">
-           <!--     -->
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.FoodPost)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.QuantityRequired)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.EarliestPickup)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.LatestPickup)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.AStatus)
-            </th>
+@if (viewType == "applicationsmade")
+{
+    var madeApps = Model.Where(a => a.UserId == currentUserId).ToList();
 
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-                <td>
-                    @Html.DisplayFor(modelItem => item.FoodPost.FoodName)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem=> item.QuantityRequired)
-                </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.EarliestPickup)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.LatestPickup)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.AStatus)
-            </td>
-            
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.ApplicationId">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.ApplicationId">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.ApplicationId">Delete</a>
-            </td>
-        </tr>
+    if (madeApps.Any())
+    {
+        <div class="accordion" id="madeAccordion">
+            <div class="accordion-item">
+                <h2 class="accordion-header" id="madeHeading">
+                    <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#madeCollapse" aria-expanded="true" aria-controls="madeCollapse">
+                        View Applications Made
+                    </button>
+                </h2>
+                <div id="madeCollapse" class="accordion-collapse collapse show" aria-labelledby="madeHeading" data-bs-parent="#madeAccordion">
+                    <div class="accordion-body">
+                        <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-3">
+                            @foreach (var item in madeApps)
+                            {
+                                <div class="col">
+                                    <div class="card shadow rounded-5 d-flex flex-column" style="aspect-ratio:1/1; background-color:white;">
+                                        <div style="height:50%; overflow:hidden;">
+                                            <img src="@Url.Content(item.FoodPost.FoodImage)" alt="@item.FoodPost.FoodName" class="w-100 h-100" style="object-fit:cover;" />
+                                        </div>
+                                        <div class="card-body d-flex flex-column p-2">
+                                            <h6 class="card-title mb-1" style="color:#3d5438;">@item.FoodPost.FoodName</h6>
+                                            <p class="mb-0 small">Qty: @item.QuantityRequired</p>
+                                            <p class="mb-0 small">
+                                                Status:
+                                                @if (item.AStatus == Application.ApplicationStatus.Approved)
+                                                {
+                                                    <span class="badge bg-success">Approved</span>
+                                                }
+                                                else if (item.AStatus == Application.ApplicationStatus.Processing)
+                                                {
+                                                    <span class="badge bg-warning text-dark">Pending</span>
+                                                }
+                                                else
+                                                {
+                                                    <span class="badge bg-danger">Declined</span>
+                                                }
+                                            </p>
+                                            @if (item.AStatus == Application.ApplicationStatus.Approved)
+                                            {
+                                                <p class="mb-0 small">Pickup: @item.EarliestPickup.ToShortDateString() - @item.LatestPickup.ToShortDateString()</p>
+                                            }
+                                            <div class="mt-auto d-flex justify-content-start">
+                                                <a asp-action="Details" asp-route-id="@item.ApplicationId" class="btn btn-sm apply-btn" title="Details">
+                                                    <i class="bi bi-info-circle-fill"></i>
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+    else
+    {
+        <div class="alert alert-info mt-4">You have no Applications Made.</div>
+    }
 }
-    </tbody>
-</table>
+else if (viewType == "applicationsreceived")
+{
+    var receivedApps = Model.Where(a => a.FoodPost.UserId == currentUserId);
+    var groups = new[] {
+        new { Title = "Pending Applications", Status = Application.ApplicationStatus.Processing },
+        new { Title = "Approved Applications", Status = Application.ApplicationStatus.Approved },
+        new { Title = "Declined Applications", Status = Application.ApplicationStatus.Declined }
+    };
+
+    <div class="accordion" id="receivedAccordion">
+        @foreach (var group in groups)
+        {
+            var groupApps = receivedApps.Where(a => a.AStatus == group.Status).ToList();
+            string collapseId = group.Status.ToString().ToLower() + "Collapse";
+            string headingId = group.Status.ToString().ToLower() + "Heading";
+
+            <div class="accordion-item">
+                <h2 class="accordion-header" id="@headingId">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#@collapseId" aria-expanded="false" aria-controls="@collapseId">
+                        @group.Title
+                    </button>
+                </h2>
+                <div id="@collapseId" class="accordion-collapse collapse" aria-labelledby="@headingId" data-bs-parent="#receivedAccordion">
+                    <div class="accordion-body">
+                        @if (groupApps.Any())
+                        {
+                            <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-3">
+                                @foreach (var item in groupApps)
+                                {
+                                    <div class="col">
+                                        <div class="card shadow rounded-5 d-flex flex-column" style="aspect-ratio:1/1; background-color:white;">
+                                            <div style="height:50%; overflow:hidden;">
+                                                <img src="@Url.Content(item.FoodPost.FoodImage)" alt="@item.FoodPost.FoodName" class="w-100 h-100" style="object-fit:cover;" />
+                                            </div>
+                                            <div class="card-body d-flex flex-column p-2">
+                                                <h6 class="card-title mb-1" style="color:#3d5438;">@item.FoodPost.FoodName</h6>
+                                                <p class="mb-0 small">Qty: @item.QuantityRequired</p>
+                                                <p class="mb-0 small">
+                                                    Status:
+                                                    @if (item.AStatus == Application.ApplicationStatus.Approved)
+                                                    {
+                                                        <span class="badge bg-success">Approved</span>
+                                                    }
+                                                    else if (item.AStatus == Application.ApplicationStatus.Processing)
+                                                    {
+                                                        <span class="badge bg-warning text-dark">Pending</span>
+                                                    }
+                                                    else
+                                                    {
+                                                        <span class="badge bg-danger">Declined</span>
+                                                    }
+                                                </p>
+                                                @if (item.AStatus == Application.ApplicationStatus.Approved)
+                                                {
+                                                    <p class="mb-0 small">Pickup: @item.EarliestPickup.ToShortDateString() - @item.LatestPickup.ToShortDateString()</p>
+                                                }
+                                                @if (item.AStatus == Application.ApplicationStatus.Processing)
+                                                {
+                                                    <div class="mt-auto d-flex justify-content-between flex-wrap">
+                                                        <form method="post" asp-action="Approve" asp-route-id="@item.ApplicationId" class="d-inline">
+                                                            <button type="submit" class="btn btn-sm apply-btn me-1" title="Approve">
+                                                                <i class="bi bi-check-circle-fill"></i>
+                                                            </button>
+                                                        </form>
+                                                        <form method="post" asp-action="Decline" asp-route-id="@item.ApplicationId" class="d-inline">
+                                                            <button type="submit" class="btn btn-sm btn-outline-danger" title="Reject">
+                                                                <i class="bi bi-x-circle-fill"></i>
+                                                            </button>
+                                                        </form>
+                                                    </div>
+                                                }
+                                            </div>
+                                        </div>
+                                    </div>
+                                }
+                            </div>
+                        }
+                        else
+                        {
+                            <div class="alert alert-info mt-3">You have no @group.Title.ToLower().Replace("applications", "") applications.</div>
+                        }
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+}
+else
+{
+    <div class="alert alert-warning mt-4">Invalid view type.</div>
+}
+
+<div class="pagination mt-5 d-flex justify-content-center">
+    <span class="me-3">Page @currentPage of @totalPages</span>
+
+    @if (currentPage > 1)
+    {
+        <a class="apply-btn me-3" asp-action="Index"
+           asp-route-viewType="@viewType"
+           asp-route-sortOrder="@currentSort"
+           asp-route-searchString="@currentFilter"
+           asp-route-pageNumber="@(currentPage - 1)">
+            &laquo; Previous
+        </a>
+    }
+
+    @if (currentPage < totalPages)
+    {
+        <a class="apply-btn" asp-action="Index"
+           asp-route-viewType="@viewType"
+           asp-route-sortOrder="@currentSort"
+           asp-route-searchString="@currentFilter"
+           asp-route-pageNumber="@(currentPage + 1)">
+            Next &raquo;
+        </a>
+    }
+</div>
+
+<style>
+    .apply-btn {
+        color: #3d5438;
+        border: 1px solid #3d5438;
+        text-decoration: none;
+        padding: 4px 12px;
+        border-radius: 4px;
+        transition: all 0.3s ease;
+        background-color: transparent;
+        font-size: 0.9rem;
+    }
+
+        .apply-btn:hover,
+        .apply-btn.active {
+            background-color: #3d5438;
+            color: white;
+            border-color: #3d5438;
+        }
+
+    .btn-outline-danger {
+        color: #dc3545;
+        border-color: #dc3545;
+        padding: 3px 10px;
+        border-radius: 4px;
+        transition: all 0.3s ease;
+        background-color: transparent;
+    }
+
+        .btn-outline-danger:hover {
+            background-color: #dc3545;
+            color: white;
+        }
+
+    .card-title {
+        font-weight: 600;
+    }
+
+    .pagination a {
+        margin-left: 5px;
+    }
+</style>
