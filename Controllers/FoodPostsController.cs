@@ -15,6 +15,9 @@ using System.Drawing;
 using System.Security.Claims;
 using Microsoft.Extensions.Hosting;
 using TuitionDbv1.Helpers;
+using Stripe;
+using Stripe.Checkout;
+using Microsoft.Extensions.Options;
 
 namespace FoodWasteManager.Controllers
 {
@@ -22,15 +25,64 @@ namespace FoodWasteManager.Controllers
     {
         private readonly FoodWasteManagerContext _context;
         private readonly UserManager<FoodWasteManagerUser> _userManager;
-        public FoodPostsController(FoodWasteManagerContext context, UserManager<FoodWasteManagerUser> userManager)
+        private readonly StripeSettings _stripeSettings;
+
+        public FoodPostsController(IOptions<StripeSettings> stripeSettings, FoodWasteManagerContext context, UserManager<FoodWasteManagerUser> userManager)
         {
+         
             _context = context;
             _userManager = userManager;
+            _stripeSettings = stripeSettings.Value;
         }
+
 
         [Authorize]
 
+        public async Task<IActionResult> Payment(int ApplicationId)
+
+        {
+            StripeConfiguration.ApiKey = _stripeSettings.SecretKey;
+
+            var application = _context.Applications.Where(a => a.ApplicationId == ApplicationId).Include(a => a.Users).Include(a => a.FoodPost).FirstOrDefault();
+            var Options = new SessionCreateOptions
+            {
+                LineItems = new List<SessionLineItemOptions>(),
+                CustomerEmail = User.Identity.Name,
+                SuccessUrl = Url.Action("Success", "Applications", new { viewType = "applicationsmade" }, Request.Scheme),
+                CancelUrl = Url.Action("Index", "Applications", new { viewType = "applications" }, Request.Scheme),
+
+                Mode = "payment",
+                ClientReferenceId = User.FindFirstValue(ClaimTypes.NameIdentifier)
+
+            }; 
+
+
+            var foodPostApplication = new SessionLineItemOptions()
+            {
+                PriceData = new SessionLineItemPriceDataOptions
+                {
+                    UnitAmount = (long)application.FoodPost.FoodPrice * 100 / application.QuantityRequired,
+                    Currency = "nzd",
+                    ProductData = new SessionLineItemPriceDataProductDataOptions
+                    {
+                        Description = "Payment for: " + application.FoodPost.FoodName,
+                        Name = application.FoodPost.FoodName
+                    }
+                },
+                Quantity = application.QuantityRequired,
+            };
+            Options.LineItems.Add(foodPostApplication);
+
+            var service = new SessionService();
+            var session = service.Create(Options);
+            return Redirect(session.Url);
+
+}
+       
+
         // GET: FoodPosts
+
+
         public async Task<IActionResult> Index(string sortOrder, string currentFilter, string searchString, int? pageNumber)
         {
             ViewData["CurrentSort"] = sortOrder;

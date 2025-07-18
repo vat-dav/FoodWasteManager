@@ -11,6 +11,9 @@ using Microsoft.AspNetCore.Identity;
 using FoodWasteManager.Areas.Identity.Data;
 using Microsoft.AspNetCore.Authorization;
 using System.Security.Claims;
+using Microsoft.Identity.Client;
+using Stripe;
+using Stripe.Checkout;
 
 
 
@@ -33,6 +36,24 @@ namespace FoodWasteManager.Controllers
             _signInManager = signInManager;
         }
 
+        /*public IActionResult PaymentStripe(string applicationId)
+          {
+        StripeConfiguration.ApiKey = _stripeSettings.SecretKey;
+
+   var foodPostAppliedFor = _context.Applications.Where(a => a.AStatus == Approved).include(a => a.Foodposts);
+              var Options = new SessionCreateOptions
+              {
+                  LineItems = new List<SessionLineItemOptions>(),
+                  CustomerEmail = User.Identity.Name,
+                  SuccessUrl = "https://localhost:7193/Applications?viewType=applicationsmade/Success",
+                               CancelUrl = "https://localhost:7193/Applications?viewType=applications"
+
+              };
+
+
+          }
+          */
+
 
         [Authorize]
 
@@ -41,11 +62,11 @@ namespace FoodWasteManager.Controllers
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
-         
+
             IQueryable<Models.Application> applications = _context.Applications
                 .Include(a => a.FoodPost).ThenInclude(a => a.Users);
 
-            // Filter by role and viewType
+            // filtered data given to the views depending on role and the viewType
             if (User.IsInRole("Admin"))
             {
                 ViewData["Title"] = "All Applications";
@@ -55,16 +76,16 @@ namespace FoodWasteManager.Controllers
 
 
                 applications = applications.Where(a => a.UserId == userId &&
-        (a.AStatus == Application.ApplicationStatus.Processing ||
-         a.AStatus == Application.ApplicationStatus.Approved ||
-         a.AStatus == Application.ApplicationStatus.Declined)); ;
+        (a.AStatus == Models.Application.ApplicationStatus.Processing ||
+         a.AStatus == Models.Application.ApplicationStatus.Approved ||
+         a.AStatus == Models.Application.ApplicationStatus.Declined)); ;
                 ViewData["Title"] = "Applications Made";
             }
             else if (User.IsInRole("Seller") && viewType == "applicationsreceived")
             {
-                applications = applications.Where(a => a.FoodPost.UserId == userId && (a.AStatus == Application.ApplicationStatus.Processing ||
-         a.AStatus == Application.ApplicationStatus.Approved ||
-         a.AStatus == Application.ApplicationStatus.Declined));
+                applications = applications.Where(a => a.FoodPost.UserId == userId && (a.AStatus == Models.Application.ApplicationStatus.Processing ||
+         a.AStatus == Models.Application.ApplicationStatus.Approved ||
+         a.AStatus == Models.Application.ApplicationStatus.Declined));
 
                 int count = await applications.CountAsync();
                 ViewData["Title"] = count == 0 ? "No Applications Received Yet!" : "Applications Received";
@@ -74,7 +95,7 @@ namespace FoodWasteManager.Controllers
                 ViewData["Title"] = "No Applications Available";
                 ViewBag.CurrentPage = 1;
                 ViewBag.TotalPages = 1;
-                return View(new List<Application>());
+                return View(new List<Models.Application>());
             }
 
             // Search
@@ -161,10 +182,10 @@ namespace FoodWasteManager.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("ApplicationId,FoodPostId,QuantityRequired,EarliestPickup,LatestPickup,AStatus")] Application application)
+        public async Task<IActionResult> Create([Bind("ApplicationId,FoodPostId,QuantityRequired,EarliestPickup,LatestPickup,AStatus")] Models.Application application)
         {
 
-      
+
 
             var currentUserId = _userManager.GetUserId(User); // gets logged-in user's ID
             application.UserId = currentUserId;
@@ -206,7 +227,7 @@ namespace FoodWasteManager.Controllers
 
             if (!ModelState.IsValid)
             {
-                application.AStatus = Application.ApplicationStatus.Processing; // default sets the application status to processing, as waiting for the other user to approve/decline the application.
+                application.AStatus = Models.Application.ApplicationStatus.Processing; // default sets the application status to processing, as waiting for the other user to approve/decline the application.
 
                 var user = await _userManager.GetUserAsync(User); // get the currently logged-in user - this variable works for FK and adding role to user
                 application.UserId = user.Id; // sets the foreign key manually
@@ -244,7 +265,7 @@ namespace FoodWasteManager.Controllers
                 return Forbid(); // user is not authorized to approve this application
             }
 
-            application.AStatus = Application.ApplicationStatus.Approved;
+            application.AStatus = Models.Application.ApplicationStatus.Approved;
             await _context.SaveChangesAsync();
 
             return RedirectToAction(nameof(Index), new { viewType = "applicationsreceived" });
@@ -269,7 +290,7 @@ namespace FoodWasteManager.Controllers
                 return Forbid(); // user is not authorized to decline this application
             }
 
-            application.AStatus = Application.ApplicationStatus.Declined;
+            application.AStatus = Models.Application.ApplicationStatus.Declined;
             await _context.SaveChangesAsync();
 
             return RedirectToAction(nameof(Index), new { viewType = "applicationsreceived" });

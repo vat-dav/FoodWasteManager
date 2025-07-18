@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using FoodWasteManager.Data;
 using FoodWasteManager.Areas.Identity.Data;
+using FoodWasteManager.Models;
 
 public class Program
 {
@@ -16,11 +17,16 @@ public class Program
             .AddRoles<IdentityRole>()
             .AddEntityFrameworkStores<FoodWasteManagerContext>(); //added Identity with role support.
 
-
         // Add services to the container.
         builder.Services.AddControllersWithViews();
 
         builder.Services.AddRazorPages(); // added support for razor pages
+
+
+        builder.Services.Configure<StripeSettings>(
+    builder.Configuration.GetSection("Stripe"));
+
+        Stripe.StripeConfiguration.ApiKey = builder.Configuration["Stripe:SecretKey"];
 
         var app = builder.Build();
 

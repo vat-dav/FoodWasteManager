@@ -42,28 +42,24 @@
                     </script>
                 </div>
                 <div class="checkbox mb-3">
-                    <label asp-for="Input.RememberMe" class="form-label">
-                        <input class="form-check-input" asp-for="Input.RememberMe" />
-                        @Html.DisplayNameFor(m => m.Input.RememberMe)
-                    </label>
-                </div>
-                <div>
+                        <label asp-for="Input.RememberMe" class="form-label">
+                            <input class="form-check-input" asp-for="Input.RememberMe" />
+                            @Html.DisplayNameFor(m => m.Input.RememberMe)
+                        </label>
+                    </div>
+                    <div>
                         <button id="login-submit" type="submit" class="w-100 btn btn-lg mb-5" style="background-color:#d0f2b6">
-
-
                             <h4 style="color: #3d5438">Log in</h4>
-                            
-</button
->
-                </div>
+                        </button>
+                    </div>
                     <div class="mb-4">
                         <h5>
                             <a id="forgot-password" asp-page="./ForgotPassword" style="color:#3d5438">Forgot your password?</a>
-                    </h5>
-                    <h5> 
+                        </h5>
+                        <h5>
                             <a asp-page="./Register" style="color:#3d5438" asp-route-returnUrl="@Model.ReturnUrl">Register as a new user</a>
-                    </h5>
-                    <h5>
+                        </h5>
+                        <h5>
                             <a id="resend-confirmation" style="color:#3d5438" asp-page="./ResendEmailConfirmation">Resend email confirmation</a>
                     </h5>
                 </div>

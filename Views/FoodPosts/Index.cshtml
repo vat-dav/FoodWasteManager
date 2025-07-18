@@ -19,7 +19,7 @@
 
 
 
-<div class="justify-content-end align-items-center">
+<div class="justify-content-end">
   
     <h1 style="color:#3d5438">FoodPosts Made:</h1>
 
@@ -36,12 +36,9 @@
 
         }
     }
-
-
 </div>
 
 <div class="mt-3">
-
     <form asp-action="Index" method="get" class="d-inline ms-2 mt-3 ">
         <input type="hidden" name="sortOrder" value="@ViewData["CurrentSort"]" />
         <input type="text" name="searchString" value="@ViewData["CurrentFilter"]" placeholder="Search food..." class="form-control d-inline-block w-auto ms-3" />
@@ -51,7 +48,6 @@
 
     <span class="me-2 text-muted ms-lg-5">Sort by:</span>
     @{
-
         <span class="ms-1"></span>
         if (User.IsInRole("Buyer") || User.IsInRole("Seller") || hasNoRole)
         {
@@ -60,34 +56,19 @@
 
             <a asp-action="Index" asp-route-sortOrder="price" class="btn btn-sm" style=" color: #3d5438; border-color: #3d5438; @(sortOrder =="price" ? "active" : "" )">Low to High Price</a>
             <a asp-action="Index" asp-route-sortOrder="price_desc" class="btn btn-sm" style=" color: #3d5438; border-color: #3d5438; @(sortOrder =="price_desc" ? "active" : "" )">High to low Price</a>
-
         }
-
-
         if (User.IsInRole("Admin"))
         {
-
             <a asp-action="Index" asp-route-sortOrder="dateposted" class="btn btn-sm" style=" color: #3d5438; border-color: #3d5438; @(sortOrder =="price" ? "active" : "" )">Oldest</a>
             <a asp-action="Index" asp-route-sortOrder="dateposted_desc" class="btn btn-sm" style=" color: #3d5438; border-color: #3d5438; @(sortOrder =="price_desc" ? "active" : "" )">Newest</a>
-
-
-
         }
-
-
-
-
     }
-
 </div>
 
 
 
 
 <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-3 mt-3">
-
-    
-
     @foreach (var item in Model)
     {
         <div class="col">
@@ -98,13 +79,11 @@
                 <div class="card-body d-flex flex-column p-2" style="overflow: hidden;">
                     <h6 class="card-title mb-1">@item.FoodName</h6>
                     <h3 class="mb-0 small">Qty: @item.FoodQuantity</h3>
-                   
                     <h3 class="mb-0 small">Price: $@item.FoodPrice</h3>
                     <h4 class="mb-2 small">Best Before: @item.FoodBestBefore.ToShortDateString()</h4>
                     <div class="mt-auto d-flex justify-content-between">
                         <a asp-controller="Applications" asp-action="Create" asp-route-FoodPostId="@item.FoodPostId" class="btn btn-sm apply-btn" style="outline-color:#3d5438">Apply!</a>
                         <a asp-action="Details" asp-route-id="@item.FoodPostId" class="btn btn-sm apply-btn">Details</a>
-
                         @{
                             if (User.IsInRole("Admin"))
                             {
