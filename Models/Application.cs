@@ -22,7 +22,7 @@ namespace FoodWasteManager.Models
         [ForeignKey("UserId")]
         public FoodWasteManagerUser Users { get; set; } // Navigation property for relation with FoodWasteManagerUser table
 
-        [Required, Range(1, int.MaxValue, ErrorMessage = "Value must be a non-negative number."), Display(Name = "Quantity Requested")]
+        [Required, Range(1, int.MaxValue, ErrorMessage = "Value must be a non-negative and realistic number."), Display(Name = "Quantity Requested")]
         public int QuantityRequired { get; set; } // Required field for quantity needed, display name is Quantity
 
         [Required, Display(Name = "Pickup From")]
@@ -30,6 +30,7 @@ namespace FoodWasteManager.Models
 
         [Required, Display(Name = "Pickup Until")]
         public DateTime LatestPickup { get; set; } // Required field for latest pickup time, display name is Pickup Until
+
 
         public enum ApplicationStatus
         {

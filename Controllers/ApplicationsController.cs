@@ -36,23 +36,10 @@ namespace FoodWasteManager.Controllers
             _signInManager = signInManager;
         }
 
-        /*public IActionResult PaymentStripe(string applicationId)
-          {
-        StripeConfiguration.ApiKey = _stripeSettings.SecretKey;
-
-   var foodPostAppliedFor = _context.Applications.Where(a => a.AStatus == Approved).include(a => a.Foodposts);
-              var Options = new SessionCreateOptions
-              {
-                  LineItems = new List<SessionLineItemOptions>(),
-                  CustomerEmail = User.Identity.Name,
-                  SuccessUrl = "https://localhost:7193/Applications?viewType=applicationsmade/Success",
-                               CancelUrl = "https://localhost:7193/Applications?viewType=applications"
-
-              };
 
 
-          }
-          */
+
+
 
 
         [Authorize]
@@ -203,9 +190,11 @@ namespace FoodWasteManager.Controllers
 
             if (application.QuantityRequired > foodQuantityExceeded.FoodQuantity)
             {
-                ModelState.AddModelError("QuantityRequired", "Requested quantity exceeds available quantity.");
-                return RedirectToAction("Index");
+                ModelState.AddModelError("QuantityRequired", $"Only {foodQuantityExceeded.FoodQuantity} items available.");
+                ViewData["FoodPostId"] = new SelectList(_context.FoodPosts, "FoodPostId", "FoodName", application.FoodPostId);
+                return View(application);
             }
+
             //validation above ensures that the food quantity required stated in the application does not exceed the available amount for the specific foodpost.
 
             var today = DateTime.Today; // Declares today to be current date set as DateTime variable

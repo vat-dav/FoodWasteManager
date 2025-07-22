@@ -13,8 +13,6 @@ using FoodWasteManager.Areas.Identity.Data;
 using LazZiya.ImageResize;
 using System.Drawing;
 using System.Security.Claims;
-using Microsoft.Extensions.Hosting;
-using TuitionDbv1.Helpers;
 using Stripe;
 using Stripe.Checkout;
 using Microsoft.Extensions.Options;

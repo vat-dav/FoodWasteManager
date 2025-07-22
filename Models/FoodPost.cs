@@ -21,7 +21,7 @@ namespace FoodWasteManager.Models
         [Required, Range(0, int.MaxValue, ErrorMessage = "Value must be a non-negative number."), Display(Name = "Quantity")]
         public int FoodQuantity { get; set; } // Required quantity field, display name is Quantity
 
-        [Required, Display(Name = "Price"), Range(0, 50, ErrorMessage = "Please enter a price between $0-50")]
+        [Display(Name = "Price"), Range(0, 50, ErrorMessage = "Please enter a price between $0-50")]
         public int FoodPrice { get; set; } // Required price field (0–50), display name is Price
 
         [Required, DataType(DataType.Date), Display(Name = "Best Before")]
