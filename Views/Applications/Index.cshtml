@@ -90,59 +90,57 @@
 }
 else if (viewType == "applicationsmade")
 {
-        <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-3">
+    <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-3">
         @foreach (var item in filteredApps)
         {
-                    <div class="col">
-                        <div class="card shadow rounded-5 d-flex flex-column" style="aspect-ratio:1/1; background:#f0ede6;">
-                            <div style="height:50%; overflow:hidden;">
-                                <img src="@Url.Content(item.FoodPost.FoodImage)" alt="@item.FoodPost.FoodName" class="w-100 h-100" style="object-fit:cover;" />
-                            </div>
-                            <div class="card-body d-flex flex-column p-2">
-                                <h6 class="card-title mb-1">@item.FoodPost.FoodName</h6>
-                                <p class="mb-0 small">Qty: @item.QuantityRequired</p>
-                                <p class="mb-0 small">
-                                    Status:
+            <div class="col">
+                <div class="card shadow rounded-5 d-flex flex-column" style="aspect-ratio:1/1; background:#f0ede6;">
+                    <div style="height:50%; overflow:hidden;">
+                        <img src="@Url.Content(item.FoodPost.FoodImage)" alt="@item.FoodPost.FoodName" class="w-100 h-100" style="object-fit:cover;" />
+                    </div>
+                    <div class="card-body d-flex flex-column p-2">
+                        <h6 class="card-title mb-1">@item.FoodPost.FoodName</h6>
+                        <p class="mb-0 small">Qty: @item.QuantityRequired</p>
+                        <p class="mb-0 small">
+                            Status:
                             @switch (item.AStatus)
                             {
                                 case Application.ApplicationStatus.Approved:
-                                                    <span class="badge badge-approved">@item.AStatus</span>
-                                                    <form asp-action="Payment" asp-controller="FoodPosts" method="get" class="mt-2">
-                                                        <input type="hidden" name="ApplicationId" value="@item.ApplicationId" />
-                                        @if (!User.IsInRole("Admin"))
-                                        {
-                                                                <button type="submit" class="btn btn-sm apply-btn">Pay Now</button>
-                                        }
-                                                    </form>
+                                    <span class="badge badge-approved">@item.AStatus</span>
                                     break;
-
                                 case Application.ApplicationStatus.Processing:
-                                                    <span class="badge bg-warning text-dark">@item.AStatus</span>
+                                    <span class="badge bg-warning text-dark">@item.AStatus</span>
                                     break;
-
                                 case Application.ApplicationStatus.Declined:
-                                                    <span class="badge badge-declined">@item.AStatus</span>
-                                                    <form asp-action="Payment" asp-controller="FoodPosts" method="get" class="mt-2">
-                                                        <input type="hidden" name="ApplicationId" value="@item.ApplicationId" />
-                                                        <button type="submit" class="btn btn-sm apply-btn">Pay Now</button>
-                                                    </form>
+                                    <span class="badge badge-declined">@item.AStatus</span>
                                     break;
                             }
-                                </p>
+                        </p>
+
                         @if (item.AStatus == Application.ApplicationStatus.Approved)
                         {
-                                        <p class="mb-0 small">Pickup: @item.EarliestPickup.ToShortDateString() - @item.LatestPickup.ToShortDateString()</p>
+                            <p class="mb-0 small">Pickup: @item.EarliestPickup.ToShortDateString() - @item.LatestPickup.ToShortDateString()</p>
                         }
-                                <div class="mt-auto">
-                                    <a asp-action="Details" asp-route-id="@item.ApplicationId" class="btn btn-sm apply-btn" title="Details">
-                                        <i class="bi bi-info-circle-fill"></i>
-                                    </a>
-                                </div>
-                            </div>
+
+                        <div class="mt-auto d-flex justify-content-between align-items-center gap-2 flex-wrap">
+                            <a asp-action="Details" asp-route-id="@item.ApplicationId" class="btn btn-sm apply-btn" title="Details">
+                                <i class="bi bi-info-circle-fill"></i>
+                            </a>
+
+                            @if (item.AStatus == Application.ApplicationStatus.Approved && !User.IsInRole("Admin"))
+                            {
+                                <form asp-action="Payment" asp-controller="FoodPosts" method="get" class="m-0 p-0">
+                                    <input type="hidden" name="ApplicationId" value="@item.ApplicationId" />
+                                    <button type="submit" class="btn btn-sm btn-paynow">Pay Now</button>
+                                </form>
+                            }
                         </div>
                     </div>
+                </div>
+            </div>
         }
-        </div>
+    </div>
+
 }
 else if (viewType == "applicationsreceived")
 {
@@ -257,6 +255,27 @@ else if (viewType == "applicationsreceived")
         color: #3d5438;
         border: 1px solid #3d5438;
         text-decoration: none;
+        padding: 3px 10px;
+        border-radius: 4px;
+        transition: all 0.3s ease;
+        background-color: #d0f2b6;
+    }
+
+    .apply-btn:hover {
+        background-color: #3d5438;
+        color: white;
+        border-color: #3d5438;
+    }
+
+    .clear-btn {
+        padding: 3px 10px;
+        border-radius: 4px;
+    }
+
+    .apply-btn {
+        color: #3d5438;
+        border: 1px solid #3d5438;
+        text-decoration: none;
         padding: 4px 12px;
         border-radius: 4px;
         transition: all 0.3s ease;
@@ -267,9 +286,10 @@ else if (viewType == "applicationsreceived")
 
     .apply-btn:hover,
     .apply-btn.active {
-        background-color: #d0f2b6;
-        color: #3d5438;
+            background-color: #3d5438;
+        color: #FFF;
         border-color: #3d5438;
+        border: 1px solid #fff
     }
 
     .btn-pending {
@@ -356,4 +376,19 @@ else if (viewType == "applicationsreceived")
         color: #d0f2b6 !important;
         box-shadow: none !important;
     }
+
+    .btn-paynow {
+        background-color: #d0f2b6; /* spinach green */
+        color: black;
+        border: 1px solid #3d5438;
+        padding: 4px 10px;
+        border-radius: 4px;
+        transition: all 0.3s ease;
+    }
+
+        .btn-paynow:hover {
+            background-color: #3d5438; /* darker spinach */
+            color: white;
+        }
+
 </style>
