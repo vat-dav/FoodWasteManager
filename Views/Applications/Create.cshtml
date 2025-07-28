@@ -9,7 +9,7 @@
     <div class="w-100" style="max-width: 600px;">
         <h1 class="mb-4 text-center" style="color:#3d5438;">Apply for a Food Post</h1>
 
-        <form asp-action="Create" onsubmit="return PickupTimes()" class="p-4 rounded-4 shadow" style="background-color:#d0f2b6;">
+        <form asp-action="Create" onsubmit="return validatePickupDates();" class="p-4 rounded-4 shadow" style="background-color:#d0f2b6;">
             <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
 
             <div class="mb-3">
@@ -25,17 +25,17 @@
 
             <div class="mb-3">
                 <label asp-for="EarliestPickup" class="form-label fw-semibold" style="color:#3d5438;">Earliest Pickup</label>
-                <input asp-for="EarliestPickup" id="EarliestPickup" type="date" class="form-control"
-                       min="@DateTime.Today.ToString("yyyy-MM-dd")"
-                       max="@DateTime.Today.AddMonths(1).ToString("yyyy-MM-dd")" />
+                <input asp-for="EarliestPickup" id="EarliestPickup" type="datetime-local" class="form-control" />
                 <span asp-validation-for="EarliestPickup" class="text-danger"></span>
             </div>
 
             <div class="mb-3">
                 <label asp-for="LatestPickup" class="form-label fw-semibold" style="color:#3d5438;">Latest Pickup</label>
-                <input asp-for="LatestPickup" id="LatestPickup" type="date" class="form-control" />
+                <input asp-for="LatestPickup" id="LatestPickup" type="datetime-local" class="form-control" />
                 <span asp-validation-for="LatestPickup" class="text-danger"></span>
             </div>
+
+            <div id="pickup-error" class="text-danger mb-3 fw-semibold" style="display:none;"></div>
 
             <div class="d-flex justify-content-center">
                 <button type="submit" class="btn btn-success fw-semibold" style="background-color:#3d5438; border:none; min-width:120px;">
@@ -48,42 +48,88 @@
         </form>
     </div>
 </div>
-
 @section Scripts {
-    @{
-        await Html.RenderPartialAsync("_ValidationScriptsPartial");
-    }
+    @Html.Partial("_ValidationScriptsPartial")
 
-    <script>
-        function PickupTimes() {
-            const earliest = new Date(document.getElementById("EarliestPickup").value);
-            const latest = new Date(document.getElementById("LatestPickup").value);
-
-            if (latest <= earliest) {
-                alert("Latest Pickup must be after Earliest Pickup :)");
-                return false;
-            }
-
-            return true;
-        }
-    </script>
     <script>
         document.addEventListener("DOMContentLoaded", function () {
             const earliestInput = document.getElementById("EarliestPickup");
             const latestInput = document.getElementById("LatestPickup");
 
+            const now = new Date();
+            const minEarliest = now.toISOString().slice(0, 16);
+            const maxEarliestDate = new Date(now);
+            maxEarliestDate.setDate(now.getDate() + 3);
+            const maxEarliest = maxEarliestDate.toISOString().slice(0, 16);
+
+            // Set initial min/max for EarliestPickup (next 3 days)
+            earliestInput.min = minEarliest;
+            earliestInput.max = maxEarliest;
+
+            // When EarliestPickup is chosen
             earliestInput.addEventListener("change", function () {
-                const earliestDate = new Date(this.value);
-                if (isNaN(earliestDate)) return;
+                const earliestDate = new Date(earliestInput.value);
 
-                const minDate = earliestDate.toISOString().split("T")[0];
-                const maxDate = new Date(earliestDate);
-                maxDate.setDate(maxDate.getDate() + 7);
-                const maxDateStr = maxDate.toISOString().split("T")[0];
+                if (!earliestInput.value) {
+                    latestInput.min = "";
+                    latestInput.max = "";
+                    return;
+                }
 
-                latestInput.min = minDate;
-                latestInput.max = maxDateStr;
+                const minLatestDate = new Date(earliestDate);
+                const maxLatestDate = new Date(earliestDate);
+                maxLatestDate.setDate(earliestDate.getDate() + 2);
+
+                const minLatest = minLatestDate.toISOString().slice(0, 16);
+                const maxLatest = maxLatestDate.toISOString().slice(0, 16);
+
+                // Apply min/max to LatestPickup
+                latestInput.min = minLatest;
+                latestInput.max = maxLatest;
+
+                // Reset LatestPickup if out of bounds
+                if (latestInput.value) {
+                    const latestDate = new Date(latestInput.value);
+                    if (latestDate < minLatestDate || latestDate > maxLatestDate) {
+                        alert("Latest Pickup must be within 2 days after the Earliest Pickup.");
+                        latestInput.value = "";
+                    }
+                }
             });
         });
+
+        function validatePickupDates() {
+            const earliestInput = document.getElementById("EarliestPickup").value;
+            const latestInput = document.getElementById("LatestPickup").value;
+            const errorDiv = document.getElementById("pickup-error");
+            errorDiv.style.display = "none";
+            errorDiv.innerText = "";
+
+            if (!earliestInput || !latestInput) return true;
+
+            const earliest = new Date(earliestInput);
+            const latest = new Date(latestInput);
+            const now = new Date();
+
+            const maxEarliest = new Date();
+            maxEarliest.setDate(now.getDate() + 3);
+
+            if (earliest < now || earliest > maxEarliest) {
+                errorDiv.innerText = "Earliest Pickup must be within the next 3 days.";
+                errorDiv.style.display = "block";
+                return false;
+            }
+
+            const maxLatest = new Date(earliest);
+            maxLatest.setDate(earliest.getDate() + 2);
+
+            if (latest < earliest || latest > maxLatest) {
+                errorDiv.innerText = "Latest Pickup must be within 2 days after the Earliest Pickup.";
+                errorDiv.style.display = "block";
+                return false;
+            }
+
+            return true;
+        }
     </script>
 }

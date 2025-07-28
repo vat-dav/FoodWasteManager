@@ -22,7 +22,7 @@ namespace FoodWasteManager.Models
         [ForeignKey("UserId")]
         public FoodWasteManagerUser Users { get; set; } // Navigation property for relation with FoodWasteManagerUser table
 
-        [Required, Range(1, int.MaxValue, ErrorMessage = "Value must be a non-negative and realistic number."), Display(Name = "Quantity Requested")]
+        [Required, Range(1, 1000, ErrorMessage = "Value must be non-negative and less than 1000."), Display(Name = "Quantity Requested")]
         public int QuantityRequired { get; set; } // Required field for quantity needed, display name is Quantity
 
         [Required, Display(Name = "Pickup From")]

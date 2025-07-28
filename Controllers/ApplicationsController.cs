@@ -37,55 +37,62 @@ namespace FoodWasteManager.Controllers
         }
 
 
-
-
-
-
-
         [Authorize]
 
         // GET: Applications
+        [Authorize]
         public async Task<IActionResult> Index(string? viewType, string? searchString, string? sortOrder, int? pageNumber)
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
-
             IQueryable<Models.Application> applications = _context.Applications
                 .Include(a => a.FoodPost).ThenInclude(a => a.Users);
 
-            // filtered data given to the views depending on role and the viewType
             if (User.IsInRole("Admin"))
             {
+                applications = applications.Where(a =>
+                    a.AStatus == Models.Application.ApplicationStatus.Processing ||
+                    a.AStatus == Models.Application.ApplicationStatus.Approved ||
+                    a.AStatus == Models.Application.ApplicationStatus.Declined);
+
                 ViewData["Title"] = "All Applications";
-            }
-            if (User.IsInRole("Buyer") && viewType == "applicationsmade")
-            {
-
-
-                applications = applications.Where(a => a.UserId == userId &&
-        (a.AStatus == Models.Application.ApplicationStatus.Processing ||
-         a.AStatus == Models.Application.ApplicationStatus.Approved ||
-         a.AStatus == Models.Application.ApplicationStatus.Declined)); ;
-                ViewData["Title"] = "Applications Made";
-            }
-            else if (User.IsInRole("Seller") && viewType == "applicationsreceived")
-            {
-                applications = applications.Where(a => a.FoodPost.UserId == userId && (a.AStatus == Models.Application.ApplicationStatus.Processing ||
-         a.AStatus == Models.Application.ApplicationStatus.Approved ||
-         a.AStatus == Models.Application.ApplicationStatus.Declined));
-
-                int count = await applications.CountAsync();
-                ViewData["Title"] = count == 0 ? "No Applications Received Yet!" : "Applications Received";
             }
             else
             {
-                ViewData["Title"] = "No Applications Available";
-                ViewBag.CurrentPage = 1;
-                ViewBag.TotalPages = 1;
-                return View(new List<Models.Application>());
+                if (viewType == "applicationsmade")
+                {
+                    
+
+                    applications = applications.Where(a =>
+                        a.UserId == userId &&
+                        (a.AStatus == Models.Application.ApplicationStatus.Processing ||
+                         a.AStatus == Models.Application.ApplicationStatus.Approved ||
+                         a.AStatus == Models.Application.ApplicationStatus.Declined));
+
+                    ViewData["Title"] = "Applications Made";
+                }
+                else if (viewType == "applicationsreceived")
+                {
+               
+
+                    applications = applications.Where(a =>
+                        a.FoodPost != null &&
+                        a.FoodPost.UserId == userId &&
+                        (a.AStatus == Models.Application.ApplicationStatus.Processing ||
+                         a.AStatus == Models.Application.ApplicationStatus.Approved ||
+                         a.AStatus == Models.Application.ApplicationStatus.Declined));
+
+                    ViewData["Title"] = "Applications Received";
+                }
+                else
+                {
+                    return BadRequest("Invalid view type.");
+                }
             }
 
-            // Search
+
+
+            // --- SEARCH ---
             if (searchString != null)
             {
                 pageNumber = 1;
@@ -103,10 +110,12 @@ namespace FoodWasteManager.Controllers
             {
                 applications = applications.Where(a =>
                     a.FoodPost.FoodName.Contains(searchString) ||
-                    "Approved".Contains(searchString) || "Processing".Contains(searchString) || "Declined".Contains(searchString));
+                    "Approved".Contains(searchString) ||
+                    "Processing".Contains(searchString) ||
+                    "Declined".Contains(searchString));
             }
 
-            // Sorting
+     
             applications = sortOrder switch
             {
                 "status" => applications.OrderBy(a => a.AStatus),
@@ -114,8 +123,8 @@ namespace FoodWasteManager.Controllers
                 _ => applications.OrderBy(a => a.FoodPost.FoodName)
             };
 
-            // Paging
-            int pageSize = 10;
+           
+            int pageSize = 12;
             int currentPage = pageNumber ?? 1;
             int totalItems = await applications.CountAsync();
             int totalPages = (int)Math.Ceiling(totalItems / (double)pageSize);
@@ -131,6 +140,7 @@ namespace FoodWasteManager.Controllers
 
             return View(pagedApplications);
         }
+
 
 
 

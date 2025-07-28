@@ -18,7 +18,7 @@ namespace FoodWasteManager.Models
         [Required, MaxLength(25), Display(Name = "Name")]
         public string FoodName { get; set; } // Required food name with max length 25, display name is Name
 
-        [Required, Range(0, int.MaxValue, ErrorMessage = "Value must be a non-negative number."), Display(Name = "Quantity")]
+        [Required, Range(0, 1000, ErrorMessage = "Value must be non-negative and less than 1000."), Display(Name = "Quantity")]
         public int FoodQuantity { get; set; } // Required quantity field, display name is Quantity
 
         [Display(Name = "Price"), Range(0, 50, ErrorMessage = "Please enter a price between $0-50")]
