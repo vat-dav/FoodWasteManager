@@ -228,23 +228,36 @@ else if (viewType == "applicationsreceived")
         }
         </div>
 }
-
-<div class="pagination mt-5 d-flex justify-content-center align-items-center gap-3">
-    <span>Page @currentPage of @totalPages</span>
+<div class="pagination mt-5" style="font-size: 1.25rem;">
+    <span class="ms-3">Page @currentPage of @totalPages</span>
 
     @if (currentPage > 1)
     {
-            <a asp-action="Index" asp-route-viewType="@viewType" asp-route-sortOrder="@currentSort" asp-route-searchString="@currentFilter" asp-route-pageNumber="@(currentPage - 1)" class="apply-btn">
-                &laquo; Previous
+        <h5 >
+            <a class="apply-btn ms-3" style="font-size: 1.25rem" asp-action="Index"
+               asp-route-viewType="@viewType"
+               asp-route-sortOrder="@currentSort"
+               asp-route-searchString="@currentFilter"
+               asp-route-pageNumber="@(currentPage - 1)">
+                Previous Page
             </a>
+        </h5>
     }
+
     @if (currentPage < totalPages)
     {
-            <a asp-action="Index" asp-route-viewType="@viewType" asp-route-sortOrder="@currentSort" asp-route-searchString="@currentFilter" asp-route-pageNumber="@(currentPage + 1)" class="apply-btn">
-                Next &raquo;
+        <h5 >
+            <a class="apply-btn ms-3" style="font-size: 1.25rem" asp-action="Index"
+               asp-route-viewType="@viewType"
+               asp-route-sortOrder="@currentSort"
+               asp-route-searchString="@currentFilter"
+               asp-route-pageNumber="@(currentPage + 1)">
+                Next Page
             </a>
+        </h5>
     }
 </div>
+
 
 <style>
     body, .card {
@@ -293,7 +306,7 @@ else if (viewType == "applicationsreceived")
     }
 
     .btn-pending {
-        background-color: #d0f2b6;
+        background-color: #f0ede6;
         color: #3d5438;
         border: 1px solid #3d5438;
         padding: 4px 10px;
