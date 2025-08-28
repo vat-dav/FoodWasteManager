@@ -59,9 +59,12 @@
         }
         if (User.IsInRole("Admin"))
         {
-            <a asp-action="Index" asp-route-sortOrder="dateposted" class="btn btn-sm" style=" color: #3d5438; border-color: #3d5438; @(sortOrder =="price" ? "active" : "" )">Oldest</a>
-            <a asp-action="Index" asp-route-sortOrder="dateposted_desc" class="btn btn-sm" style=" color: #3d5438; border-color: #3d5438; @(sortOrder =="price_desc" ? "active" : "" )">Newest</a>
+        {
+            <a asp-action="Index" asp-route-sortOrder="dateposted" class="btn btn-sm apply-btn">Oldest</a>
+            <a asp-action="Index" asp-route-sortOrder="dateposted_desc" class="btn btn-sm apply-btn">Newest</a>
+
         }
+    }
     }
 </div>
 

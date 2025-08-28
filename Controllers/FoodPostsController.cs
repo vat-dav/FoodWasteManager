@@ -59,7 +59,9 @@ namespace FoodWasteManager.Controllers
             {
                 PriceData = new SessionLineItemPriceDataOptions
                 {
-                    UnitAmount = (long)application.FoodPost.FoodPrice * 100 / application.QuantityRequired,
+                    decimal 
+
+                    UnitAmount = ((long)application.FoodPost.FoodPrice * 100 / application.FoodPost.FoodQuantity) * application.QuantityRequired,
                     Currency = "nzd",
                     ProductData = new SessionLineItemPriceDataProductDataOptions
                     {

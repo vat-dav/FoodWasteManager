@@ -244,7 +244,7 @@ else if (viewType == "applicationsreceived")
         </h5>
     }
 
-    @if (currentPage < totalPages)
+    @if (currentPage < totalPages && !User.IsInRole("Seller")) 
     {
         <h5 >
             <a class="apply-btn ms-3" style="font-size: 1.25rem" asp-action="Index"
