@@ -39,6 +39,8 @@ namespace FoodWasteManager.Controllers
         public async Task<IActionResult> Payment(int ApplicationId)
 
         {
+
+
             StripeConfiguration.ApiKey = _stripeSettings.SecretKey;
 
             var application = _context.Applications.Where(a => a.ApplicationId == ApplicationId).Include(a => a.Users).Include(a => a.FoodPost).FirstOrDefault();
@@ -46,22 +48,21 @@ namespace FoodWasteManager.Controllers
             {
                 LineItems = new List<SessionLineItemOptions>(),
                 CustomerEmail = User.Identity.Name,
-                SuccessUrl = Url.Action("Success", "Applications", new { viewType = "applicationsmade" }, Request.Scheme),
-                CancelUrl = Url.Action("Index", "Applications", new { viewType = "applications" }, Request.Scheme),
+                SuccessUrl = Url.Action("PaymentSuccess", "Applications", new { applicationId = ApplicationId }, Request.Scheme),              
+                CancelUrl = Url.Action("Index", "Applications", new { viewType = "applicationsmade" }, Request.Scheme),
+
 
                 Mode = "payment",
                 ClientReferenceId = User.FindFirstValue(ClaimTypes.NameIdentifier)
 
-            }; 
+            };
 
 
             var foodPostApplication = new SessionLineItemOptions()
             {
                 PriceData = new SessionLineItemPriceDataOptions
                 {
-                    decimal 
-
-                    UnitAmount = ((long)application.FoodPost.FoodPrice * 100 / application.FoodPost.FoodQuantity) * application.QuantityRequired,
+                    UnitAmount = (long)((application.FoodPost.FoodPrice / application.FoodPost.FoodQuantity) * 100),
                     Currency = "nzd",
                     ProductData = new SessionLineItemPriceDataProductDataOptions
                     {
@@ -152,6 +153,7 @@ namespace FoodWasteManager.Controllers
                 .AsNoTracking()
                 .ToListAsync();
 
+           
             ViewBag.CurrentPage = currentPage;
             ViewBag.TotalPages = totalPages;
 

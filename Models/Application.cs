@@ -31,6 +31,7 @@ namespace FoodWasteManager.Models
         [Required, Display(Name = "Pickup Until")]
         public DateTime LatestPickup { get; set; } // Required field for latest pickup time, display name is Pickup Until
 
+        public bool HasPaid { get; set; }
 
         public enum ApplicationStatus
         {

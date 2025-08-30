@@ -27,7 +27,7 @@ namespace FoodWasteManager.Controllers
         private readonly FoodWasteManagerContext _context;
         private readonly UserManager<FoodWasteManagerUser> _userManager; // injected usermanager
         private readonly SignInManager<FoodWasteManagerUser> _signInManager; //injected signinmanager
-
+        
 
         public ApplicationsController(FoodWasteManagerContext context, UserManager<FoodWasteManagerUser> userManager, SignInManager<FoodWasteManagerUser> signInManager)
         {
@@ -38,6 +38,43 @@ namespace FoodWasteManager.Controllers
 
 
         [Authorize]
+        public async Task<IActionResult> Approved(int applicationId)
+        {
+            var application = await _context.Applications
+                .Include(a => a.FoodPost)
+                .FirstOrDefaultAsync(a => a.ApplicationId == applicationId);
+
+            if (application == null)
+            {
+                return NotFound();
+            }
+
+            // Optionally confirm payment with Stripe API (recommended in production)
+            application.AStatus = Models.Application.ApplicationStatus.Approved;
+            await _context.SaveChangesAsync();
+
+            // Redirect to "applications made" list or a success page
+            return RedirectToAction("Index", new { viewType = "applicationsmade" });
+        }
+
+        [Authorize]
+        public async Task<IActionResult> PaymentSuccess(int applicationId)
+        {
+
+            var application = await _context.Applications.Include(a => a.FoodPost).FirstOrDefaultAsync(a => a.ApplicationId == applicationId);
+
+            
+           
+                application.HasPaid = true;
+
+                // Prevent negative food quantity
+                application.FoodPost.FoodQuantity = Math.Max(0, application.FoodPost.FoodQuantity - application.QuantityRequired);
+
+                await _context.SaveChangesAsync();
+           
+            return RedirectToAction("Index", new { viewType = "applicationsmade" });
+        }
+
 
         // GET: Applications
         [Authorize]
@@ -61,7 +98,7 @@ namespace FoodWasteManager.Controllers
             {
                 if (viewType == "applicationsmade")
                 {
-                    
+
 
                     applications = applications.Where(a =>
                         a.UserId == userId &&
@@ -73,7 +110,7 @@ namespace FoodWasteManager.Controllers
                 }
                 else if (viewType == "applicationsreceived")
                 {
-               
+
 
                     applications = applications.Where(a =>
                         a.FoodPost != null &&
@@ -115,7 +152,7 @@ namespace FoodWasteManager.Controllers
                     "Declined".Contains(searchString));
             }
 
-     
+
             applications = sortOrder switch
             {
                 "status" => applications.OrderBy(a => a.AStatus),
@@ -123,7 +160,7 @@ namespace FoodWasteManager.Controllers
                 _ => applications.OrderBy(a => a.FoodPost.FoodName)
             };
 
-           
+
             int pageSize = 12;
             int currentPage = pageNumber ?? 1;
             int totalItems = await applications.CountAsync();
@@ -179,13 +216,14 @@ namespace FoodWasteManager.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("ApplicationId,FoodPostId,QuantityRequired,EarliestPickup,LatestPickup,AStatus")] Models.Application application)
+        public async Task<IActionResult> Create([Bind("ApplicationId,FoodPostId,QuantityRequired,EarliestPickup,LatestPickup,AStatus,HasPaid")] Models.Application application)
         {
-
-
+            
 
             var currentUserId = _userManager.GetUserId(User); // gets logged-in user's ID
             application.UserId = currentUserId;
+
+            application.HasPaid = false;
 
             var foodPostId = await _context.FoodPosts.Include(f => f.Users).FirstOrDefaultAsync(f => f.FoodPostId == application.FoodPostId);
 
@@ -316,7 +354,7 @@ namespace FoodWasteManager.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("ApplicationId,FoodPostId,QuantityRequired,EarliestPickup,LatestPickup,AStatus")] Models.Application application)
+        public async Task<IActionResult> Edit(int id, [Bind("ApplicationId,FoodPostId,QuantityRequired,EarliestPickup,LatestPickup,AStatus,HasPaid")] Models.Application application)
         {
             if (id != application.ApplicationId)
             {
@@ -390,5 +428,6 @@ namespace FoodWasteManager.Controllers
         {
             return _context.Applications.Any(e => e.ApplicationId == id);
         }
+
     }
 }

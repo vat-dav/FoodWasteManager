@@ -94,7 +94,7 @@ else if (viewType == "applicationsmade")
         @foreach (var item in filteredApps)
         {
             <div class="col">
-                <div class="card shadow rounded-5 d-flex flex-column" style="aspect-ratio:1/1; background:#f0ede6;">
+                <div class="card shadow rounded-5 d-flex flex-column" style="aspect-ratio:1/1; background:#fff;">
                     <div style="height:50%; overflow:hidden;">
                         <img src="@Url.Content(item.FoodPost.FoodImage)" alt="@item.FoodPost.FoodName" class="w-100 h-100" style="object-fit:cover;" />
                     </div>
@@ -120,6 +120,18 @@ else if (viewType == "applicationsmade")
                         @if (item.AStatus == Application.ApplicationStatus.Approved)
                         {
                             <p class="mb-0 small">Pickup: @item.EarliestPickup.ToShortDateString() - @item.LatestPickup.ToShortDateString()</p>
+
+                            <p class="mb-0 small">
+                                Payment Status:
+                                @if (item.HasPaid)
+                                {
+                                    <span class="badge bg-success">Paid!</span>
+                                }
+                                else
+                                {
+                                    <span class="badge bg-secondary">Not Paid, Pay now!</span>
+                                }
+                            </p>
                         }
 
                         <div class="mt-auto d-flex justify-content-between align-items-center gap-2 flex-wrap">
@@ -127,7 +139,7 @@ else if (viewType == "applicationsmade")
                                 <i class="bi bi-info-circle-fill"></i>
                             </a>
 
-                            @if (item.AStatus == Application.ApplicationStatus.Approved && !User.IsInRole("Admin"))
+                            @if (item.AStatus == Application.ApplicationStatus.Approved && !User.IsInRole("Admin") && User.IsInRole("Buyer"))
                             {
                                 <form asp-action="Payment" asp-controller="FoodPosts" method="get" class="m-0 p-0">
                                     <input type="hidden" name="ApplicationId" value="@item.ApplicationId" />
@@ -175,7 +187,7 @@ else if (viewType == "applicationsreceived")
                                 @foreach (var item in groupApps)
                                 {
                                                     <div class="col">
-                                                        <div class="card shadow rounded-5 d-flex flex-column" style="aspect-ratio:1/1; background:#f0ede6;">
+                                                        <div class="card shadow rounded-5 d-flex flex-column" style="aspect-ratio:1/1; background:#ffffff;">
                                                             <div style="height:50%; overflow:hidden;">
                                                                 <img src="@Url.Content(item.FoodPost.FoodImage)" alt="@item.FoodPost.FoodName" class="w-100 h-100" style="object-fit:cover;" />
                                                             </div>
@@ -200,6 +212,8 @@ else if (viewType == "applicationsreceived")
                                                 @if (item.AStatus == Application.ApplicationStatus.Approved)
                                                 {
                                                                         <p class="mb-0 small">Pickup: @item.EarliestPickup.ToShortDateString() - @item.LatestPickup.ToShortDateString()</p>
+
+
                                                 }
                                                 @if (item.AStatus == Application.ApplicationStatus.Processing)
                                                 {
@@ -244,7 +258,7 @@ else if (viewType == "applicationsreceived")
         </h5>
     }
 
-    @if (currentPage < totalPages && !User.IsInRole("Seller")) 
+    @if (currentPage < totalPages) 
     {
         <h5 >
             <a class="apply-btn ms-3" style="font-size: 1.25rem" asp-action="Index"
@@ -260,7 +274,7 @@ else if (viewType == "applicationsreceived")
 
 
 <style>
-    body, .card {
+    body, {
         background-color: #f0ede6;
     }
 
@@ -335,7 +349,7 @@ else if (viewType == "applicationsreceived")
     }
 
     .card {
-        background-color: #f0ede6;
+        background-color: #ffffff;
         box-shadow: 0 2px 5px rgba(61, 84, 56, 0.2);
     }
 
