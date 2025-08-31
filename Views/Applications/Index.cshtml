@@ -141,11 +141,23 @@ else if (viewType == "applicationsmade")
 
                             @if (item.AStatus == Application.ApplicationStatus.Approved && !User.IsInRole("Admin") && User.IsInRole("Buyer"))
                             {
-                                <form asp-action="Payment" asp-controller="FoodPosts" method="get" class="m-0 p-0">
-                                    <input type="hidden" name="ApplicationId" value="@item.ApplicationId" />
-                                    <button type="submit" class="btn btn-sm btn-paynow">Pay Now</button>
-                                </form>
+
+                                if (item.HasPaid = false)
+                                {
+                                    <form asp-action="Payment" asp-controller="FoodPosts" method="get" class="m-0 p-0">
+                                        <input type="hidden" name="ApplicationId" value="@item.ApplicationId" />
+                                        <button type="submit" class="btn btn-sm btn-paynow">Pay Now</button>
+                                    </form>
+                                }
                             }
+
+                            <form asp-action="Delete" asp-route-id="@item.ApplicationId" method="post"
+                                  onsubmit="return confirm('Are you sure you want to delete this application?');"
+                                  class="m-0 p-0">
+                                <button type="submit" class="btn btn-sm btn-outline-danger" title="Delete">
+                                    <i class="bi bi-trash-fill"></i>
+                                </button>
+                            </form>
                         </div>
                     </div>
                 </div>
@@ -242,10 +254,14 @@ else if (viewType == "applicationsreceived")
         }
         </div>
 }
-<div class="pagination mt-5" style="font-size: 1.25rem;">
-    <span class="ms-3">Page @currentPage of @totalPages</span>
 
-    @if (currentPage > 1)
+
+<div class="pagination mt-5" style="font-size: 1.25rem;">
+    @if (viewType == "applicationsmade")
+{
+    <span class="ms-3">Page @currentPage of @totalPages</span>
+}
+    @if (currentPage > 1 && viewType == "applicationsmade")
     {
         <h5 >
             <a class="apply-btn ms-3" style="font-size: 1.25rem" asp-action="Index"
@@ -258,7 +274,7 @@ else if (viewType == "applicationsreceived")
         </h5>
     }
 
-    @if (currentPage < totalPages) 
+    @if (currentPage < totalPages && viewType == "applicationsmade")
     {
         <h5 >
             <a class="apply-btn ms-3" style="font-size: 1.25rem" asp-action="Index"
@@ -417,5 +433,7 @@ else if (viewType == "applicationsreceived")
             background-color: #3d5438; /* darker spinach */
             color: white;
         }
+
+   
 
 </style>

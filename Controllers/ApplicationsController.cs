@@ -421,7 +421,7 @@ namespace FoodWasteManager.Controllers
             }
 
             await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+            return RedirectToAction(nameof(Index), new { viewType = "applicationsmade" });
         }
 
         private bool ApplicationExists(int id)
