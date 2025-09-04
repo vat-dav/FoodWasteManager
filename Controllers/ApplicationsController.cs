@@ -83,7 +83,9 @@ namespace FoodWasteManager.Controllers
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
             IQueryable<Models.Application> applications = _context.Applications
-                .Include(a => a.FoodPost).ThenInclude(a => a.Users);
+     .Include(a => a.Users) // applicant (buyer)
+     .Include(a => a.FoodPost).ThenInclude(fp => fp.Users); // food post owner (seller)
+
 
             if (User.IsInRole("Admin"))
             {

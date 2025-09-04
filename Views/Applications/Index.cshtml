@@ -119,7 +119,9 @@ else if (viewType == "applicationsmade")
 
                         @if (item.AStatus == Application.ApplicationStatus.Approved)
                         {
-                            <p class="mb-0 small">Pickup: @item.EarliestPickup.ToShortDateString() - @item.LatestPickup.ToShortDateString()</p>
+                            <p class="mb-0 small">Pickup Details:</p>
+                            <p class="mb-0 small">Time: @item.EarliestPickup.ToShortDateString() - @item.LatestPickup.ToShortDateString()</p>
+                            <p class="mb-0 small">Address: @item.Users.UserAddress</p>
 
                             <p class="mb-0 small">
                                 Payment Status:
@@ -148,6 +150,9 @@ else if (viewType == "applicationsmade")
                                         <input type="hidden" name="ApplicationId" value="@item.ApplicationId" />
                                         <button type="submit" class="btn btn-sm btn-paynow">Pay Now</button>
                                     </form>
+
+
+
                                 }
                             }
 
@@ -366,6 +371,7 @@ else if (viewType == "applicationsreceived")
 
     .card {
         background-color: #ffffff;
+        min-height: 300px;
         box-shadow: 0 2px 5px rgba(61, 84, 56, 0.2);
     }
 
