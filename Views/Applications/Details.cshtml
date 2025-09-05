@@ -30,9 +30,15 @@
             </dl>
 
             <div class="d-flex justify-content-center mt-4">
-                <a asp-action="Edit" asp-route-id="@Model?.ApplicationId" class="btn btn-success fw-semibold me-2" style="background-color:#3d5438; border:none; min-width:120px;">
+               
+                @{
+                    if(Model.AStatus == Application.ApplicationStatus.Processing)
+                    {
+                    <a asp-action="Edit" asp-route-id="@Model?.ApplicationId" class="btn btn-success fw-semibold me-2" style="background-color:#3d5438; border:none; min-width:120px;">
                     <i class="bi bi-pencil-square me-1"></i> Edit
                 </a>
+                    }
+                }
                 <a asp-action="Index" asp-route-viewType="applicationsmade" class="btn btn-sm ms-1 clear-btn" style="color:#3d5438; border-color:#3d5438; min-width:120px;">
                     Back
                 </a>

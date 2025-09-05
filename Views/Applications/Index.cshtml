@@ -46,53 +46,74 @@
     }
 </h1>
 
-<form asp-action="Index" method="get" class="d-inline-flex align-items-center gap-2 mb-3 flex-wrap">
-    <input type="hidden" name="viewType" value="@viewType" />
-    <input type="hidden" name="sortOrder" value="@currentSort" />
-    <input type="text" name="searchString" value="@currentFilter" placeholder="Search applications..." class="form-control form-control-sm" style="min-width: 250px;" />
-    <button type="submit" class="btn btn-sm apply-btn">Search</button>
-    <a asp-action="Index" asp-route-viewType="@viewType" class="btn btn-sm apply-btn">Clear</a>
-
-    <span class="text-muted ms-3 me-2">Sort by:</span>
-    @{
-        var sortOptions = new[]
-        {
-            new { Text = "Status ↑", Value = "status" },
-            new { Text = "Status ↓", Value = "status_desc" },
-            new { Text = "Food Name ↑", Value = "foodname" },
-            new { Text = "Food Name ↓", Value = "foodname_desc" }
-        };
-    }
-    @foreach (var option in sortOptions)
-    {
-        var activeClass = currentSort == option.Value ? "active" : "";
-            <a asp-action="Index" asp-route-viewType="@viewType" asp-route-sortOrder="@option.Value" asp-route-searchString="@currentFilter"
-               class="btn btn-sm apply-btn @activeClass">@option.Text</a>
-    }
-</form>
-
 @if (!filteredApps.Any())
 {
-        <div class="alert alert-info">
-        @if (viewType == "applicationsmade")
+  <div class="d-flex align-items-center justify-content-between mt-4">
+        @if (!string.IsNullOrEmpty(currentFilter))
         {
-            <text>You haven't made any applications yet.</text>
+            <h3 style="color:#3d5438; margin:0;">No applications match your search.</h3>
+            <a asp-action="Index" asp-route-viewType="applicationsmade"
+               class="btn btn-sm ms-3 clear-btn"
+               style="background-color:#3d5438; color:white; border:none; width:140px; height:40px; display:flex; align-items:center; justify-content:center; border-radius:5px;">
+                Return
+                <i class="bi bi-arrow-left ms-2"></i>
+            </a>
+        }
+        else if (viewType == "applicationsmade")
+        {
+            <h3 style="color:#3d5438; margin:0;">You haven't made any applications yet.</h3>
         }
         else if (viewType == "applicationsreceived")
         {
-            <text>No applications found.</text>
+            <h3 style="color:#3d5438; margin:0;">No applications found.</h3>
         }
         else
         {
-            <text>Invalid view type.</text>
+            <h3 style="color:#3d5438; margin:0;">Invalid view type.</h3>
         }
-        </div>
+    </div>
 }
 else if (viewType == "applicationsmade")
 {
+
+    <div class="d-flex align-items-center mb-3">
+
+        <form asp-action="Index" method="get" class="d-inline-flex align-items-center gap-2 mb-3 flex-wrap">
+            <input type="hidden" name="viewType" value="@viewType" />
+            <input type="hidden" name="sortOrder" value="@currentSort" />
+            <input type="text" name="searchString" value="@currentFilter" placeholder="Search applications..." class="form-control form-control-sm" style="min-width: 250px;" />
+            <button type="submit" class="btn btn-sm apply-btn">Search</button>
+            <a asp-action="Index" asp-route-viewType="@viewType" class="btn btn-sm apply-btn">Clear</a>
+            <span class="text-muted me-2 ms-3">Sort by:</span>
+            @{
+                var sortOptions = new[]
+                {
+        new { Text = "Status ↑", Value = "status" },
+        new { Text = "Status ↓", Value = "status_desc" },
+        new { Text = "Food Name ↑", Value = "foodname" },
+        new { Text = "Food Name ↓", Value = "foodname_desc" }
+        };
+            }
+
+            @foreach (var option in sortOptions)
+            {
+                var activeClass = currentSort == option.Value ? "active" : "";
+                <a asp-action="Index"
+                   asp-route-viewType="@viewType"
+                   asp-route-sortOrder="@option.Value"
+                   asp-route-searchString="@currentFilter"
+                   class="btn btn-sm apply-btn @activeClass">@option.Text</a>
+            }
+
+
+        </form>
+
+    </div>
+
     <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-3">
         @foreach (var item in filteredApps)
         {
+
             <div class="col">
                 <div class="card shadow rounded-5 d-flex flex-column" style="aspect-ratio:1/1; background:#fff;">
                     <div style="height:50%; overflow:hidden;">
@@ -144,7 +165,7 @@ else if (viewType == "applicationsmade")
                             @if (item.AStatus == Application.ApplicationStatus.Approved && !User.IsInRole("Admin") && User.IsInRole("Buyer"))
                             {
 
-                                if (item.HasPaid = false)
+                                if (item.HasPaid == false)
                                 {
                                     <form asp-action="Payment" asp-controller="FoodPosts" method="get" class="m-0 p-0">
                                         <input type="hidden" name="ApplicationId" value="@item.ApplicationId" />
@@ -169,10 +190,12 @@ else if (viewType == "applicationsmade")
             </div>
         }
     </div>
-
 }
+
+
 else if (viewType == "applicationsreceived")
 {
+
     var groups = new[]
     {
         new { Title = "Pending Applications", Status = Application.ApplicationStatus.Processing, Id = "pending" },
@@ -180,108 +203,113 @@ else if (viewType == "applicationsreceived")
         new { Title = "Declined Applications", Status = Application.ApplicationStatus.Declined, Id = "declined" }
     };
 
-        <div class="accordion" id="receivedAccordion">
+
+    <div class="accordion mt-4" id="receivedAccordion">
         @foreach (var group in groups)
         {
             var groupApps = filteredApps.Where(a => a.AStatus == group.Status);
             var collapseId = $"{group.Id}Collapse";
             var headingId = $"{group.Id}Heading";
-                    <div class="accordion-item">
-                        <h2 class="accordion-header" id="@headingId">
-                            <button class="accordion-button collapsed group-accordion-btn" type="button" data-bs-toggle="collapse" data-bs-target="#@collapseId" aria-expanded="false" aria-controls="@collapseId">
+            <div class="accordion-item">
+                <h2 class="accordion-header" id="@headingId">
+                    <button class="accordion-button collapsed group-accordion-btn" type="button" data-bs-toggle="collapse" data-bs-target="#@collapseId" aria-expanded="false" aria-controls="@collapseId">
                         @group.Title
-                            </button>
-                        </h2>
-                        <div id="@collapseId" class="accordion-collapse collapse" aria-labelledby="@headingId">
-                            <div class="accordion-body">
+                    </button>
+                </h2>
+                <div id="@collapseId" class="accordion-collapse collapse" aria-labelledby="@headingId">
+                    <div class="accordion-body">
                         @if (!groupApps.Any())
                         {
-                                        <div class="alert alert-info mt-3">No @group.Title.ToLower().Replace("applications", "").Trim() applications found.</div>
+                            <div class="alert alert-info mt-3">No @group.Title.ToLower().Replace("applications", "").Trim() applications found.</div>
                         }
                         else
                         {
-                                        <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-3">
+                            <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-3">
                                 @foreach (var item in groupApps)
                                 {
-                                                    <div class="col">
-                                                        <div class="card shadow rounded-5 d-flex flex-column" style="aspect-ratio:1/1; background:#ffffff;">
-                                                            <div style="height:50%; overflow:hidden;">
-                                                                <img src="@Url.Content(item.FoodPost.FoodImage)" alt="@item.FoodPost.FoodName" class="w-100 h-100" style="object-fit:cover;" />
-                                                            </div>
-                                                            <div class="card-body d-flex flex-column p-2">
-                                                                <h6 class="card-title mb-1">@item.FoodPost.FoodName</h6>
-                                                                <p class="mb-0 small">Qty: @item.QuantityRequired</p>
-                                                                <p class="mb-0 small">
-                                                                    Status:
+                                    <div class="col">
+                                        <div class="card shadow rounded-5 d-flex flex-column" style="aspect-ratio:1/1; background:#ffffff;">
+                                            <div style="height:50%; overflow:hidden;">
+                                                <img src="@Url.Content(item.FoodPost.FoodImage)" alt="@item.FoodPost.FoodName" class="w-100 h-100" style="object-fit:cover;" />
+                                            </div>
+                                            <div class="card-body d-flex flex-column p-2">
+                                                <h6 class="card-title mb-1">@item.FoodPost.FoodName</h6>
+                                                <p class="mb-0 small">Qty: @item.QuantityRequired</p>
+                                                <p class="mb-0 small">
+                                                    Status:
                                                     @switch (item.AStatus)
                                                     {
                                                         case Application.ApplicationStatus.Approved:
-                                                                                    <span class="badge badge-approved">@item.AStatus</span>
+                                                            <span class="badge badge-approved">@item.AStatus</span>
                                                             break;
                                                         case Application.ApplicationStatus.Processing:
-                                                                                    <span class="badge bg-warning text-dark">@item.AStatus</span>
+                                                            <span class="badge bg-warning text-dark">@item.AStatus</span>
                                                             break;
                                                         case Application.ApplicationStatus.Declined:
-                                                                                    <span class="badge badge-declined">@item.AStatus</span>
+                                                            <span class="badge badge-declined">@item.AStatus</span>
                                                             break;
                                                     }
-                                                                </p>
+                                                </p>
                                                 @if (item.AStatus == Application.ApplicationStatus.Approved)
                                                 {
-                                                                        <p class="mb-0 small">Pickup: @item.EarliestPickup.ToShortDateString() - @item.LatestPickup.ToShortDateString()</p>
+                                                    <p class="mb-0 small">Pickup: @item.EarliestPickup.ToShortDateString() - @item.LatestPickup.ToShortDateString()</p>
 
 
                                                 }
                                                 @if (item.AStatus == Application.ApplicationStatus.Processing)
                                                 {
-                                                                        <div class="mt-auto d-flex justify-content-between flex-wrap">
-                                                                            <form method="post" asp-action="Approve" asp-route-id="@item.ApplicationId" class="d-inline">
-                                                                                <button type="submit" class="btn btn-sm btn-pending me-1" title="Approve">
-                                                                                    <i class="bi bi-check-circle-fill"></i>
-                                                                                </button>
-                                                                            </form>
-                                                                            <form method="post" asp-action="Decline" asp-route-id="@item.ApplicationId" class="d-inline">
-                                                                                <button type="submit" class="btn btn-sm btn-outline-danger" title="Reject">
-                                                                                    <i class="bi bi-x-circle-fill"></i>
-                                                                                </button>
-                                                                            </form>
-                                                                        </div>
-                                                }
-                                                            </div>
-                                                        </div>
+                                                    <div class="mt-auto d-flex justify-content-between flex-wrap">
+                                                        <form method="post" asp-action="Approve" asp-route-id="@item.ApplicationId" class="d-inline">
+                                                            <button type="submit" class="btn btn-sm btn-pending me-1" title="Approve">
+                                                                <i class="bi bi-check-circle-fill"></i>
+                                                            </button>
+                                                        </form>
+                                                        <form method="post" asp-action="Decline" asp-route-id="@item.ApplicationId" class="d-inline">
+                                                            <button type="submit" class="btn btn-sm btn-outline-danger" title="Reject">
+                                                                <i class="bi bi-x-circle-fill"></i>
+                                                            </button>
+                                                        </form>
                                                     </div>
-                                }
+                                                }
+                                            </div>
                                         </div>
-                        }
+                                    </div>
+                                }
                             </div>
-                        </div>
+                        }
                     </div>
+                </div>
+            </div>
         }
-        </div>
+    </div>
 }
-
 
 <div class="pagination mt-5" style="font-size: 1.25rem;">
-    @if (viewType == "applicationsmade")
-{
-    <span class="ms-3">Page @currentPage of @totalPages</span>
-}
-    @if (currentPage > 1 && viewType == "applicationsmade")
-    {
-        <h5 >
-            <a class="apply-btn ms-3" style="font-size: 1.25rem" asp-action="Index"
-               asp-route-viewType="@viewType"
-               asp-route-sortOrder="@currentSort"
-               asp-route-searchString="@currentFilter"
-               asp-route-pageNumber="@(currentPage - 1)">
-                Previous Page
-            </a>
-        </h5>
-    }
+    @{
+        if (string.IsNullOrEmpty(currentFilter))
+        {
 
+            @if (viewType == "applicationsmade")
+            {
+                <span class="ms-3">Page @currentPage of @totalPages</span>
+            }
+            @if (currentPage > 1 && viewType == "applicationsmade")
+            {
+                <h5>
+                    <a class="apply-btn ms-3" style="font-size: 1.25rem" asp-action="Index"
+                       asp-route-viewType="@viewType"
+                       asp-route-sortOrder="@currentSort"
+                       asp-route-searchString="@currentFilter"
+                       asp-route-pageNumber="@(currentPage - 1)">
+                        Previous Page
+                    </a>
+                </h5>
+            }
+        }
+  
     @if (currentPage < totalPages && viewType == "applicationsmade")
     {
-        <h5 >
+        <h5>
             <a class="apply-btn ms-3" style="font-size: 1.25rem" asp-action="Index"
                asp-route-viewType="@viewType"
                asp-route-sortOrder="@currentSort"
@@ -291,9 +319,8 @@ else if (viewType == "applicationsreceived")
             </a>
         </h5>
     }
+}
 </div>
-
-
 <style>
     body, {
         background-color: #f0ede6;
@@ -309,11 +336,11 @@ else if (viewType == "applicationsreceived")
         background-color: #d0f2b6;
     }
 
-    .apply-btn:hover {
-        background-color: #3d5438;
-        color: white;
-        border-color: #3d5438;
-    }
+        .apply-btn:hover {
+            background-color: #3d5438;
+            color: white;
+            border-color: #3d5438;
+        }
 
     .clear-btn {
         padding: 3px 10px;
@@ -332,13 +359,13 @@ else if (viewType == "applicationsreceived")
         display: inline-block;
     }
 
-    .apply-btn:hover,
-    .apply-btn.active {
+        .apply-btn:hover,
+        .apply-btn.active {
             background-color: #3d5438;
-        color: #FFF;
-        border-color: #3d5438;
-        border: 1px solid #fff
-    }
+            color: #FFF;
+            border-color: #3d5438;
+            border: 1px solid #fff
+        }
 
     .btn-pending {
         background-color: #f0ede6;
@@ -349,10 +376,10 @@ else if (viewType == "applicationsreceived")
         transition: all 0.3s ease;
     }
 
-    .btn-pending:hover {
-        background-color: #b7d897;
-        color: #2b3d28;
-    }
+        .btn-pending:hover {
+            background-color: #b7d897;
+            color: #2b3d28;
+        }
 
     .btn-outline-danger {
         color: #dc3545;
@@ -364,10 +391,10 @@ else if (viewType == "applicationsreceived")
         display: inline-block;
     }
 
-    .btn-outline-danger:hover {
-        background-color: #dc3545;
-        color: white;
-    }
+        .btn-outline-danger:hover {
+            background-color: #dc3545;
+            color: white;
+        }
 
     .card {
         background-color: #ffffff;
@@ -409,22 +436,22 @@ else if (viewType == "applicationsreceived")
         transition: background-color 0.3s ease, color 0.3s ease;
     }
 
-    .group-accordion-btn::after {
-        filter: invert(1);
-    }
+        .group-accordion-btn::after {
+            filter: invert(1);
+        }
 
-    .group-accordion-btn:hover,
-    .group-accordion-btn:focus {
-        background-color: #33502e;
-        color: #c6e3a9;
-        outline: none;
-    }
+        .group-accordion-btn:hover,
+        .group-accordion-btn:focus {
+            background-color: #33502e;
+            color: #c6e3a9;
+            outline: none;
+        }
 
-    .group-accordion-btn:not(.collapsed) {
-        background-color: #3d5438 !important;
-        color: #d0f2b6 !important;
-        box-shadow: none !important;
-    }
+        .group-accordion-btn:not(.collapsed) {
+            background-color: #3d5438 !important;
+            color: #d0f2b6 !important;
+            box-shadow: none !important;
+        }
 
     .btn-paynow {
         background-color: #d0f2b6; /* spinach green */
@@ -439,7 +466,5 @@ else if (viewType == "applicationsreceived")
             background-color: #3d5438; /* darker spinach */
             color: white;
         }
-
-   
 
 </style>

@@ -31,7 +31,7 @@
         if (User.IsInRole("Buyer") || User.IsInRole("Seller") || !isAdmin || hasNoRole)
         {
             <div class="mt-3">
-                <a asp-action="Create" class="btn align-content-center margin righ" style="background-color:#d0f2b6">
+                <a asp-action="Create" class="btn align-content-center" style="background-color:#d0f2b6">
                     <h6 style="color:#3d5438">Create New</h6>
                 </a>
             </div>
@@ -42,38 +42,42 @@
         }
 </div>
 
-<div class="mt-3">
-    <form asp-action="Index" method="get" class="d-inline ms-2 mt-3 ">
+<div class="d-flex flex-wrap align-items-center mt-3 gap-2">
+    <form asp-action="Index" method="get" class="d-flex align-items-center gap-2">
         <input type="hidden" name="sortOrder" value="@ViewData["CurrentSort"]" />
-        <input type="text" name="searchString" value="@ViewData["CurrentFilter"]" placeholder="Search food..." class="form-control d-inline-block w-auto ms-3" />
-        <button type="submit" class="btn btn-sm apply-btn ms-3">Search</button>
-        <a asp-action="Index" class="btn btn-sm ms-1  apply-btn " style=" border-color: #3d5438;">Clear</a>
+        <input type="text" name="searchString" value="@ViewData["CurrentFilter"]" placeholder="Search food..."
+               class="form-control form-control-sm" style="width: 200px; border-color: #3d5438;" />
+        <button type="submit" class="btn btn-sm apply-btn">Search</button>
+        <a asp-action="Index" class="btn btn-sm apply-btn" style="border-color:#3d5438;">Clear</a>
     </form>
 
-    <span class="me-2 text-muted ms-lg-5">Sort by:</span>
-    @{
-        <span class="ms-1"></span>
-        if (User.IsInRole("Buyer") || User.IsInRole("Seller") || hasNoRole)
-        {
-            <a asp-action="Index" asp-route-sortOrder="date" class="btn btn-sm apply-btn " style="border-color: #3d5438; @(sortOrder == "date" ? "active" : "")">Best Before ↑</a>
-            <a asp-action="Index" asp-route-sortOrder="date_desc" class="btn btn-sm apply-btn" style=" border-color: #3d5438; @(sortOrder == "date_desc" ? "active" : "")">Best Before ↓</a>
+    <span class="ms-3 me-2 text-muted">Sort by:</span>
 
-            <a asp-action="Index" asp-route-sortOrder="price" class="btn btn-sm apply-btn" style="  border-color: #3d5438; @(sortOrder =="price" ? "active" : "" )">Low to High Price</a>
-            <a asp-action="Index" asp-route-sortOrder="price_desc" class="btn btn-sm apply-btn" style="  border-color: #3d5438; @(sortOrder =="price_desc" ? "active" : "" )">High to low Price</a>
-        }
-        if (User.IsInRole("Admin"))
-        {
-        {
-            <a asp-action="Index" asp-route-sortOrder="dateposted" class="btn btn-sm apply-btn">Oldest</a>
-            <a asp-action="Index" asp-route-sortOrder="dateposted_desc" class="btn btn-sm apply-btn">Newest</a>
+    @if (User.IsInRole("Buyer") || User.IsInRole("Seller") || hasNoRole)
+    {
+        <a asp-action="Index" asp-route-sortOrder="date"
+           class="btn btn-sm apply-btn @(sortOrder == "date" ? "active" : "")">Best Before ↑</a>
+        <a asp-action="Index" asp-route-sortOrder="date_desc"
+           class="btn btn-sm apply-btn @(sortOrder == "date_desc" ? "active" : "")">Best Before ↓</a>
 
-        }
+        <a asp-action="Index" asp-route-sortOrder="price"
+           class="btn btn-sm apply-btn @(sortOrder == "price" ? "active" : "")">Low to High Price</a>
+        <a asp-action="Index" asp-route-sortOrder="price_desc"
+           class="btn btn-sm apply-btn @(sortOrder == "price_desc" ? "active" : "")">High to Low Price</a>
     }
+
+    @if (User.IsInRole("Admin"))
+    {
+        <a asp-action="Index" asp-route-sortOrder="dateposted" class="btn btn-sm apply-btn @(sortOrder == "dateposted" ? "active" : "")">Oldest</a>
+        <a asp-action="Index" asp-route-sortOrder="dateposted_desc" class="btn btn-sm apply-btn @(sortOrder == "dateposted_desc" ? "active" : "")">Newest</a>
+    }
+</div>
+
     }
 </div>
 
 
-<div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-3 mt-3">
+<div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-3">
     @if (!Model.Any())
     {
         <div>

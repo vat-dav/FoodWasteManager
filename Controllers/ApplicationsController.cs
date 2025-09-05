@@ -144,7 +144,7 @@ namespace FoodWasteManager.Controllers
             ViewData["CurrentFilter"] = searchString;
             ViewData["CurrentSort"] = sortOrder;
             ViewData["StatusSortParm"] = sortOrder == "status" ? "status_desc" : "status";
-
+               ViewData["FoodNameSortParm"] = sortOrder == "foodname" ? "foodname_desc" : "foodname";
             if (!string.IsNullOrEmpty(searchString))
             {
                 applications = applications.Where(a =>
@@ -159,6 +159,8 @@ namespace FoodWasteManager.Controllers
             {
                 "status" => applications.OrderBy(a => a.AStatus),
                 "status_desc" => applications.OrderByDescending(a => a.AStatus),
+                "foodname" => applications.OrderBy(a => a.FoodPost.FoodName),
+                "foodname_desc" => applications.OrderByDescending(a => a.FoodPost.FoodName),
                 _ => applications.OrderBy(a => a.FoodPost.FoodName)
             };
 

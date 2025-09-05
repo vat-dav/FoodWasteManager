@@ -79,11 +79,11 @@ namespace FoodWasteManager.Controllers
             return Redirect(session.Url);
 
 }
-       
+
 
         // GET: FoodPosts
 
-
+        [Authorize]
         public async Task<IActionResult> Index(string sortOrder, string currentFilter, string searchString, int? pageNumber)
         {
             ViewData["CurrentSort"] = sortOrder;

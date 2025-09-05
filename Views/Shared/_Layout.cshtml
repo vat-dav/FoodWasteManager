@@ -10,6 +10,7 @@
     }
 
 <head>
+    <a href="c:\users\vatsa\source\repos\foodwastemanager\views\foodtypes\delete.cshtml">c:\users\vatsa\source\repos\foodwastemanager\views\foodtypes\delete.cshtml</a>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - FoodWasteManager</title>
@@ -50,7 +51,7 @@
                             if (User.IsInRole("Buyer"))
                             { 
                                 <li class="nav-item">
-                                    <a class="nav-link text-dark fs-5" asp-area="" asp-controller="Applications" asp-action="Index" asp-route-viewType="applicationsmade">Applications Made</a>
+                                    <a class="nav-link text-dark fs-5" asp-area="" asp-controller="Applications" asp-action="Index" asp-route-viewType="applicationsmade">My Applications</a>
                                 </li> 
                             }
                         }
@@ -58,14 +59,12 @@
                             if (User.IsInRole("Seller") )
                             {
                                 <li class="nav-item">
-                                    <a class="nav-link text-dark fs-5" asp-area="" asp-controller="Applications" asp-action="Index" asp-route-viewType="applicationsreceived">Applications Received</a>
+                                    <a class="nav-link text-dark fs-5" asp-area="" asp-controller="Applications" asp-action="Index" asp-route-viewType="applicationsreceived">My Foodposts</a>
                                 </li>
                             }
                         }
 
-                        <li class="nav-item">
-                            <a class="nav-link text-dark fs-5" asp-area="" asp-controller="Home" asp-action="HowToOperate">How to operate</a>
-                        </li>
+                       
 
                     </ul>
                 </div>
@@ -84,7 +83,10 @@
     <footer class="border-top footer text-muted">
         <div class="container">
             &copy; 2025 - FoodWasteManager - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+           Are you lost? - <a asp-area="" asp-controller="Home" asp-action="HowToOperate">How To Operate</a>
         </div>
+
+
     </footer>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
