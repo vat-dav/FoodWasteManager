@@ -10,7 +10,7 @@
     }
 
 <head>
-    <a href="c:\users\vatsa\source\repos\foodwastemanager\views\foodtypes\delete.cshtml">c:\users\vatsa\source\repos\foodwastemanager\views\foodtypes\delete.cshtml</a>
+        
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - FoodWasteManager</title>
@@ -34,16 +34,16 @@
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
                     <ul class="navbar-nav flex-grow-1">
                         <li class="nav-item">
-                            <a class="nav-link text-dark fs-5" asp-area="" asp-controller="FoodPosts" asp-action="Index">Available Food</a>
+                            <a class="nav-link fs-5" style="color:#3d5438" asp-area="" asp-controller="FoodPosts" asp-action="Index">Available Food</a>
                         </li>
                         @{
                             if (User.IsInRole("Admin"))
                             {
                                 <li class="nav-item">
-                                    <a class="nav-link text-dark fs-5" asp-area="" asp-controller="FoodTypes" asp-action="Index">Make a new Food Category</a>
+                                    <a class="nav-link fs-5" style="color:#3d5438" asp-area="" asp-controller="FoodTypes" asp-action="Index">Make a new Food Category</a>
                                 </li>
                                 <li class="nav-item">
-                                    <a class="nav-link text-dark fs-5" asp-area="" asp-controller="Applications" asp-action="Index">View all applications </a>
+                                    <a class="nav-link fs-5" style="color:#3d5438" asp-area="" asp-controller="Applications" asp-action="Index">View all applications </a>
                                 </li>
                             }
                         }
@@ -51,7 +51,7 @@
                             if (User.IsInRole("Buyer"))
                             { 
                                 <li class="nav-item">
-                                    <a class="nav-link text-dark fs-5" asp-area="" asp-controller="Applications" asp-action="Index" asp-route-viewType="applicationsmade">My Applications</a>
+                                    <a class="nav-link fs-5" style="color:#3d5438"  asp-area="" asp-controller="Applications" asp-action="Index" asp-route-viewType="applicationsmade">My Applications</a>
                                 </li> 
                             }
                         }
@@ -59,7 +59,7 @@
                             if (User.IsInRole("Seller") )
                             {
                                 <li class="nav-item">
-                                    <a class="nav-link text-dark fs-5" asp-area="" asp-controller="Applications" asp-action="Index" asp-route-viewType="applicationsreceived">My Foodposts</a>
+                                    <a class="nav-link fs-5" style="color:#3d5438" asp-area="" asp-controller="Applications" asp-action="Index" asp-route-viewType="applicationsreceived">My Foodposts</a>
                                 </li>
                             }
                         }
@@ -81,9 +81,9 @@
     </div>
 
     <footer class="border-top footer text-muted">
-        <div class="container">
-            &copy; 2025 - FoodWasteManager - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-           Are you lost? - <a asp-area="" asp-controller="Home" asp-action="HowToOperate">How To Operate</a>
+        <div class="container" style="color:#3d5438">
+            &copy; 2025 - FoodWasteManager - <a style="color:#3d5438" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+            <span class="ms-3">Are you lost? - <a style="color:#3d5438" asp-area="" asp-controller="Home" asp-action="HowToOperate">How To Operate</a></span>
         </div>
 
 

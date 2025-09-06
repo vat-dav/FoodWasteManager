@@ -1,37 +1,38 @@
 ﻿@{
     ViewData["Title"] = "How to Operate";
 }
-<h1>@ViewData["Title"]</h1>
+<h1 style ="color:#3d5438" >@ViewData["Title"]</h1>
 <br></br>
 
-<h5>
-    <!-- General description -->
+<h5 style="color:#3d5438">
+    <!-- description of web app-->
     This is a web-application that helps reduce food waste by letting users post leftover food and other users apply to purchase it. The app connects users (buyers) with other users (sellers). </h5><br></br>
 
-    <!-- Accessing the system -->
-    <li>All users must first Register (or Login if already registered) to the app to use its features.</li>
+    <!-- how to log in and use web app -->
+<li style="color:#3d5438">All users must first Register (or Login if already registered) to the app to use its features.</li>
 
     <br></br>
 
-    <!-- Selling Food -->
-    <h5>Selling Food</h5>
-    <li>To post food, go to: <a asp-controller="FoodPosts" asp-action="Index">Manage FoodPosts</a> and click "Create New". Then, fill in all details like name, quantity, price, image, and best-before date of the food you would like to sell.</li>
+    <!-- how to sell food/post food -->
+<h5 style="color:#3d5438">Selling Food</h5>
+<li style="color:#3d5438">To post food, go to: <a style="color:#3d5438" asp-controller="FoodPosts" asp-action="Index">Manage FoodPosts</a> and click "Create New". Then, fill in all details like name, quantity, price, image, and best-before date of the food you would like to sell.</li>
     <br></br>
-    <!-- Buying Food -->
-    <h5>Buying Food</h5>
-    <li>
-        To apply for available food, go to: <a asp-controller="FoodPosts" asp-action="Index" asp-route-viewType="applicationsmade"> Available Food</a>, and click "Apply". Then, fill in what quantity you would like, and your preferred pickup time.</li>
+<!-- how to buy food/apply for food -->
+<h5 style="color:#3d5438">Buying Food</h5>
+<li style="color:#3d5438">
+    To apply for available food, go to: <a style="color:#3d5438" asp-controller="FoodPosts" asp-action="Index" asp-route-viewType="applicationsmade"> Available Food</a>, and click "Apply". Then, fill in what quantity you would like, and your preferred pickup time.
+</li>
     <br></br>
 
      
-    <!-- Viewing your applications -->
-<li>To view or manage your food applications, go to: <a asp-controller="Applications" asp-action="Index" asp-route-viewType="applicationsmade" >My Applications</a>. You’ll see if they’ve been accepted or declined, and get pickup instructions.</li>
+    <!-- how to view your applications -->
+<li style="color:#3d5438">To view or manage your food applications, go to: <a style="color:#3d5438" asp-controller="Applications" asp-action="Index" asp-route-viewType="applicationsmade">My Applications</a>. You’ll see if they’ve been accepted or declined, and get pickup instructions.</li>
    
-    <!-- Managing requests if you're a seller -->
-<li>If you've posted food, you can manage incoming applications by going to: <a asp-controller="Applications" asp-action="Index" asp-route-viewType="applicationsreceived">Manage FoodPosts</a> and clicking on the details of a post. You can then approve or reject any requests.</li>
+    <!-- how to manage application requests if you're a seller -->
+<li style="color:#3d5438">If you've posted food, you can manage incoming applications by going to: <a style="color:#3d5438" asp-controller="Applications" asp-action="Index" asp-route-viewType="applicationsreceived">Manage FoodPosts</a> and clicking on the details of a post. You can then approve or reject any requests.</li>
 
     <br></br>
-
+<h3 style="color:#3d5438">
     <!-- Contact information -->
     This web-app was developed by Vatsal, a TPI student at Avondale College. If you need help, feel free to reach out at ac121655@avcol.school.nz
 </h3>
