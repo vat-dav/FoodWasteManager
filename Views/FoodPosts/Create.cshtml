@@ -42,9 +42,8 @@
             <div class="mb-3">
                 <label asp-for="FoodBestBefore" class="form-label fw-semibold" style="color:#3d5438;">Best Before Date</label>
                 <input asp-for="FoodBestBefore" class="form-control"
-                       type="date"
-                       min="@DateOnly.FromDateTime(DateTime.Today).ToString("yyyy-MM-dd")"
-                       max="@DateOnly.FromDateTime(DateTime.Today.AddMonths(1)).ToString("yyyy-MM-dd")" />
+                       type="date" id="FoodBestBefore"
+                       min="@DateTime.Today.ToString("yyyy-MM-dd")" />
                 <span asp-validation-for="FoodBestBefore" class="text-danger"></span>
             </div>
 
@@ -61,5 +60,34 @@
 @section Scripts {
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
+        <script>
+            const perishableFoodTypes = [1, 4, 6];
+
+            window.onload = () => {
+                const type = document.getElementById("FoodTypeId");
+                const date = document.getElementById("FoodBestBefore");
+
+                const setDateLimits = () => {
+                    const today = new Date();
+                    const minDate = today.toISOString().split('T')[0];  // "yyyy-MM-dd" string
+
+                    let maxDate = new Date();
+
+                    if (perishableFoodTypes.includes(+type.value)) {
+                        maxDate.setDate(today.getDate() + 14);  // 14 days from today
+                    } 
+                    else {
+                        maxDate.setFullYear(today.getFullYear() + 1);  // 1 years from today
+                    }
+
+                    date.min = minDate;
+                    date.max = maxDate.toISOString().split('T')[0];
+                };
+
+                setDateLimits();
+                type.addEventListener("change", setDateLimits);
+            };
+        </script>
+       
     }
 }
