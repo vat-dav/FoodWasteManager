@@ -202,10 +202,6 @@ namespace FoodWasteManager.Controllers
             return View(pagedApplications);
         }
 
-
-
-
-
         // GET: Applications/Details/5
         public async Task<IActionResult> Details(int? id)
         {
@@ -484,4 +480,4 @@ namespace FoodWasteManager.Controllers
         }
 
     }
-}
+}   
