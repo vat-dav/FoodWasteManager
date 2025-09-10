@@ -120,10 +120,12 @@ namespace FoodWasteManager.Controllers
             var foodPosts = from f in _context.FoodPosts.Include(f => f.FoodTypes)
                             select f;
 
-            // filtering by search (FoodName)
+         
+            // filtering by search (FoodName or FoodType)
             if (!string.IsNullOrEmpty(searchString))
             {
-                foodPosts = foodPosts.Where(f => f.FoodName.Contains(searchString));
+                foodPosts = foodPosts.Where(f => f.FoodName.Contains(searchString) || f.FoodTypes.FoodTypeName.Contains(searchString));
+
             }
 
             // sorting based on UI tabs - FoodName and BestBefore
