@@ -26,6 +26,11 @@
         };
     }
 }
+@if (TempData["AlertMessage"] != null)
+{
+    <script>alert('@TempData["AlertMessage"]');</script>
+}
+
 
 <h1 style="color:#3d5438">
     @if (User.IsInRole("Admin"))
@@ -140,11 +145,8 @@ else if (viewType == "applicationsmade")
 
                         @if (item.AStatus == Application.ApplicationStatus.Approved)
                         {
-                            <p class="mb-0 small">Pickup Details:</p>
-                            <p class="mb-0 small">Time: @item.EarliestPickup.ToShortDateString() - @item.LatestPickup.ToShortDateString()</p>
-                            <p class="mb-0 small">Address: @item.Users.UserAddress</p>
-
-                            <p class="mb-0 small">
+                            
+                            <p class="mb-0 small mt-1">
                                 Payment Status:
                                 @if (item.HasPaid)
                                 {
@@ -155,9 +157,14 @@ else if (viewType == "applicationsmade")
                                     <span class="badge bg-secondary">Not Paid, Pay now!</span>
                                 }
                             </p>
+                            <p class="mb-0 small"><b>Pickup Details:</b></p>
+                            <p class="mb-0 small">Time: @item.EarliestPickup.ToShortDateString() - @item.LatestPickup.ToShortDateString()</p>
+                            <p class="mb-0 small">Address: @item.Users.UserAddress</p>
+
+                            
                         }
 
-                        <div class="mt-auto d-flex justify-content-between align-items-center gap-2 flex-wrap">
+                        <div class="mt-auto d-flex justify-content-between align-items-center gap-2 flex-wrap mt-2">
                             <a asp-action="Details" asp-route-id="@item.ApplicationId" class="btn btn-sm apply-btn" title="Details">
                                 <i class="bi bi-info-circle-fill"></i>
                             </a>

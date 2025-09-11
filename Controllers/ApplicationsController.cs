@@ -461,12 +461,17 @@ namespace FoodWasteManager.Controllers
             //find application based on the id
             var application = await _context.Applications.FindAsync(id);
 
-            //if the application is not null yet, remove it from the database, making it null
-            if (application != null)
+            //if the application is not null yet and if the user hasn't paid, remove it from the database, making it null
+            if (application != null && application.HasPaid == false)
             {
+
                 _context.Applications.Remove(application);
             }
+            else
+            {
+                TempData["AlertMessage"] = "Cannot delete this application because payment has already been made.";
 
+            }
             //save the deletion to the database
             await _context.SaveChangesAsync();
 
