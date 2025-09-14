@@ -156,7 +156,7 @@ namespace FoodWasteManager.Controllers
                 _context.FoodTypes.Remove(foodType);// removes the record
             }
 
-            await _context.SaveChangesAsync(); // save deletion to the database (delete from database)
+            await _context.SaveChangesAsync(); // save the deletion to the database
             return RedirectToAction(nameof(Index));  // redirect the user to the foodtypes controller index
         }
 
