@@ -1,2 +1,2 @@
-﻿SELECT TOP 3 * FROM foodwastemanager.dbo.FoodPosts
+﻿SELECT TOP 3 * FROM FoodWasteManager.dbo.FoodPosts
 ORDER BY DatePosted DESC;

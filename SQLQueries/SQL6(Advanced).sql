@@ -1,2 +1,2 @@
 ﻿SELECT u.UserFirstName, u.UserLastName, f.FoodName, f.FoodQuantity, f.FoodPrice 
-FROM FoodPosts f JOIN AspNetUsers u ON f.Id = u.Id;
+FROM FoodWasteManager.dbo.FoodPosts f JOIN FoodWasteManager.dbo.AspNetUsers u ON f.UserId = u.Id;

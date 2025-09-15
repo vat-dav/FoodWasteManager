@@ -1,1 +1,1 @@
-﻿SELECT * FROM AspNetUsers WHERE Email LIKE '%@gmail.com';
+﻿SELECT * FROM FoodWasteManager.dbo.AspNetUsers WHERE Email LIKE '%@gmail.com';

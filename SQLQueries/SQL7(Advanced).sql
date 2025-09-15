@@ -1,2 +1,2 @@
-﻿SELECT DISTINCT f.FoodName, f.FoodQuantity FROM FoodPosts f
-JOIN Applications a ON f.FoodPostId = a.FoodPostId;
+﻿SELECT DISTINCT f.FoodName, f.FoodQuantity FROM FoodWasteManager.dbo.FoodPosts f
+JOIN FoodWasteManager.dbo.Applications a ON f.FoodPostId = a.FoodPostId;
