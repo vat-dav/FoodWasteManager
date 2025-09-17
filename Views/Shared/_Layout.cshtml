@@ -59,7 +59,11 @@
                             if (User.IsInRole("Seller") )
                             {
                                 <li class="nav-item">
-                                    <a class="nav-link fs-5" style="color:#3d5438" asp-area="" asp-controller="Applications" asp-action="Index" asp-route-viewType="applicationsreceived">My Listings</a>
+                                    <a class="nav-link fs-5" style="color:#3d5438" asp-area="" asp-controller="Applications" asp-action="Index" asp-route-viewType="applicationsreceived">Approve/Decline Applications</a>
+                                </li>
+
+                                <li class="nav-item">
+                                    <a class="nav-link fs-5" style="color:#3d5438" asp-area="" class="nav-link" asp-controller="FoodPosts" asp-action="MyFoodPosts">Edit/Delete FoodPosts</a>
                                 </li>
                             }
                         }

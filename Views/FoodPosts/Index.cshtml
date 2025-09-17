@@ -1,6 +1,9 @@
 ﻿@model IEnumerable<FoodWasteManager.Models.FoodPost>
 @using Azure.Core
+@using FoodWasteManager.Areas.Identity.Data
 @using FoodWasteManager.Models;
+@inject Microsoft.AspNetCore.Identity.UserManager<FoodWasteManagerUser> UserManager
+
 
 @{
     ViewData["Title"] = "Index";
@@ -12,6 +15,7 @@
     var isBuyer = User.IsInRole("Buyer");
     var isSeller = User.IsInRole("Seller");
     var isAdmin = User.IsInRole("Admin");
+    var currentUserId = UserManager.GetUserId(User);
 
     var hasNoRole = !isBuyer && !isSeller && !isAdmin;
 }
@@ -38,7 +42,7 @@
 <div class="d-flex flex-wrap align-items-center mt-3 gap-2">
     <form asp-action="Index" method="get" class="d-flex align-items-center gap-2">
         <input type="hidden" name="sortOrder" value="@ViewData["CurrentSort"]" />
-        <input type="text" name="searchString" value="@ViewData["CurrentFilter"]" placeholder="Search food..."
+        <input type="text" name="searchString" value="@ViewData["CurrentFilter"]" placeholder="Search by name or category..."
                class="form-control form-control-sm" style="width: 200px; border-color: #3d5438;" />
         <button type="submit" class="btn btn-sm apply-btn">Search</button>
         <a asp-action="Index" class="btn btn-sm apply-btn" style="border-color:#3d5438;">Clear</a>
@@ -81,8 +85,8 @@
         {
             @foreach (var item in Model)
             {
-                if (item.FoodQuantity > 0)
-                { // Only makes cards for the foodpost if the foodquantity is more than 0
+                if (item.FoodQuantity > 0 && item.UserId != currentUserId)
+                { // Only makes cards for the foodpost if the foodquantity is more than 0 and for foodposts that the user hasn't posted
    <div class="col-6 col-sm-4 col-md-3 d-flex justify-content-center">
                         <div class="card shadow rounded-5 d-flex flex-column food-card" style="aspect-ratio:1/1; background:#fff;">
 

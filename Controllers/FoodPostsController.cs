@@ -177,6 +177,21 @@ namespace FoodWasteManager.Controllers
             return View(pagedFoodPosts);
         }
 
+        [Authorize]
+
+        public async Task<IActionResult> MyFoodPosts()
+        {
+            var currentUserId = _userManager.GetUserId(User);
+
+            var myFoodPosts = await _context.FoodPosts.Include(f => f.FoodTypes)
+        .Where(f => f.UserId == currentUserId)
+        .OrderByDescending(f => f.DatePosted)
+        .ToListAsync();
+
+            return View(myFoodPosts);
+        }
+
+
 
         // GET: FoodPosts/Details/5
         public async Task<IActionResult> Details(int? id)
@@ -186,7 +201,9 @@ namespace FoodWasteManager.Controllers
                 return NotFound();
             }
 
-            var foodPost = await _context.FoodPosts.Include(ft => ft.FoodTypes).FirstOrDefaultAsync(m => m.FoodPostId == id); //lets navigation to the foodtype table in views
+//lets navigation to the foodtype table in views
+            var foodPost = await _context.FoodPosts.Include(f => f.FoodTypes).FirstOrDefaultAsync(m => m.FoodPostId == id);
+            
 
             if (foodPost == null)
             {
@@ -387,6 +404,19 @@ namespace FoodWasteManager.Controllers
             if (foodPost == null)
             {
                 return NotFound();
+            }
+
+            //checks if any foodpost has applications connected to them
+            bool hasApps = await _context.Applications.AnyAsync(a => a.FoodPostId == id);
+
+            // if foodpost has applications, send them to details view and show the message
+            if (hasApps)
+            {
+
+                TempData["Message"] = "This food post has applications and cannot be deleted.";
+
+                return RedirectToAction("Details", new { id = foodPost.FoodPostId });
+
             }
 
             //ensure that the user is either the owner of the post or is an admin, to allow for deleting the foodpost

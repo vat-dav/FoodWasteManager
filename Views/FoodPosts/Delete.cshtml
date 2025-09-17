@@ -7,8 +7,9 @@
 
 <div class="d-flex justify-content-center align-items-start" style="min-height: 80vh; background-color: #f0ede6; padding: 2rem;">
     <div class="w-100" style="max-width: 700px;">
+
         <h1 class="mb-3 text-center" style="color:#3d5438;">Delete This Food Post?</h1>
-        <h5 class="text-center mb-4" style="color:#3d5438;">Are you sure you want to remove this from the system?</h5>
+        <h5 class="text-center mb-4" style="color:#3d5438;">Are you sure you want to remove this from the WasteLess marketplace?</h5>
 
         <div class="p-4 rounded-4 shadow" style="background-color:#d0f2b6;">
             <div class="text-center mb-4">
@@ -36,16 +37,35 @@
             </dl>
 
             <form asp-action="Delete" method="post" class="mt-4 d-flex justify-content-center">
-                <input type="hidden" asp-for="FoodPostId" />
+                <input type="hidden" asp-for="FoodPostId" asp-route-id="@Model.FoodPostId" />
 
                 <button type="submit" class="btn btn-danger fw-semibold me-3" style="min-width: 120px;">
                     <i class="bi bi-trash-fill me-1"></i> Delete
                 </button>
 
-                <a asp-action="Index" class="btn btn-outline-secondary" style="color:#3d5438; border-color:#3d5438; min-width: 120px;">
+                <a asp-area="" asp-controller="FoodPosts" asp-action="MyFoodPosts" class="btn apply-btn" style="border-color:#3d5438; min-width: 120px;">
                     Cancel
                 </a>
             </form>
         </div>
     </div>
 </div>
+
+
+<style>
+    .apply-btn {
+        color: #3d5438;
+        border: 1px solid #3d5438;
+        text-decoration: none;
+        padding: 3px 10px;
+        border-radius: 4px;
+        transition: all 0.3s ease;
+    }
+
+        .apply-btn:hover {
+            background-color: #3d5438;
+            color: white;
+            border-color: #3d5438;
+        }
+
+</style>

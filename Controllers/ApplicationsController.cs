@@ -269,10 +269,10 @@ namespace FoodWasteManager.Controllers
             var today = DateTime.Today; // Declares today to be current date set as DateTime variable
             var maxEarliestDate = today.AddMonths(1); // Declares variable to be 1 month from current date
             var maxLatestDate = application.EarliestPickup.AddDays(7); // Latest Pickup can be up to 7 days after EarliestPickup
-
-            // Check if EarliestPickup is valid based on validation
-            if (application.EarliestPickup.Date < today || application.EarliestPickup.Date > maxEarliestDate)
-            {
+        
+                     // Check if EarliestPickup is valid based on validation
+               if (application.EarliestPickup.Date < today || application.EarliestPickup.Date > maxEarliestDate)
+                          {
                 ModelState.AddModelError("EarliestPickup", "Earliest Pickup must be today or within the next month.");
             }
 
