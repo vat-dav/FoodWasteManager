@@ -54,7 +54,7 @@
                 <button type="submit" class="btn btn-success fw-semibold" style="background-color:#3d5438; border:none; min-width:120px;">
                     <i class="bi bi-pencil-square me-2"></i> Save
                 </button>
-                <a asp-action="Index" class="btn btn-sm ms-1 clear-btn" style="color:#3d5438; border-color:#3d5438; min-width:120px;">
+                <a asp-action="MyFoodPosts" class="btn btn-sm ms-1 apply-btn" style=" min-width:120px;">
                     Back to List
                 </a>
             </div>
@@ -67,3 +67,30 @@
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
 }
+
+
+                <style>
+
+    .apply-btn {
+        color: #3d5438;
+        border: 1px solid #3d5438;
+        text-decoration: none;
+        padding: 4px 12px;
+        border-radius: 4px;
+        transition: all 0.3s ease;
+        background-color: transparent;
+        font-size: 0.9rem;
+        display: inline-block;
+    }
+
+        .apply-btn:hover,
+        .apply-btn.active {
+            background-color: #3d5438;
+            color: #FFF;
+            border-color: #3d5438;
+            border: 1px solid #fff
+        }
+
+
+
+                </style>

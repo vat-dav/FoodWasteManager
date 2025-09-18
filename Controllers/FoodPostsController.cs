@@ -357,11 +357,13 @@ namespace FoodWasteManager.Controllers
                 await _context.SaveChangesAsync();
 
                 //return to the index of foodposts
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction(nameof(MyFoodPosts));
             }
 
             //return to the view, passing the foodposts parameter
             return View(foodPost);
+
+
         }
 
 

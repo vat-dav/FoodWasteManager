@@ -78,10 +78,13 @@
         }
     </div>
 }
-else if (viewType == "applicationsmade" && Model.FoodQuantity > 0)
+
+@if (viewType == "applicationsmade" && filteredApps.Any(a => a.QuantityRequired > 0))
 {
+    var appsToRender = filteredApps.Where(a => a.QuantityRequired > 0);
 
     <div class="d-flex align-items-center mb-3">
+
 
         <form asp-action="Index" method="get" class="d-inline-flex align-items-center gap-2 mb-3 flex-wrap">
             <input type="hidden" name="viewType" value="@viewType" />
@@ -114,11 +117,9 @@ else if (viewType == "applicationsmade" && Model.FoodQuantity > 0)
         </form>
 
     </div>
+   
 
-
-    @if (viewType == "applicationsmade" && filteredApps.Any(a => a.QuantityRequired > 0))
-    {
-        var appsToRender = filteredApps.Where(a => a.QuantityRequired > 0);
+    
 
     <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-3">
         @foreach (var item in filteredApps)
@@ -184,8 +185,6 @@ else if (viewType == "applicationsmade" && Model.FoodQuantity > 0)
                                         <button type="submit" class="btn btn-sm btn-paynow">Pay Now</button>
                                     </form>
 
-
-
                                 }
                             }
 
@@ -202,8 +201,8 @@ else if (viewType == "applicationsmade" && Model.FoodQuantity > 0)
             </div>
         }
     </div>
-}
 
+    }
 
 else if (viewType == "applicationsreceived")
 {
@@ -334,7 +333,7 @@ else if (viewType == "applicationsreceived")
 }
 </div>
 <style>
-    body, {
+    body {
         background-color: #f0ede6;
     }
 
