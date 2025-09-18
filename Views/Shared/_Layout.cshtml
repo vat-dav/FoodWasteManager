@@ -33,45 +33,74 @@
                 </button>
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
                     <ul class="navbar-nav flex-grow-1">
-                        <li class="nav-item">
-                            <a class="nav-link fs-5" style="color:#3d5438" asp-area="" asp-controller="FoodPosts" asp-action="Index">Food Marketplace</a>
-                        </li>
-                        @{
-                            if (User.IsInRole("Admin"))
-                            {
-                                <li class="nav-item">
-                                    <a class="nav-link fs-5" style="color:#3d5438" asp-area="" asp-controller="FoodTypes" asp-action="Index">Make new Food Category</a>
-                                </li>
-                                <li class="nav-item">
-                                    <a class="nav-link fs-5" style="color:#3d5438" asp-area="" asp-controller="Applications" asp-action="Index">View all applications </a>
-                                </li>
-                            }
-                        }
-                        @{
-                            if (User.IsInRole("Buyer"))
-                            { 
-                                <li class="nav-item">
-                                    <a class="nav-link fs-5" style="color:#3d5438"  asp-area="" asp-controller="Applications" asp-action="Index" asp-route-viewType="applicationsmade">My Applications</a>
-                                </li> 
-                            }
-                        }
-                        @{
-                            if (User.IsInRole("Seller") )
-                            {
-                                <li class="nav-item">
-                                    <a class="nav-link fs-5" style="color:#3d5438" asp-area="" asp-controller="Applications" asp-action="Index" asp-route-viewType="applicationsreceived">Approve/Decline Applications</a>
-                                </li>
 
-                                <li class="nav-item">
-                                    <a class="nav-link fs-5" style="color:#3d5438" asp-area="" class="nav-link" asp-controller="FoodPosts" asp-action="MyFoodPosts">Edit/Delete FoodPosts</a>
-                                </li>
-                            }
+                        @if (User.IsInRole("Buyer") || User.IsInRole("Seller"))
+                        {
+                            <li class="nav-item fw-bold small mt-1" style="color:#3d5438;">Buyer Tabs:</li>
+                            <li class="nav-item mb-2 mt-2 ms-2">
+                                <a class="nav-link fs-5" style="color:#3d5438;"
+                                   asp-controller="FoodPosts" asp-action="Index">
+                                    Food Marketplace
+                                </a>
+                            </li>
                         }
 
-                       
+                        @if (User.IsInRole("Admin"))
+                        {
+                            <li class="nav-item fw-bold small mt-1" style="color:#3d5438;">Admin Tabs:</li>
+                            <li class="nav-item mb-2 mt-2">
+                                <a class="nav-link fs-5" style="color:#3d5438;"
+                                   asp-controller="FoodTypes" asp-action="Index">
+                                    New Food Category
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link fs-5" style="color:#3d5438;"
+                                   asp-controller="Applications" asp-action="Index">
+                                    All Applications
+                                </a>
+                            </li>
+                        }
+
+                        @if (User.IsInRole("Buyer"))
+                        {
+                            <li class="nav-item mt-2">
+
+                                <a class="nav-link fs-5" style="color:#3d5438;"
+                                   asp-controller="Applications"
+                                   asp-action="Index"
+                                   asp-route-viewType="applicationsmade">
+                                    My Applications
+                                </a>
+                            </li>
+                        }
+
+                        @if (User.IsInRole("Seller"))
+                        {
+                            <li class="nav-item fw-bold small mt-2 ms-3" style="color:#3d5438;">Seller Tabs:</li>
+                            <li class="nav-item mb-2 mt-2 ms-2">
+                                <a class="nav-link fs-5" style="color:#3d5438;"
+                                   asp-controller="Applications"
+                                   asp-action="Index"
+                                   asp-route-viewType="applicationsreceived">
+                                    Manage Applications
+                                </a>
+                            </li>
+                            <li class="nav-item mt-2">
+                                <a class="nav-link fs-5" style="color:#3d5438;"
+                                   asp-controller="FoodPosts"
+                                   asp-action="MyFoodPosts">
+                                    Manage Food Posts
+                                </a>
+                            </li>
+                        }
 
                     </ul>
                 </div>
+
+
+
+
                 <partial name="_LoginPartial" />
             </div>
         </nav>

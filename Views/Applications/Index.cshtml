@@ -78,7 +78,7 @@
         }
     </div>
 }
-else if (viewType == "applicationsmade")
+else if (viewType == "applicationsmade" && Model.FoodQuantity > 0)
 {
 
     <div class="d-flex align-items-center mb-3">
@@ -114,6 +114,11 @@ else if (viewType == "applicationsmade")
         </form>
 
     </div>
+
+
+    @if (viewType == "applicationsmade" && filteredApps.Any(a => a.QuantityRequired > 0))
+    {
+        var appsToRender = filteredApps.Where(a => a.QuantityRequired > 0);
 
     <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-3">
         @foreach (var item in filteredApps)
