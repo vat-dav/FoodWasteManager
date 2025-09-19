@@ -227,7 +227,7 @@ namespace FoodWasteManager.Controllers
       
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("FoodPostId,FoodTypeId,FoodImage,FoodName,FoodQuantity,FoodPrice,FoodBestBefore,DatePosted,ImageFile")] FoodPost foodPost, IFormFile imageFile)
+        public async Task<IActionResult> Create(int id ,[Bind("FoodPostId,FoodTypeId,FoodImage,FoodName,FoodQuantity,FoodPrice,FoodBestBefore,DatePosted,ImageFile")] FoodPost foodPost, IFormFile imageFile)
 
         {
             //if imagefile has been uploaded and is not null, the image is resized before saved.
@@ -304,6 +304,7 @@ namespace FoodWasteManager.Controllers
             }
 
             if (!ModelState.IsValid)
+
             {
                 var user = await _userManager.GetUserAsync(User); // get the currently logged-in user
                 foodPost.UserId = user.Id; // sets the foreign key manually
@@ -345,12 +346,21 @@ namespace FoodWasteManager.Controllers
                     }
 
                     foodPost.FoodImage = "/images/" + fileName;
+
+                  
+
                 }
                 else
                 {
                     // no new file, so keep the existing image
                     foodPost.FoodImage = existingPost.FoodImage;
+                    foodPost.ImageFile = existingPost.ImageFile;
+
+                    
+
                 }
+
+            
 
                 //update and save changes to the database
                 _context.Update(foodPost);
@@ -359,6 +369,8 @@ namespace FoodWasteManager.Controllers
                 //return to the index of foodposts
                 return RedirectToAction(nameof(MyFoodPosts));
             }
+
+          
 
             //return to the view, passing the foodposts parameter
             return View(foodPost);

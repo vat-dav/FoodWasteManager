@@ -80,6 +80,12 @@
             <div>
                 <h2 class="text-muted text-center">No relevant food posts found!</h2>
             </div>
+            <a asp-action="Index" asp-controller="FoodPosts"
+               class="btn btn-sm ms-3 clear-btn"
+               style="background-color:#3d5438; color:white; border:none; width:140px; height:40px; display:flex; align-items:center; justify-content:center; border-radius:5px;">
+                Return
+                <i class="bi bi-arrow-left ms-2"></i>
+            </a>
         }
         else
         {
@@ -101,9 +107,14 @@
                     <h3 class="mb-0 small">Price: $@item.FoodPrice</h3>
                     <h4 class="mb-2 small">Best Before: @item.FoodBestBefore.ToShortDateString()</h4>
                     <div class="mt-auto d-flex justify-content-between">
+                                    @{
+
+                                        if(User.IsInRole("Seller") || User.IsInRole("Buyer"))
+                                        {
                         <a asp-controller="Applications" asp-action="Create" asp-route-FoodPostId="@item.FoodPostId" class="btn btn-sm apply-btn" style="outline-color:#3d5438">Apply!</a>
+                                        }
                         <a asp-action="Details" asp-route-id="@item.FoodPostId" class="btn btn-sm apply-btn">Details</a>
-                        @{
+                                        
                             if (User.IsInRole("Admin"))
                             {
                                 <a asp-action="Delete" asp-route-id="@item.FoodPostId" class="btn btn-sm btn-outline-danger">Delete
@@ -125,9 +136,11 @@
 <div class="pagination mt-5">
    
 
+ 
+
     <span class="ms-3">Page @ViewBag.CurrentPage of @ViewBag.TotalPages</span>
 
-     @if (ViewBag.CurrentPage > 1)
+     @if (ViewBag.CurrentPage > 1 )
     {
         <h5> <a class="apply-btn ms-3" asp-action="Index"
            asp-route-sortOrder="@ViewData["CurrentSort"]"

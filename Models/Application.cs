@@ -2,6 +2,7 @@
 using FoodWasteManager.Models;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
+using Microsoft.AspNetCore.Mvc;
 
 namespace FoodWasteManager.Models
 {
@@ -10,7 +11,7 @@ namespace FoodWasteManager.Models
         [Key]
         public int ApplicationId { get; set; } // PK for table
 
-        [Required, Display(Name = "Food Item")]
+        [Required, Display(Name = "Food Item"),HiddenInput(DisplayValue = false)]
         public int FoodPostId { get; set; } // FK to table (PK of FoodPosts table), is required and display name is Food Item
 
         [ForeignKey("FoodPostId")]

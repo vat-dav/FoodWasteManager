@@ -39,10 +39,30 @@
                 </a>
                     }
                 }
-                <a asp-action="Index" asp-route-viewType="applicationsmade" class="btn btn-sm ms-1 clear-btn" style="color:#3d5438; border-color:#3d5438; min-width:120px;">
+                <a asp-action="Index" asp-route-viewType="applicationsmade" class="btn btn-sm ms-1 apply-btn" style="min-width:120px;">
                     Back
                 </a>
             </div>
         </div>
     </div>
 </div>
+
+
+
+<style>
+    .apply-btn {
+        color: #3d5438;
+        border: 1px solid #3d5438;
+        text-decoration: none;
+        padding: 3px 10px;
+        border-radius: 4px;
+        transition: all 0.3s ease;
+    }
+
+        .apply-btn:hover {
+            background-color: #3d5438;
+            color: white;
+            border-color: #3d5438;
+        }
+
+</style>

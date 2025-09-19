@@ -61,7 +61,7 @@ namespace FoodWasteManager.Controllers
         // saves the new food type to the database after validating the users input
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("FoodId,FoodTypeName")] FoodType foodType)
+        public async Task<IActionResult> Create([Bind("FoodTypeId,FoodTypeName")] FoodType foodType)
         {
             if (!ModelState.IsValid)
             {
@@ -96,7 +96,7 @@ namespace FoodWasteManager.Controllers
        //saves the updated food type in the database
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("FoodId,FoodTypeName")] FoodType foodType)
+        public async Task<IActionResult> Edit(int id, [Bind("FoodTypeId,FoodTypeName")] FoodType foodType)
         {
             if (id != foodType.FoodTypeId)
             {

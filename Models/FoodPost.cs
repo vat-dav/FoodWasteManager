@@ -12,7 +12,7 @@ namespace FoodWasteManager.Models
         [Display(Name = "Image")]
         public string FoodImage { get; set; } // Image file name or path (string stored in DB)
 
-        [NotMapped, Required]
+        [NotMapped, Required(ErrorMessage ="Please upload a recent photo of the food when editing a post.")]
         public IFormFile ImageFile { get; set; } // Not mapped, used to upload image via form
 
         [Required, MaxLength(25), Display(Name = "Name")]

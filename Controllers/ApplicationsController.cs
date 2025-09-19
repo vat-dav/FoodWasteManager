@@ -422,7 +422,7 @@ namespace FoodWasteManager.Controllers
                 }
 
                 //redirect to the index method of applications controller
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction(nameof(Index), new { viewType = "applicationsmade" });
             }
 
             //populate dropdown with foodname, based on foodpostid

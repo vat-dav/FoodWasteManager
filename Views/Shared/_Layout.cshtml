@@ -34,20 +34,19 @@
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
                     <ul class="navbar-nav flex-grow-1">
 
-                        @if (User.IsInRole("Buyer") || User.IsInRole("Seller"))
-                        {
-                            <li class="nav-item fw-bold small mt-1" style="color:#3d5438;">Buyer Tabs:</li>
-                            <li class="nav-item mb-2 mt-2 ms-2">
-                                <a class="nav-link fs-5" style="color:#3d5438;"
-                                   asp-controller="FoodPosts" asp-action="Index">
-                                    Food Marketplace
-                                </a>
-                            </li>
-                        }
+                        <li class="nav-item mb-2 mt-2 ms-2">
+                            <a class="nav-link fs-5" style="color:#3d5438;"
+                               asp-controller="FoodPosts" asp-action="Index">
+                                Food Marketplace
+                            </a>
+                        </li>
 
                         @if (User.IsInRole("Admin"))
                         {
-                            <li class="nav-item fw-bold small mt-1" style="color:#3d5438;">Admin Tabs:</li>
+                            
+                            <li class="nav-item fw-bold small mt-1 ms-2" style="color:#3d5438;">Admin:</li>
+
+                           
                             <li class="nav-item mb-2 mt-2">
                                 <a class="nav-link fs-5" style="color:#3d5438;"
                                    asp-controller="FoodTypes" asp-action="Index">
@@ -55,7 +54,7 @@
                                 </a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link fs-5" style="color:#3d5438;"
+                                <a class="nav-link fs-5 mb-2 mt-2" style="color:#3d5438;"
                                    asp-controller="Applications" asp-action="Index">
                                     All Applications
                                 </a>
@@ -64,7 +63,9 @@
 
                         @if (User.IsInRole("Buyer"))
                         {
-                            <li class="nav-item mt-2">
+                            <li class="nav-item fw-bold small mt-2 ms-3" style="color:#3d5438;">Buyer:</li>
+                            <li class="nav-item mb-2 mt-2 ms-2">
+                    
 
                                 <a class="nav-link fs-5" style="color:#3d5438;"
                                    asp-controller="Applications"
@@ -77,7 +78,7 @@
 
                         @if (User.IsInRole("Seller"))
                         {
-                            <li class="nav-item fw-bold small mt-2 ms-3" style="color:#3d5438;">Seller Tabs:</li>
+                            <li class="nav-item fw-bold small mt-2 ms-3" style="color:#3d5438;">Seller:</li>
                             <li class="nav-item mb-2 mt-2 ms-2">
                                 <a class="nav-link fs-5" style="color:#3d5438;"
                                    asp-controller="Applications"

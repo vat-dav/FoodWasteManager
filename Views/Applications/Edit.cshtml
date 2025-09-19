@@ -14,9 +14,7 @@
             <input type="hidden" asp-for="ApplicationId" />
 
             <div class="mb-3">
-                <label asp-for="FoodPostId" class="form-label fw-semibold" style="color:#3d5438;">Select Food Post</label>
-                <select asp-for="FoodPostId" class="form-select" asp-items="ViewBag.FoodPostId"></select>
-                <span asp-validation-for="FoodPostId" class="text-danger"></span>
+                <input type="hidden" asp-for="FoodPostId" />
             </div>
 
             <div class="mb-3">
@@ -40,10 +38,10 @@
             </div>
 
             <div class="d-flex justify-content-center">
-                <button type="submit" class="btn btn-success fw-semibold me-2" style="background-color:#3d5438; border:none; min-width:120px;">
+                <button type="submit" class="btn me-2" style="background-color:#3d5438; color:#fff; min-width:120px;">
                     <i class="bi bi-pencil-square me-1"></i> Save
                 </button>
-                <a asp-action="Index" asp-route-viewType="applicationsmade" class="btn btn-sm ms-1 clear-btn" style="color:#3d5438; border-color:#3d5438; min-width:120px;">
+                <a asp-action="Index" asp-route-viewType="applicationsmade" class="btn btn-sm ms-1 apply-btn" style="min-width:120px;">
                     Cancel
                 </a>
             </div>
@@ -86,3 +84,22 @@
         });
     </script>
 }
+
+
+<style>
+    .apply-btn {
+        color: #3d5438;
+        border: 1px solid #3d5438;
+        text-decoration: none;
+        padding: 3px 10px;
+        border-radius: 4px;
+        transition: all 0.3s ease;
+    }
+
+        .apply-btn:hover {
+            background-color: #3d5438;
+            color: white;
+            border-color: #3d5438;
+        }
+
+</style>

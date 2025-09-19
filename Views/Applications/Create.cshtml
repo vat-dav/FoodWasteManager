@@ -12,9 +12,9 @@
         <form asp-action="Create" onsubmit="return validatePickupDates();" class="p-4 rounded-4 shadow" style="background-color:#d0f2b6;">
             <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
 
-            <div class="mb-3">
-                <label asp-for="FoodPostId" class="form-label fw-semibold" style="color:#3d5438;">Select Food Post</label>
-                <select asp-for="FoodPostId" class="form-select" asp-items="ViewBag.FoodPostId"></select>
+            <div class="mb-3" >
+                
+                <input type="hidden" asp-for="FoodPostId" />
             </div>
 
             <div class="mb-3">
@@ -41,7 +41,7 @@
                 <button type="submit" class="btn btn-success fw-semibold" style="background-color:#3d5438; border:none; min-width:120px;">
                     <i class="bi bi-check-circle-fill me-2"></i> Submit
                 </button>
-                <a asp-action="Index" asp-controller="FoodPosts" class="btn btn-outline-secondary ms-2" style="color:#3d5438; border-color:#3d5438; min-width:120px;">
+                <a asp-action="Index" asp-controller="FoodPosts" class="btn apply-btn ms-2" style="min-width:120px;">
                     Cancel
                 </a>
             </div>
@@ -134,3 +134,29 @@
         }
     </script>
 }
+
+
+                <style>
+    .apply-btn {
+        color: #3d5438;
+        border: 1px solid #3d5438;
+        text-decoration: none;
+        padding: 4px 12px;
+        border-radius: 4px;
+        transition: all 0.3s ease;
+        background-color: transparent;
+        font-size: 0.9rem;
+        display: inline-block;
+    }
+
+        .apply-btn:hover,
+        .apply-btn.active {
+            background-color: #3d5438;
+            color: #FFF;
+            border-color: #3d5438;
+            border: 1px solid #fff
+        }
+
+
+
+                </style>

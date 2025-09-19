@@ -1,35 +1,53 @@
 ﻿@model FoodWasteManager.Models.FoodType
-
 @{
-    ViewData["Title"] = "Edit";
+    ViewData["Title"] = "Edit Food Category";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h1>Edit</h1>
+<h1 class="mb-4">Edit Food Category</h1>
 
-<h4>FoodType</h4>
-<hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Edit">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <input type="hidden" asp-for="FoodTypeId" />
-            <div class="form-group">
-                <label asp-for="FoodTypeName" class="control-label"></label>
-                <input asp-for="FoodTypeName" class="form-control" />
-                <span asp-validation-for="FoodTypeName" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Save" class="btn btn-primary" />
-            </div>
-        </form>
+<div class="mb-3">
+    <a asp-action="Index" class="btn apply-btn">
+        <i class="bi bi-arrow-left"></i> Back to List
+    </a>
+</div>
+
+<form asp-action="Edit" class="w-50">
+    <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+    <input type="hidden" asp-for="FoodTypeId" />
+
+    <div class="mb-3">
+        <label asp-for="FoodTypeName" class="form-label fw-bold"></label>
+        <input asp-for="FoodTypeName" class="form-control" />
+        <span asp-validation-for="FoodTypeName" class="text-danger"></span>
     </div>
-</div>
 
-<div>
-    <a asp-action="Index">Back to List</a>
-</div>
+    <button type="submit" class="btn apply-btn me-2">
+        <i class="bi bi-check-circle-fill"></i> Save
+    </button>
+</form>
 
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
 }
+
+<style>
+    .apply-btn {
+        color: #3d5438;
+        border: 1px solid #3d5438;
+        background-color: #d0f2b6;
+        text-decoration: none;
+        padding: 6px 16px;
+        border-radius: 4px;
+        transition: all 0.3s ease;
+    }
+
+        .apply-btn:hover {
+            background-color: #3d5438;
+            color: white;
+            border-color: #3d5438;
+        }
+</style>
